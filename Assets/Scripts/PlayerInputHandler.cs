@@ -3,28 +3,37 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    public Vector2 MoveInput { get; private set; }
-    public bool IsJumping { get; private set; }
-    public bool IsSprinting { get; private set; }
-    public bool IsCrouching { get; private set; }
+    private IControllable controlledPlayer;
+
+    public void SetControllable(IControllable player)
+    {
+        controlledPlayer = player;
+    }
 
     public void OnMove(InputValue value)
     {
-        MoveInput = value.Get<Vector2>();
+        controlledPlayer?.Move(value.Get<Vector2>());
+    }
+
+    public void OnLook(InputValue value)
+    {
+        controlledPlayer?.Look(value.Get<Vector2>());
     }
 
     public void OnJump(InputValue value)
     {
-        IsJumping = value.isPressed;
+        if (value.isPressed)
+            controlledPlayer?.Jump();
     }
 
     public void OnSprint(InputValue value)
     {
-        IsSprinting = value.isPressed;
+        controlledPlayer?.SetSprint(value.isPressed);
     }
 
     public void OnCrouch(InputValue value)
     {
-        IsCrouching = value.isPressed;
+        if (value.isPressed)
+            controlledPlayer?.ToggleCrouch();
     }
 }
