@@ -155,7 +155,7 @@ MonoBehaviour:
   canUseHeadbob: 1
   useFootsteps: 1
   walkSpeed: 4
-  sprintSpeed: 7
+  sprintSpeed: 50
   crouchSpeed: 2
   lookSpeedX: 2
   lookSpeedY: 2

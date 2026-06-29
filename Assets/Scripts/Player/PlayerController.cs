@@ -102,14 +102,13 @@ public class PlayerController : NetworkBehaviour, IControllable
 
         if (useFootsteps)
             HandleFootsteps();
-
+        HandleMovementInput();
         ApplyFinalMovements();
     }
 
     public void Move(Vector2 input)
     {
-        float speed = isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed;
-        currentInput = new Vector2(speed * input.y, speed * input.x);
+        currentInput = new Vector2(input.x, input.y);
     }
 
     public void Look(Vector2 input)
@@ -140,7 +139,15 @@ public class PlayerController : NetworkBehaviour, IControllable
             StartCoroutine(CrouchStand());
         }
     }
+    private void HandleMovementInput()
+    {
+        float speed = isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed;
+        Vector2 input = currentInput;
 
+        float moveDirectionY = moveDirection.y;
+        moveDirection = (transform.forward * input.y + transform.right * input.x) * speed;
+        moveDirection.y = moveDirectionY;
+    }
     private void HandleHeadbob()
     {
         if (!characterController.isGrounded) return;
