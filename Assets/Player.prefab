@@ -134,6 +134,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c0d929116e2234188c9433cf612366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+  OnInteractEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3105807553803532469
 MonoBehaviour:
   m_ObjectHideFlags: 0

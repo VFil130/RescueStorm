@@ -62,7 +62,7 @@ public class PlayerController : NetworkBehaviour, IControllable
 
     private Camera playerCamera;
     private CharacterController characterController;
-
+    private Interactor interactor;
     private Vector3 moveDirection;
     private Vector2 currentInput;
     private float rotationX = 0;
@@ -76,6 +76,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
+        interactor = GetComponent<Interactor>();
         defaultYPos = playerCamera.transform.localPosition.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -126,7 +127,10 @@ public class PlayerController : NetworkBehaviour, IControllable
             jumpRequested = true;
         }
     }
-
+    public void Interact()
+    {
+        interactor.DoInteract();
+    }
     public void SetSprint(bool sprint)
     {
         isSprinting = sprint;
@@ -161,7 +165,6 @@ public class PlayerController : NetworkBehaviour, IControllable
             playerCamera.transform.localPosition = camPos;
         }
     }
-
     private void ApplyFinalMovements()
     {
         if (!characterController.isGrounded)
@@ -212,7 +215,6 @@ public class PlayerController : NetworkBehaviour, IControllable
             footstepTimer = GetCurrentOffset;
         }
     }
-
     private IEnumerator CrouchStand()
     {
         if (isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))

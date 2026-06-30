@@ -7,4 +7,5 @@ public interface IControllable
     void Jump();
     void SetSprint(bool isSprinting);
     void ToggleCrouch();
+    void Interact();
 }
