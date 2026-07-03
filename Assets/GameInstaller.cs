@@ -9,5 +9,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<NetworkService>().AsSingle();
         Container.Bind<AudioManager>().AsSingle();
         Container.Bind<ParticleManager>().AsSingle();
+        Container.Bind<SceneManagerService>().AsSingle();
     }
 }
