@@ -6,10 +6,10 @@ public class DungeonGenerator : MonoBehaviour
     public GameObject[] roomPrefabs;
     public GameObject wallPrefab;
     public int maxRooms = 20;
-    public float roomSize = 10f;
+    public float cellSize = 10f;
     public float spacing = 2f;
     public bool generateOnStart = true;
-    public int gridBounds = 20;
+    public int gridBounds = 30;
 
     private List<RoomNode> rooms = new List<RoomNode>();
     private List<DoorSlot> openSlots = new List<DoorSlot>();
@@ -24,12 +24,11 @@ public class DungeonGenerator : MonoBehaviour
     public void GenerateDungeon()
     {
         ClearDungeon();
-
         if (roomPrefabs.Length == 0) return;
 
         GameObject startRoom = Instantiate(roomPrefabs[0], Vector3.zero, Quaternion.identity);
         startRoom.transform.parent = this.transform;
-        RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero);
+        RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero, GetRoomSize(startRoom));
         rooms.Add(startNode);
         RegisterRoom(startNode);
         openSlots.AddRange(GetDoorSlots(startRoom, Vector2Int.zero));
@@ -51,61 +50,72 @@ public class DungeonGenerator : MonoBehaviour
                 openSlots.RemoveAt(slotIndex);
             }
         }
-
         CloseRemainingSlots();
+    }
+
+    private Vector2Int GetRoomSize(GameObject room)
+    {
+        RoomData data = room.GetComponent<RoomData>();
+        return data != null ? data.size : Vector2Int.one;
     }
 
     private bool TryPlaceRoom(DoorSlot slot)
     {
-        Vector2Int targetGrid = slot.gridPosition + slot.direction;
+        List<GameObject> compatible = GetCompatibleRooms(slot.direction);
+        if (compatible.Count == 0) return false;
 
-        if (gridOccupied.ContainsKey(targetGrid)) return false;
-        if (IsOutsideBounds(targetGrid)) return false;
-
-        List<GameObject> compatibleRooms = GetCompatibleRooms(slot.direction);
-        if (compatibleRooms.Count == 0) return false;
-
-        GameObject chosen = compatibleRooms[Random.Range(0, compatibleRooms.Count)];
-        Vector3 worldPos = new Vector3(targetGrid.x * (roomSize + spacing), 0, targetGrid.y * (roomSize + spacing));
-
-        Quaternion rotation = GetRotationForDirection(slot.direction);
-        GameObject newRoom = Instantiate(chosen, worldPos, rotation);
-        newRoom.transform.parent = this.transform;
-
-        RoomNode node = new RoomNode(newRoom, targetGrid);
-        rooms.Add(node);
-        RegisterRoom(node);
-
-        List<DoorSlot> newSlots = GetDoorSlots(newRoom, targetGrid);
-        foreach (var newSlot in newSlots)
+        for (int i = 0; i < 5; i++)
         {
-            if (!IsSlotConnectedToExisting(newSlot))
+            GameObject chosen = compatible[Random.Range(0, compatible.Count)];
+            Vector2Int roomSize = GetRoomSize(chosen);
+            Vector2Int targetGrid = slot.gridPosition + slot.direction;
+
+            if (IsOverlapping(targetGrid, roomSize)) continue;
+            if (IsOutsideBounds(targetGrid, roomSize)) continue;
+
+            Vector3 worldPos = new Vector3(
+                targetGrid.x * (cellSize + spacing),
+                0,
+                targetGrid.y * (cellSize + spacing)
+            );
+
+            Quaternion rotation = GetRotationForDirection(slot.direction);
+            GameObject newRoom = Instantiate(chosen, worldPos, rotation);
+            newRoom.transform.parent = this.transform;
+
+            RoomNode node = new RoomNode(newRoom, targetGrid, roomSize);
+            rooms.Add(node);
+            RegisterRoom(node);
+
+            List<DoorSlot> newSlots = GetDoorSlots(newRoom, targetGrid);
+            foreach (var newSlot in newSlots)
             {
-                openSlots.Add(newSlot);
+                if (!IsSlotConnectedToExisting(newSlot))
+                {
+                    openSlots.Add(newSlot);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsOverlapping(Vector2Int pos, Vector2Int size)
+    {
+        for (int x = pos.x; x < pos.x + size.x; x++)
+        {
+            for (int y = pos.y; y < pos.y + size.y; y++)
+            {
+                if (gridOccupied.ContainsKey(new Vector2Int(x, y))) return true;
             }
         }
-
-        return true;
+        return false;
     }
 
-    private void CloseSlot(DoorSlot slot)
+    private bool IsOutsideBounds(Vector2Int pos, Vector2Int size)
     {
-        Vector3 worldPos = new Vector3(
-            slot.gridPosition.x * (roomSize + spacing) + GetDoorWorldOffset(slot.direction).x,
-            0,
-            slot.gridPosition.y * (roomSize + spacing) + GetDoorWorldOffset(slot.direction).z
-        );
-        Quaternion rotation = GetRotationForDirection(slot.direction);
-        Instantiate(wallPrefab, worldPos, rotation, this.transform);
-    }
-
-    private void CloseRemainingSlots()
-    {
-        foreach (var slot in openSlots)
-        {
-            CloseSlot(slot);
-        }
-        openSlots.Clear();
+        int half = gridBounds / 2;
+        return pos.x < -half || pos.x + size.x > half || pos.y < -half || pos.y + size.y > half;
     }
 
     private List<DoorSlot> GetDoorSlots(GameObject room, Vector2Int gridPos)
@@ -116,12 +126,24 @@ public class DungeonGenerator : MonoBehaviour
         {
             slots.Add(new DoorSlot
             {
-                gridPosition = gridPos,
+                gridPosition = gridPos + GetDoorGridOffset(door.transform.localPosition, GetRoomSize(room)),
                 direction = door.direction,
                 doorObject = door.gameObject
             });
         }
         return slots;
+    }
+
+    private Vector2Int GetDoorGridOffset(Vector3 localPos, Vector2Int roomSize)
+    {
+        float halfX = roomSize.x * (cellSize + spacing) / 2f;
+        float halfY = roomSize.y * (cellSize + spacing) / 2f;
+
+        if (Mathf.Approximately(localPos.z, halfY)) return new Vector2Int(0, roomSize.y);
+        if (Mathf.Approximately(localPos.z, -halfY)) return new Vector2Int(0, -1);
+        if (Mathf.Approximately(localPos.x, halfX)) return new Vector2Int(roomSize.x, 0);
+        if (Mathf.Approximately(localPos.x, -halfX)) return new Vector2Int(-1, 0);
+        return Vector2Int.zero;
     }
 
     private List<GameObject> GetCompatibleRooms(Vector2Int direction)
@@ -151,39 +173,53 @@ public class DungeonGenerator : MonoBehaviour
         return Quaternion.identity;
     }
 
+    private void CloseSlot(DoorSlot slot)
+    {
+        Vector3 worldPos = new Vector3(
+            slot.gridPosition.x * (cellSize + spacing),
+            0,
+            slot.gridPosition.y * (cellSize + spacing)
+        );
+        worldPos += GetDoorWorldOffset(slot.direction) * (cellSize / 2f);
+        Quaternion rotation = GetRotationForDirection(slot.direction);
+        Instantiate(wallPrefab, worldPos, rotation, this.transform);
+    }
+
     private Vector3 GetDoorWorldOffset(Vector2Int direction)
     {
-        float half = (roomSize + spacing) / 2f;
-        if (direction.x == 0 && direction.y == 1) return new Vector3(0, 0, half);
-        if (direction.x == 0 && direction.y == -1) return new Vector3(0, 0, -half);
-        if (direction.x == 1 && direction.y == 0) return new Vector3(half, 0, 0);
-        if (direction.x == -1 && direction.y == 0) return new Vector3(-half, 0, 0);
+        if (direction.x == 0 && direction.y == 1) return new Vector3(0, 0, 1);
+        if (direction.x == 0 && direction.y == -1) return new Vector3(0, 0, -1);
+        if (direction.x == 1 && direction.y == 0) return new Vector3(1, 0, 0);
+        if (direction.x == -1 && direction.y == 0) return new Vector3(-1, 0, 0);
         return Vector3.zero;
     }
 
-    private bool IsOutsideBounds(Vector2Int pos)
+    private void CloseRemainingSlots()
     {
-        int half = gridBounds / 2;
-        return Mathf.Abs(pos.x) > half || Mathf.Abs(pos.y) > half;
+        foreach (var slot in openSlots) CloseSlot(slot);
+        openSlots.Clear();
     }
 
     private bool IsSlotConnectedToExisting(DoorSlot slot)
     {
-        Vector2Int neighborPos = slot.gridPosition + slot.direction;
-        return gridOccupied.ContainsKey(neighborPos);
+        Vector2Int checkPos = slot.gridPosition + slot.direction;
+        return gridOccupied.ContainsKey(checkPos);
     }
 
     private void RegisterRoom(RoomNode node)
     {
-        gridOccupied[node.gridPosition] = node.roomObject;
+        for (int x = node.gridPosition.x; x < node.gridPosition.x + node.size.x; x++)
+        {
+            for (int y = node.gridPosition.y; y < node.gridPosition.y + node.size.y; y++)
+            {
+                gridOccupied[new Vector2Int(x, y)] = node.roomObject;
+            }
+        }
     }
 
     private void ClearDungeon()
     {
-        foreach (Transform child in transform)
-        {
-            DestroyImmediate(child.gameObject);
-        }
+        foreach (Transform child in transform) DestroyImmediate(child.gameObject);
         rooms.Clear();
         openSlots.Clear();
         gridOccupied.Clear();
@@ -193,11 +229,13 @@ public class DungeonGenerator : MonoBehaviour
     {
         public GameObject roomObject;
         public Vector2Int gridPosition;
+        public Vector2Int size;
 
-        public RoomNode(GameObject obj, Vector2Int pos)
+        public RoomNode(GameObject obj, Vector2Int pos, Vector2Int s)
         {
             roomObject = obj;
             gridPosition = pos;
+            size = s;
         }
     }
 
