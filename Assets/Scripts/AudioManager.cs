@@ -18,6 +18,10 @@ public class AudioManager
         sfxSource = audioRoot.AddComponent<AudioSource>();
         sfxSource.loop = false;
         sfxSource.playOnAwake = false;
+        sfxSource.spatialBlend = 1f;
+        sfxSource.minDistance = 1f;
+        sfxSource.maxDistance = 50f;
+        sfxSource.rolloffMode = AudioRolloffMode.Logarithmic;
     }
 
     public void PlaySFX(string folderName, Vector3 position, float volume = 1f)
