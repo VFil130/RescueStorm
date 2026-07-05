@@ -21,7 +21,7 @@ public class Interactor : MonoBehaviour
     }
     public void DoInteract()
     {
-        currentInteractable?.Interact();
+        currentInteractable?.Interact(this.gameObject);
     }
 
     private void CheckInteraction()
