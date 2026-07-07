@@ -11,8 +11,8 @@ public class InventorySlot
 public class Player : NetworkBehaviour
 {
     [Header("Stats")]
-    [SyncVar] private int health = 100;
-    [SyncVar] private int maxHealth = 100;
+    [SyncVar] private int health = 5;
+    [SyncVar][SerializeField] private int maxHealth = 100;
 
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
