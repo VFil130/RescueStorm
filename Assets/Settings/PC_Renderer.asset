@@ -15,6 +15,48 @@ MonoBehaviour:
   m_Active: 1
   renderPassEvent: 500
   material: {fileID: 2100000, guid: fedf334cf2cc1b44d9ae7b524decb528, type: 2}
+--- !u!114 &-4924936192971285933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
+  m_Name: RenderObjects
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.RenderObjects
+  m_Active: 1
+  settings:
+    passTag: RenderObjects
+    Event: 300
+    filterSettings:
+      RenderQueueType: 0
+      LayerMask:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      PassNames: []
+    overrideMaterial: {fileID: 2100000, guid: a29b2372eecc32e4290a4c89a9821479, type: 2}
+    overrideMaterialPassIndex: 0
+    overrideShader: {fileID: 0}
+    overrideShaderPassIndex: 0
+    overrideMode: 1
+    overrideDepthState: 0
+    depthCompareFunction: 4
+    enableWrite: 1
+    stencilSettings:
+      overrideStencilState: 0
+      stencilReference: 0
+      stencilCompareFunction: 8
+      passOperation: 0
+      failOperation: 0
+      zFailOperation: 0
+    cameraSettings:
+      overrideCamera: 0
+      restoreCamera: 1
+      offset: {x: 0, y: 0, z: 0, w: 0}
+      cameraFieldOfView: 60
 --- !u!114 &-4323236855090618535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,7 +121,8 @@ MonoBehaviour:
   - {fileID: -122567428183688894}
   - {fileID: -6349898745657986998}
   - {fileID: -4323236855090618535}
-  m_RendererFeatureMap: ad6b866f10d7b46c42f913ce928d4cfe4a705be9bba0e0a7595f725cfcc600c4
+  - {fileID: -4924936192971285933}
+  m_RendererFeatureMap: ad6b866f10d7b46c42f913ce928d4cfe4a705be9bba0e0a7595f725cfcc600c4535a7b3ca01ca7bb
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -120,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   m_Settings:
     AOMethod: 0
     Downsample: 0
@@ -134,3 +177,16 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 100
     SampleCount: -1
+--- !u!114 &8696062312850486648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82cc51333f0afc04b8921b8a6d8e77d1, type: 3}
+  m_Name: URP_EnableDepthNormals
+  m_EditorClassIdentifier: Assembly-CSharp::FPL.URP_EnableDepthNormals
+  m_Active: 1
