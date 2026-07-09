@@ -11,6 +11,7 @@ public class DungeonGenerator : MonoBehaviour
     public bool generateOnStart = true;
     public int gridBounds = 30;
 
+    private List<GameObject> mandatoryRooms = new List<GameObject>();
     private List<RoomNode> rooms = new List<RoomNode>();
     private List<DoorSlot> openSlots = new List<DoorSlot>();
     private Dictionary<Vector2Int, GameObject> gridOccupied = new Dictionary<Vector2Int, GameObject>();
@@ -20,13 +21,50 @@ public class DungeonGenerator : MonoBehaviour
         if (generateOnStart) GenerateDungeon();
     }
 
+    public void SetMandatoryRooms(List<GameObject> rooms)
+    {
+        mandatoryRooms = rooms;
+    }
+
+    public List<GameObject> GetPlacedRooms()
+    {
+        List<GameObject> result = new List<GameObject>();
+        foreach (var node in rooms)
+        {
+            result.Add(node.roomObject);
+        }
+        return result;
+    }
+
+    public List<Vector3> GetRandomRoomPositions(int count)
+    {
+        List<Vector3> positions = new List<Vector3>();
+        List<RoomNode> shuffled = new List<RoomNode>(rooms);
+        for (int i = 0; i < shuffled.Count && positions.Count < count; i++)
+        {
+            int index = Random.Range(i, shuffled.Count);
+            RoomNode temp = shuffled[i];
+            shuffled[i] = shuffled[index];
+            shuffled[index] = temp;
+        }
+        for (int i = 0; i < Mathf.Min(count, shuffled.Count); i++)
+        {
+            positions.Add(shuffled[i].roomObject.transform.position);
+        }
+        return positions;
+    }
+
     [ContextMenu("Generate Dungeon")]
     public void GenerateDungeon()
     {
         ClearDungeon();
         if (roomPrefabs.Length == 0) return;
 
-        GameObject startRoom = Instantiate(roomPrefabs[0], Vector3.zero, Quaternion.identity);
+        List<GameObject> combinedPrefabs = new List<GameObject>();
+        combinedPrefabs.AddRange(roomPrefabs);
+        combinedPrefabs.AddRange(mandatoryRooms);
+
+        GameObject startRoom = Instantiate(combinedPrefabs[0], Vector3.zero, Quaternion.identity);
         startRoom.transform.parent = this.transform;
         RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero, GetRoomSize(startRoom));
         rooms.Add(startNode);
@@ -40,7 +78,7 @@ public class DungeonGenerator : MonoBehaviour
             int slotIndex = Random.Range(0, openSlots.Count);
             DoorSlot slot = openSlots[slotIndex];
 
-            if (TryPlaceRoom(slot))
+            if (TryPlaceRoom(slot, combinedPrefabs))
             {
                 openSlots.RemoveAt(slotIndex);
             }
@@ -59,9 +97,9 @@ public class DungeonGenerator : MonoBehaviour
         return data != null ? data.size : Vector2Int.one;
     }
 
-    private bool TryPlaceRoom(DoorSlot slot)
+    private bool TryPlaceRoom(DoorSlot slot, List<GameObject> prefabs)
     {
-        List<GameObject> compatible = GetCompatibleRooms(slot.direction);
+        List<GameObject> compatible = GetCompatibleRooms(slot.direction, prefabs);
         if (compatible.Count == 0) return false;
 
         for (int i = 0; i < 5; i++)
@@ -146,10 +184,10 @@ public class DungeonGenerator : MonoBehaviour
         return Vector2Int.zero;
     }
 
-    private List<GameObject> GetCompatibleRooms(Vector2Int direction)
+    private List<GameObject> GetCompatibleRooms(Vector2Int direction, List<GameObject> prefabs)
     {
         List<GameObject> compatible = new List<GameObject>();
-        foreach (var prefab in roomPrefabs)
+        foreach (var prefab in prefabs)
         {
             DoorPoint[] doors = prefab.GetComponentsInChildren<DoorPoint>();
             foreach (var door in doors)
@@ -223,6 +261,7 @@ public class DungeonGenerator : MonoBehaviour
         rooms.Clear();
         openSlots.Clear();
         gridOccupied.Clear();
+        mandatoryRooms.Clear();
     }
 
     private class RoomNode

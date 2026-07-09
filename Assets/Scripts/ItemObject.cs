@@ -23,7 +23,6 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
     {
         Player player = picker.GetComponent<Player>();
         if (player == null) return false;
-
         return player.PickupItem(this);
     }
 

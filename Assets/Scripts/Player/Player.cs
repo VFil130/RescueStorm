@@ -129,7 +129,18 @@ public class Player : NetworkBehaviour
 
         OnInventoryChanged?.Invoke(inventory);
     }
+    public ItemObject GetSelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
+        return inventory[selectedSlot]?.itemObject;
+    }
 
+    public void RemoveSelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        inventory[selectedSlot].itemObject = null;
+        OnInventoryChanged?.Invoke(inventory);
+    }
     [Server]
     public void DropItem()
     {
