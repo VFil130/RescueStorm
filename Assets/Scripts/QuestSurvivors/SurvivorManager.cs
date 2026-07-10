@@ -50,17 +50,35 @@ public class SurvivorManager : NetworkBehaviour
 
         int questCount = Mathf.Min(survivorsCount, shuffledQuests.Count);
         assignedQuests = shuffledQuests.Take(questCount).ToList();
+    }
 
-        for (int i = 0; i < questCount; i++)
+    public void SpawnSurvivorsAtPositions(List<Vector3> positions)
+    {
+        if (survivorPrefab == null) return;
+        if (!NetworkServer.active) return;
+
+        for (int i = 0; i < assignedQuests.Count && i < positions.Count; i++)
         {
-            var survivor = Instantiate(survivorPrefab);
-            NetworkServer.Spawn(survivor);
+            Vector3 spawnPos = positions[i] + Vector3.up * 2f;
+            GameObject survivorObj = Instantiate(survivorPrefab, spawnPos, Quaternion.identity);
+            NetworkServer.Spawn(survivorObj);
 
-            var survivorComponent = survivor.GetComponent<Survivor>();
-            if (survivorComponent != null)
+            Survivor survivor = survivorObj.GetComponent<Survivor>();
+            if (survivor != null)
             {
-                survivorComponent.SetQuest(assignedQuests[i]);
-                survivors.Add(survivorComponent);
+                survivor.SetQuest(assignedQuests[i]);
+                survivors.Add(survivor);
+            }
+
+            if (!string.IsNullOrEmpty(assignedQuests[i].requiredItem))
+            {
+                GameObject itemPrefab = Resources.Load<GameObject>($"Items/{assignedQuests[i].requiredItem}");
+                if (itemPrefab != null)
+                {
+                    Vector3 itemPos = positions[i] + Vector3.up * 1.5f;
+                    GameObject item = Instantiate(itemPrefab, itemPos, Quaternion.identity);
+                    NetworkServer.Spawn(item);
+                }
             }
         }
     }

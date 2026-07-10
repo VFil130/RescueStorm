@@ -10,10 +10,10 @@ public class FetchItemQuestSO : QuestSO
     {
         var player = interactor.GetComponent<Player>();
         if (player == null) return false;
-
+        Debug.Log("GetPlayer");
         var item = player.GetSelectedItem();
         if (item == null) return false;
-
+        Debug.Log("GetSelItem", item);
         return item.itemName == requiredItemName;
     }
 

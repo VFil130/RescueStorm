@@ -28,11 +28,13 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public void Interact(GameObject interactor)
     {
+        Debug.Log("1");
         if (!isServer) return;
-
+        Debug.Log("sever");
         if (questCompleted)
         {
             Pickup(interactor);
+            Debug.Log("2");
             return;
         }
 
@@ -40,6 +42,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
         if (quest.CheckCompletion(interactor, this))
         {
+            Debug.Log("3");
             questCompleted = true;
             lastInteractor = interactor;
             quest.OnQuestCompleted(this);
@@ -48,6 +51,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public bool Pickup(GameObject picker)
     {
+        Debug.Log("pick");
         if (state != SurvivorState.Waiting) return false;
         if (!questCompleted) return false;
 

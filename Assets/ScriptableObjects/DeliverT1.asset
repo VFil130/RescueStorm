@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316f75361e0deee438239457c4409841, type: 3}
   m_Name: DeliverT1
   m_EditorClassIdentifier: Assembly-CSharp::FetchItemQuestSO
-  questId: 
-  questName: 
+  questId: 1
+  questName: T1
   requiredRoom: 
-  requiredItem: 
-  requiredItemName: 
+  requiredItem: Cube
+  requiredItemName: Cube

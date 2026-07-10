@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
-    private int selectedSlot = -1;
+    private int selectedSlot = 0;
 
     private InventorySlot[] inventory;
     private int heavySlotIndex;

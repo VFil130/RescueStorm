@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -93,6 +94,12 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
         CloseRemainingSlots();
+
+        if (survivorManager != null && NetworkServer.active)
+        {
+            List<Vector3> positions = GetRandomRoomPositions(survivorManager.GetAssignedQuests().Count);
+            survivorManager.SpawnSurvivorsAtPositions(positions);
+        }
     }
 
     private GameObject FindRoomPrefabByName(string roomName)
