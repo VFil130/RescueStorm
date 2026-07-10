@@ -40,7 +40,6 @@ public class SurvivorManager : NetworkBehaviour
             .ToList();
     }
 
-    [Server]
     public void InitializeSurvivors()
     {
         if (availableQuests == null || availableQuests.Count == 0) return;

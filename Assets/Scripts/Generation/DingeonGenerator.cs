@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -10,11 +11,13 @@ public class DungeonGenerator : MonoBehaviour
     public float spacing = 2f;
     public bool generateOnStart = true;
     public int gridBounds = 30;
+    public SurvivorManager survivorManager;
 
     private List<GameObject> mandatoryRooms = new List<GameObject>();
     private List<RoomNode> rooms = new List<RoomNode>();
     private List<DoorSlot> openSlots = new List<DoorSlot>();
     private Dictionary<Vector2Int, GameObject> gridOccupied = new Dictionary<Vector2Int, GameObject>();
+    private List<Vector3> roomPositions = new List<Vector3>();
 
     void Start()
     {
@@ -26,32 +29,17 @@ public class DungeonGenerator : MonoBehaviour
         mandatoryRooms = rooms;
     }
 
-    public List<GameObject> GetPlacedRooms()
-    {
-        List<GameObject> result = new List<GameObject>();
-        foreach (var node in rooms)
-        {
-            result.Add(node.roomObject);
-        }
-        return result;
-    }
-
     public List<Vector3> GetRandomRoomPositions(int count)
     {
-        List<Vector3> positions = new List<Vector3>();
-        List<RoomNode> shuffled = new List<RoomNode>(rooms);
-        for (int i = 0; i < shuffled.Count && positions.Count < count; i++)
+        List<Vector3> shuffled = new List<Vector3>(roomPositions);
+        for (int i = 0; i < shuffled.Count; i++)
         {
-            int index = Random.Range(i, shuffled.Count);
-            RoomNode temp = shuffled[i];
-            shuffled[i] = shuffled[index];
-            shuffled[index] = temp;
+            int rand = Random.Range(i, shuffled.Count);
+            Vector3 temp = shuffled[i];
+            shuffled[i] = shuffled[rand];
+            shuffled[rand] = temp;
         }
-        for (int i = 0; i < Mathf.Min(count, shuffled.Count); i++)
-        {
-            positions.Add(shuffled[i].roomObject.transform.position);
-        }
-        return positions;
+        return shuffled.Take(count).ToList();
     }
 
     [ContextMenu("Generate Dungeon")]
@@ -59,6 +47,21 @@ public class DungeonGenerator : MonoBehaviour
     {
         ClearDungeon();
         if (roomPrefabs.Length == 0) return;
+
+        if (survivorManager == null)
+            survivorManager = FindObjectOfType<SurvivorManager>();
+
+        if (survivorManager != null)
+        {
+            survivorManager.InitializeSurvivors();
+            List<string> requiredRoomNames = survivorManager.GetAllRequiredRooms();
+            mandatoryRooms.Clear();
+            foreach (string roomName in requiredRoomNames)
+            {
+                GameObject roomPrefab = FindRoomPrefabByName(roomName);
+                if (roomPrefab != null) mandatoryRooms.Add(roomPrefab);
+            }
+        }
 
         List<GameObject> combinedPrefabs = new List<GameObject>();
         combinedPrefabs.AddRange(roomPrefabs);
@@ -68,6 +71,7 @@ public class DungeonGenerator : MonoBehaviour
         startRoom.transform.parent = this.transform;
         RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero, GetRoomSize(startRoom));
         rooms.Add(startNode);
+        roomPositions.Add(startRoom.transform.position);
         RegisterRoom(startNode);
         openSlots.AddRange(GetDoorSlots(startRoom, Vector2Int.zero));
 
@@ -89,6 +93,18 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
         CloseRemainingSlots();
+    }
+
+    private GameObject FindRoomPrefabByName(string roomName)
+    {
+        foreach (var prefab in roomPrefabs)
+        {
+            if (prefab.name == roomName || prefab.name.Replace("(Clone)", "").Trim() == roomName)
+            {
+                return prefab;
+            }
+        }
+        return null;
     }
 
     private Vector2Int GetRoomSize(GameObject room)
@@ -123,6 +139,7 @@ public class DungeonGenerator : MonoBehaviour
 
             RoomNode node = new RoomNode(newRoom, targetGrid, roomSize);
             rooms.Add(node);
+            roomPositions.Add(newRoom.transform.position);
             RegisterRoom(node);
 
             List<DoorSlot> newSlots = GetDoorSlots(newRoom, targetGrid);
@@ -262,6 +279,7 @@ public class DungeonGenerator : MonoBehaviour
         openSlots.Clear();
         gridOccupied.Clear();
         mandatoryRooms.Clear();
+        roomPositions.Clear();
     }
 
     private class RoomNode
