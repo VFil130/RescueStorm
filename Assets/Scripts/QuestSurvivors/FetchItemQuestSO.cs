@@ -1,4 +1,5 @@
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewFetchItemQuest", menuName = "Quest/FetchItemQuest")]
@@ -10,11 +11,9 @@ public class FetchItemQuestSO : QuestSO
     {
         var player = interactor.GetComponent<Player>();
         if (player == null) return false;
-        Debug.Log("GetPlayer");
-        var item = player.GetSelectedItem();
+        var item = player.GetSelectedIPickable();
         if (item == null) return false;
-        Debug.Log("GetSelItem", item);
-        return item.itemName == requiredItemName;
+        return item.Name == requiredItemName;
     }
 
     public override void OnQuestCompleted(Survivor survivor)

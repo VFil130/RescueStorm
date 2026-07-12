@@ -1,12 +1,16 @@
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
 {
     [Header("Item Data")]
-    public string itemName;
     public int charges = 1;
-    public bool isHeavy = false;
+    public GameObject GameObject => gameObject;
+    [SerializeField] private string itemName;
+    [SerializeField] private bool isHeavy = false;
+    public bool IsHeavy => isHeavy;
+    public string Name => itemName;
     public Sprite icon;
 
     public void Interact(GameObject interactor)
@@ -30,5 +34,9 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
     {
         transform.position = position;
         gameObject.SetActive(true);
+    }
+    public void Use(GameObject GM)
+    {
+        Debug.Log("Using " + itemName);
     }
 }

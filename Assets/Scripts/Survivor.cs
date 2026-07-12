@@ -7,7 +7,11 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     [SyncVar(hook = nameof(OnQuestCompletedChanged))] private bool questCompleted = false;
     [SyncVar] private SurvivorState state = SurvivorState.Waiting;
     [SyncVar] private uint carrierNetId;
-
+    [SerializeField] private bool isHeavy = true;
+    [SerializeField] private string survivorName;
+    public bool IsHeavy => isHeavy;
+    public string Name => survivorName;
+    public GameObject GameObject => gameObject;
     private GameObject carrier;
     private GameManager gameManager;
     private GameObject lastInteractor;
@@ -28,13 +32,10 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public void Interact(GameObject interactor)
     {
-        Debug.Log("1");
         if (!isServer) return;
-        Debug.Log("sever");
         if (questCompleted)
         {
             Pickup(interactor);
-            Debug.Log("2");
             return;
         }
 
@@ -42,7 +43,6 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
         if (quest.CheckCompletion(interactor, this))
         {
-            Debug.Log("3");
             questCompleted = true;
             lastInteractor = interactor;
             quest.OnQuestCompleted(this);
@@ -51,14 +51,15 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public bool Pickup(GameObject picker)
     {
-        Debug.Log("pick");
         if (state != SurvivorState.Waiting) return false;
         if (!questCompleted) return false;
 
+        Player player = picker.GetComponent<Player>();
+        if (player == null) return false;
         carrier = picker;
         carrierNetId = picker.GetComponent<NetworkIdentity>().netId;
         state = SurvivorState.Carried;
-        return true;
+        return player.PickupItem(this);
     }
 
     public void Drop(Vector3 position)
@@ -69,7 +70,10 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         state = SurvivorState.Waiting;
         transform.position = position;
     }
-
+    public void Use(GameObject GM)
+    {
+        return;
+    }
     [Server]
     public void Save()
     {
