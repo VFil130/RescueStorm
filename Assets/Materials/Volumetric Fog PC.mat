@@ -132,7 +132,7 @@ Material:
     - _AlphaToMask: 0
     - _Ambient_Light: 2
     - _Ambient_Light_Scale: 0.5
-    - _Anisotropy: 0.8
+    - _Anisotropy: 1
     - _Anisotropy_Blend: 0.5
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
