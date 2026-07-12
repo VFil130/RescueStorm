@@ -1,4 +1,6 @@
+using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -10,14 +12,35 @@ public class DungeonGenerator : MonoBehaviour
     public float spacing = 2f;
     public bool generateOnStart = true;
     public int gridBounds = 30;
+    public SurvivorManager survivorManager;
 
+    private List<GameObject> mandatoryRooms = new List<GameObject>();
     private List<RoomNode> rooms = new List<RoomNode>();
     private List<DoorSlot> openSlots = new List<DoorSlot>();
     private Dictionary<Vector2Int, GameObject> gridOccupied = new Dictionary<Vector2Int, GameObject>();
+    private List<Vector3> roomPositions = new List<Vector3>();
 
     void Start()
     {
         if (generateOnStart) GenerateDungeon();
+    }
+
+    public void SetMandatoryRooms(List<GameObject> rooms)
+    {
+        mandatoryRooms = rooms;
+    }
+
+    public List<Vector3> GetRandomRoomPositions(int count)
+    {
+        List<Vector3> shuffled = new List<Vector3>(roomPositions);
+        for (int i = 0; i < shuffled.Count; i++)
+        {
+            int rand = Random.Range(i, shuffled.Count);
+            Vector3 temp = shuffled[i];
+            shuffled[i] = shuffled[rand];
+            shuffled[rand] = temp;
+        }
+        return shuffled.Take(count).ToList();
     }
 
     [ContextMenu("Generate Dungeon")]
@@ -26,10 +49,30 @@ public class DungeonGenerator : MonoBehaviour
         ClearDungeon();
         if (roomPrefabs.Length == 0) return;
 
-        GameObject startRoom = Instantiate(roomPrefabs[0], Vector3.zero, Quaternion.identity);
+        if (survivorManager == null)
+            survivorManager = FindObjectOfType<SurvivorManager>();
+
+        if (survivorManager != null)
+        {
+            survivorManager.InitializeSurvivors();
+            List<string> requiredRoomNames = survivorManager.GetAllRequiredRooms();
+            mandatoryRooms.Clear();
+            foreach (string roomName in requiredRoomNames)
+            {
+                GameObject roomPrefab = FindRoomPrefabByName(roomName);
+                if (roomPrefab != null) mandatoryRooms.Add(roomPrefab);
+            }
+        }
+
+        List<GameObject> combinedPrefabs = new List<GameObject>();
+        combinedPrefabs.AddRange(roomPrefabs);
+        combinedPrefabs.AddRange(mandatoryRooms);
+
+        GameObject startRoom = Instantiate(combinedPrefabs[0], Vector3.zero, Quaternion.identity);
         startRoom.transform.parent = this.transform;
         RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero, GetRoomSize(startRoom));
         rooms.Add(startNode);
+        roomPositions.Add(startRoom.transform.position);
         RegisterRoom(startNode);
         openSlots.AddRange(GetDoorSlots(startRoom, Vector2Int.zero));
 
@@ -40,7 +83,7 @@ public class DungeonGenerator : MonoBehaviour
             int slotIndex = Random.Range(0, openSlots.Count);
             DoorSlot slot = openSlots[slotIndex];
 
-            if (TryPlaceRoom(slot))
+            if (TryPlaceRoom(slot, combinedPrefabs))
             {
                 openSlots.RemoveAt(slotIndex);
             }
@@ -51,6 +94,24 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
         CloseRemainingSlots();
+
+        if (survivorManager != null && NetworkServer.active)
+        {
+            List<Vector3> positions = GetRandomRoomPositions(survivorManager.GetAssignedQuests().Count);
+            survivorManager.SpawnSurvivorsAtPositions(positions);
+        }
+    }
+
+    private GameObject FindRoomPrefabByName(string roomName)
+    {
+        foreach (var prefab in roomPrefabs)
+        {
+            if (prefab.name == roomName || prefab.name.Replace("(Clone)", "").Trim() == roomName)
+            {
+                return prefab;
+            }
+        }
+        return null;
     }
 
     private Vector2Int GetRoomSize(GameObject room)
@@ -59,9 +120,9 @@ public class DungeonGenerator : MonoBehaviour
         return data != null ? data.size : Vector2Int.one;
     }
 
-    private bool TryPlaceRoom(DoorSlot slot)
+    private bool TryPlaceRoom(DoorSlot slot, List<GameObject> prefabs)
     {
-        List<GameObject> compatible = GetCompatibleRooms(slot.direction);
+        List<GameObject> compatible = GetCompatibleRooms(slot.direction, prefabs);
         if (compatible.Count == 0) return false;
 
         for (int i = 0; i < 5; i++)
@@ -85,6 +146,7 @@ public class DungeonGenerator : MonoBehaviour
 
             RoomNode node = new RoomNode(newRoom, targetGrid, roomSize);
             rooms.Add(node);
+            roomPositions.Add(newRoom.transform.position);
             RegisterRoom(node);
 
             List<DoorSlot> newSlots = GetDoorSlots(newRoom, targetGrid);
@@ -146,10 +208,10 @@ public class DungeonGenerator : MonoBehaviour
         return Vector2Int.zero;
     }
 
-    private List<GameObject> GetCompatibleRooms(Vector2Int direction)
+    private List<GameObject> GetCompatibleRooms(Vector2Int direction, List<GameObject> prefabs)
     {
         List<GameObject> compatible = new List<GameObject>();
-        foreach (var prefab in roomPrefabs)
+        foreach (var prefab in prefabs)
         {
             DoorPoint[] doors = prefab.GetComponentsInChildren<DoorPoint>();
             foreach (var door in doors)
@@ -223,6 +285,8 @@ public class DungeonGenerator : MonoBehaviour
         rooms.Clear();
         openSlots.Clear();
         gridOccupied.Clear();
+        mandatoryRooms.Clear();
+        roomPositions.Clear();
     }
 
     private class RoomNode

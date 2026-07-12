@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
-    private int selectedSlot = -1;
+    private int selectedSlot = 0;
 
     private InventorySlot[] inventory;
     private int heavySlotIndex;
@@ -129,7 +129,18 @@ public class Player : NetworkBehaviour
 
         OnInventoryChanged?.Invoke(inventory);
     }
+    public ItemObject GetSelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
+        return inventory[selectedSlot]?.itemObject;
+    }
 
+    public void RemoveSelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        inventory[selectedSlot].itemObject = null;
+        OnInventoryChanged?.Invoke(inventory);
+    }
     [Server]
     public void DropItem()
     {

@@ -1,23 +1,23 @@
 using Mirror;
 using UnityEngine;
 
-public class Survivor : NetworkBehaviour
+public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 {
+    [SerializeField] private QuestSO quest;
+    [SyncVar(hook = nameof(OnQuestCompletedChanged))] private bool questCompleted = false;
     [SyncVar] private SurvivorState state = SurvivorState.Waiting;
     [SyncVar] private uint carrierNetId;
 
     private GameObject carrier;
     private GameManager gameManager;
-    private bool taskCompleted = false;
+    private GameObject lastInteractor;
 
     public enum SurvivorState { Waiting, Carried, Saved }
+    public bool IsQuestCompleted => questCompleted;
 
     void Start()
     {
-        if (isServer)
-        {
-            gameManager = FindObjectOfType<GameManager>();
-        }
+        if (isServer) gameManager = FindObjectOfType<GameManager>();
     }
 
     void Update()
@@ -26,79 +26,66 @@ public class Survivor : NetworkBehaviour
         transform.position = carrier.transform.position + Vector3.up * 0.5f;
     }
 
-    [Server]
-    public bool TryPickup(GameObject player)
+    public void Interact(GameObject interactor)
     {
-        if (state != SurvivorState.Waiting) return false;
-
-        if (!taskCompleted)
+        Debug.Log("1");
+        if (!isServer) return;
+        Debug.Log("sever");
+        if (questCompleted)
         {
-            RpcPlayEffect("Refuse", transform.position);
-            return false;
+            Pickup(interactor);
+            Debug.Log("2");
+            return;
         }
 
-        carrier = player;
-        carrierNetId = player.GetComponent<NetworkIdentity>().netId;
+        if (quest == null) return;
+
+        if (quest.CheckCompletion(interactor, this))
+        {
+            Debug.Log("3");
+            questCompleted = true;
+            lastInteractor = interactor;
+            quest.OnQuestCompleted(this);
+        }
+    }
+
+    public bool Pickup(GameObject picker)
+    {
+        Debug.Log("pick");
+        if (state != SurvivorState.Waiting) return false;
+        if (!questCompleted) return false;
+
+        carrier = picker;
+        carrierNetId = picker.GetComponent<NetworkIdentity>().netId;
         state = SurvivorState.Carried;
-        RpcPlayEffect("Pickup", transform.position);
         return true;
     }
 
-    [Server]
-    public void CompleteTask()
-    {
-        taskCompleted = true;
-        RpcPlayEffect("TaskComplete", transform.position);
-    }
-
-    [Server]
-    public void Drop()
+    public void Drop(Vector3 position)
     {
         if (state != SurvivorState.Carried) return;
-
         carrier = null;
         carrierNetId = 0;
         state = SurvivorState.Waiting;
-        RpcPlayEffect("Drop", transform.position);
+        transform.position = position;
     }
 
     [Server]
     public void Save()
     {
         if (state == SurvivorState.Saved) return;
-
         state = SurvivorState.Saved;
         carrier = null;
         carrierNetId = 0;
-
         gameManager?.AddSavedSurvivor();
-        RpcPlayEffect("Saved", transform.position);
     }
-
-    [ClientRpc]
-    private void RpcPlayEffect(string effectType, Vector3 position)
+    public void SetQuest(QuestSO newQuest)
     {
-        switch (effectType)
-        {
-            case "Pickup":
-                Debug.Log($"Survivor picked up at {position}");
-                break;
-            case "Drop":
-                Debug.Log($"Survivor dropped at {position}");
-                break;
-            case "Saved":
-                Debug.Log($"Survivor saved at {position}");
-                break;
-            case "Refuse":
-                Debug.Log($"Survivor refused at {position}");
-                break;
-            case "TaskComplete":
-                Debug.Log($"Survivor task complete at {position}");
-                break;
-        }
+        quest = newQuest;
     }
+    private void OnQuestCompletedChanged(bool oldValue, bool newValue) { }
 
     public SurvivorState GetState() => state;
     public GameObject GetCarrier() => carrier;
-    public bool IsTaskCompleted() => taskCompleted;
+    public GameObject GetLastInteractor() => lastInteractor;
 }
