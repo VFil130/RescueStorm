@@ -215,6 +215,18 @@ public class PlayerController : NetworkBehaviour, IControllable
             footstepTimer = GetCurrentOffset;
         }
     }
+    public void SelectSlot(int slot)
+    {
+        if (!isLocalPlayer) return;
+        CmdSelectSlot(slot);
+    }
+
+    [Command]
+    void CmdSelectSlot(int slot)
+    {
+        GetComponent<Player>().SelectSlot(slot);
+    }
+
     private IEnumerator CrouchStand()
     {
         if (isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))

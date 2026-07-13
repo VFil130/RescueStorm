@@ -83,7 +83,7 @@ public class Player : NetworkBehaviour
             if (inventory[i].itemObject == null)
             {
                 inventory[i].itemObject = item;
-                inventory[i].slotIndex = i; // ?
+                inventory[i].slotIndex = i;
                 item.GameObject.SetActive(false);
                 OnInventoryChanged?.Invoke(inventory);
                 return true;
@@ -146,18 +146,19 @@ public class Player : NetworkBehaviour
         OnInventoryChanged?.Invoke(inventory);
     }
     [Server]
-    public void DropItem()
+    public GameObject DropItem()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
 
         IPickupable item = inventory[selectedSlot].itemObject;
-        if (item == null) return;
+        if (item == null) return null;
 
         item.GameObject.transform.position = transform.position + transform.forward * 2f;
         item.GameObject.SetActive(true);
         inventory[selectedSlot].itemObject = null;
 
         OnInventoryChanged?.Invoke(inventory);
+        return item.GameObject;
     }
 
     [Server]

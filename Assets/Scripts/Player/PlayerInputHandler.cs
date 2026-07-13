@@ -41,4 +41,23 @@ public class PlayerInputHandler : MonoBehaviour
         if (value.isPressed)
             controlledPlayer?.Interact();
     }
+    public void OnSlot1(InputValue value)
+    {
+        if (value.isPressed) controlledPlayer?.SelectSlot(0);
+    }
+
+    public void OnSlot2(InputValue value)
+    {
+        if (value.isPressed) controlledPlayer?.SelectSlot(1);
+    }
+
+    public void OnSlot3(InputValue value)
+    {
+        if (value.isPressed) controlledPlayer?.SelectSlot(2);
+    }
+
+    public void OnSlot4(InputValue value)
+    {
+        if (value.isPressed) controlledPlayer?.SelectSlot(3);
+    }
 }
