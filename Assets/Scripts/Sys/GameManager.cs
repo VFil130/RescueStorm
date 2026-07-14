@@ -39,15 +39,7 @@ public class GameManager : NetworkBehaviour
 
     void Update()
     {
-        if (!isServer || !isGameActive || isGameOver) return;
-
-        matchTimer -= Time.deltaTime;
-        timeLeft = matchTimer;
-
-        if (matchTimer <= 0)
-        {
-            EndMatch(false);
-        }
+        UpdateTimer();
     }
 
     [Server]
@@ -129,10 +121,20 @@ public class GameManager : NetworkBehaviour
                 audioManager?.PlaySFX("Defeat", Vector3.zero);
             }
         }
-
         Debug.Log($"Match ended: {saved}/{total} saved. Victory: {victory}");
     }
+    private void UpdateTimer()
+    {
+        if (!isServer || !isGameActive || isGameOver) return;
 
+        matchTimer -= Time.deltaTime;
+        timeLeft = matchTimer;
+
+        if (matchTimer <= 0)
+        {
+            EndMatch(false);
+        }
+    }
     private void OnTimeLeftChanged(float oldValue, float newValue)
     {
         OnTimeUpdated?.Invoke(newValue);

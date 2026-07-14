@@ -54,4 +54,8 @@ public class Interactor : MonoBehaviour
         if (promptUI != null)
             promptUI.SetActive(show);
     }
+    public bool HasTarget()
+    {
+        return currentInteractable != null;
+    }
 }
