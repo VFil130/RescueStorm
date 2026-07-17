@@ -26,7 +26,7 @@ public class PredatorAI : NetworkBehaviour
     [SerializeField] private AudioSource audioSource;
 
     private NavMeshAgent agent;
-    private Transform target;
+    [SerializeField]private Transform target;
     private Vector3 patrolTarget;
     private float attackTimer = 0f;
     private float patrolTimer = 0f;
@@ -45,6 +45,10 @@ public class PredatorAI : NetworkBehaviour
         if (!isServer) return;
 
         attackTimer -= Time.deltaTime;
+        if (target == null)
+        {
+            target = FindClosestPlayer();
+        }
 
         if (behaviorTree != null)
             behaviorTree.Execute();
@@ -53,52 +57,61 @@ public class PredatorAI : NetworkBehaviour
     private void BuildBehaviorTree()
     {
         behaviorTree = new BTSelector(new System.Collections.Generic.List<BTNode>
+    {
+        new BTSequence(new System.Collections.Generic.List<BTNode>
         {
-            new BTSequence(new System.Collections.Generic.List<BTNode>
-            {
-                new BTCondition(() => target != null && Vector3.Distance(transform.position, target.position) <= attackRange),
-                new BTAction(() => { AttackUpdate(); return BTNode.Status.Running; })
-            }),
-
-            new BTSequence(new System.Collections.Generic.List<BTNode>
-            {
-                new BTCondition(() => target != null && Vector3.Distance(transform.position, target.position) <= sightRange),
-                new BTAction(() => { HuntUpdate(); return BTNode.Status.Running; })
-            }),
-
-            new BTAction(() => { PatrolUpdate(); return BTNode.Status.Running; })
-        });
+            new BTCondition(IsTargetInAttackRange),
+            new BTAction(() => AttackUpdate())
+        }),
+        new BTSequence(new System.Collections.Generic.List<BTNode>
+        {
+            new BTCondition(IsTargetInSight),
+            new BTAction(() => HuntUpdate())
+        }),
+        new BTAction(() => PatrolUpdate())
+    });
     }
 
-    private void AttackUpdate()
+    private BTNode.Status AttackUpdate()
     {
-        if (target == null) return;
+        if (target == null) return BTNode.Status.Failure;
 
         if (attackTimer <= 0f)
         {
             PerformAttack();
             attackTimer = attackCooldown;
         }
+
+        return IsTargetInAttackRange() ? BTNode.Status.Running : BTNode.Status.Failure;
     }
 
-    private void HuntUpdate()
+    private BTNode.Status HuntUpdate()
     {
-        if (target == null) return;
+        if (target == null)
+        {
+            agent.speed = walkSpeed;
+            return BTNode.Status.Failure;
+        }
 
         float distance = Vector3.Distance(transform.position, target.position);
 
         if (distance > sightRange)
         {
             target = null;
-            return;
+            agent.speed = walkSpeed;
+            return BTNode.Status.Failure;
         }
 
         agent.speed = chaseSpeed;
         agent.SetDestination(target.position);
+
+        return BTNode.Status.Running;
     }
 
-    private void PatrolUpdate()
+    private BTNode.Status PatrolUpdate()
     {
+        agent.speed = walkSpeed;
+
         if (Vector3.Distance(transform.position, patrolTarget) < 1f)
         {
             patrolTimer += Time.deltaTime;
@@ -112,6 +125,7 @@ public class PredatorAI : NetworkBehaviour
         {
             agent.SetDestination(patrolTarget);
         }
+        return BTNode.Status.Running;
     }
 
     private void PerformAttack()
@@ -139,7 +153,27 @@ public class PredatorAI : NetworkBehaviour
             patrolTarget = transform.position;
         }
     }
+    private Transform FindClosestPlayer()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, sightRange);
+        Transform closest = null;
+        float minDistance = sightRange;
 
+        foreach (Collider col in colliders)
+        {
+            Player player = col.GetComponent<Player>();
+            if (player != null && player.Health > 0)
+            {
+                float distance = Vector3.Distance(transform.position, col.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closest = col.transform;
+                }
+            }
+        }
+        return closest;
+    }
     private void PlayAttack()
     {
         if (animator != null) animator.SetTrigger("Attack");
@@ -150,7 +184,16 @@ public class PredatorAI : NetworkBehaviour
     {
         target = newTarget;
     }
-
+    private bool IsTargetInSight()
+    {
+        bool result = target != null && Vector3.Distance(transform.position, target.position) <= sightRange;
+        Debug.Log($"IsTargetInSight: {result}");
+        return result;
+    }
+    private bool IsTargetInAttackRange()
+    {
+        return target != null && Vector3.Distance(transform.position, target.position) <= attackRange;
+    }
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

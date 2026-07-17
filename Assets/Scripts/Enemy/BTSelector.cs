@@ -13,21 +13,14 @@ public class BTSelector : BTNode
 
     public override Status Execute()
     {
-        for (int i = currentIndex; i < children.Count; i++)
+        for (int i = 0; i < children.Count; i++)
         {
             Status status = children[i].Execute();
             if (status == Status.Running)
-            {
-                currentIndex = i;
                 return Status.Running;
-            }
             if (status == Status.Success)
-            {
-                currentIndex = 0;
                 return Status.Success;
-            }
         }
-        currentIndex = 0;
         return Status.Failure;
     }
 }
