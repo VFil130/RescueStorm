@@ -1902,7 +1902,7 @@ Animator:
   m_GameObject: {fileID: 954997853}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f3ab3860d1423d24fbe555c7043d068c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2054,6 +2054,7 @@ MonoBehaviour:
   patrolRadius: 15
   animator: {fileID: 954997854}
   audioSource: {fileID: 954997855}
+  target: {fileID: 0}
 --- !u!195 &954997858
 NavMeshAgent:
   m_ObjectHideFlags: 0

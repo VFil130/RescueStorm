@@ -49,7 +49,7 @@ public class PredatorAI : NetworkBehaviour
         {
             target = FindClosestPlayer();
         }
-
+        UpdateAnimations();
         if (behaviorTree != null)
             behaviorTree.Execute();
     }
@@ -135,8 +135,8 @@ public class PredatorAI : NetworkBehaviour
         Player player = target.GetComponent<Player>();
         if (player != null)
         {
+            PlayAttackAnimation();
             player.TakeDamage(damage);
-            PlayAttack();
         }
     }
 
@@ -174,11 +174,6 @@ public class PredatorAI : NetworkBehaviour
         }
         return closest;
     }
-    private void PlayAttack()
-    {
-        if (animator != null) animator.SetTrigger("Attack");
-        if (audioSource != null) audioSource.Play();
-    }
 
     public void SetTarget(Transform newTarget)
     {
@@ -194,6 +189,23 @@ public class PredatorAI : NetworkBehaviour
     {
         return target != null && Vector3.Distance(transform.position, target.position) <= attackRange;
     }
+    #region Animation Methods
+    private void UpdateAnimations()
+    {
+        if (animator == null) return;
+        bool isMoving = agent.velocity.magnitude > 0.1f;
+        animator.SetBool("IsRun", isMoving);
+        animator.SetBool("IsIdle", !isMoving);
+    }
+
+    private void PlayAttackAnimation()
+    {
+        if (animator == null) return;
+        animator.SetBool("IsRun", false);
+        animator.SetBool("IsIdle", false);
+        animator.Play("NeckBite", 0, 0f);
+    }
+    #endregion
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
