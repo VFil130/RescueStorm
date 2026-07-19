@@ -56,8 +56,10 @@ public class PlayerController : NetworkBehaviour, IControllable
     [SerializeField] private AudioClip[] woodClips = default;
     [SerializeField] private AudioClip[] metalClips = default;
     [SerializeField] private AudioClip[] grassClips = default;
-    private float footstepTimer = 0;
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
 
+    private float footstepTimer = 0;
     private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : IsSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
 
     private Camera playerCamera;
@@ -97,7 +99,7 @@ public class PlayerController : NetworkBehaviour, IControllable
             moveDirection.y = jumpForce;
             jumpRequested = false;
         }
-
+        UpdateAnimations();
         if (canUseHeadbob)
             HandleHeadbob();
 
@@ -226,7 +228,18 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         GetComponent<Player>().SelectSlot(slot);
     }
+    private void UpdateAnimations()
+    {
+        if (animator == null) return;
 
+        bool isMoving = currentInput.magnitude > 0.1f;
+        bool isGrounded = characterController.isGrounded;
+
+        animator.SetBool("IsMoving", isMoving);
+        animator.SetBool("IsGrounded", isGrounded);
+        animator.SetBool("IsSprinting", isSprinting);
+        animator.SetBool("IsCrouching", isCrouching);
+    }
     private IEnumerator CrouchStand()
     {
         if (isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))
