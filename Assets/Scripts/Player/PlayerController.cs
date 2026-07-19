@@ -82,8 +82,6 @@ public class PlayerController : NetworkBehaviour, IControllable
         defaultYPos = playerCamera.transform.localPosition.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        GetComponent<PlayerInputHandler>().SetControllable(this);
     }
 
     void Update()

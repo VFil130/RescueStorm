@@ -5,59 +5,38 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private IControllable controlledPlayer;
-    public void SetControllable(IControllable player)
+
+    // Ссылка на твой .inputactions файл (перетащи в инспектор)
+    [SerializeField] private InputActionAsset inputActions;
+
+    void Awake()
     {
-        controlledPlayer = player;
-    }
-    public void OnMove(InputValue value)
-    {
-        controlledPlayer?.Move(value.Get<Vector2>());
+        // Находим контроллер (он уже есть на этом объекте)
+        controlledPlayer = GetComponent<IControllable>();
+
+        // Подписываемся на события
+        var map = inputActions.FindActionMap("Player"); // Название карты из ассета
+
+        map.FindAction("Move").performed += ctx => controlledPlayer?.Move(ctx.ReadValue<Vector2>());
+        map.FindAction("Move").canceled += ctx => controlledPlayer?.Move(Vector2.zero);
+
+        map.FindAction("Look").performed += ctx => controlledPlayer?.Look(ctx.ReadValue<Vector2>());
+
+        map.FindAction("Jump").performed += ctx => controlledPlayer?.Jump();
+
+        map.FindAction("Sprint").performed += ctx => controlledPlayer?.SetSprint(true);
+        map.FindAction("Sprint").canceled += ctx => controlledPlayer?.SetSprint(false);
+
+        map.FindAction("Crouch").performed += ctx => controlledPlayer?.ToggleCrouch();
+
+        map.FindAction("Interact").performed += ctx => controlledPlayer?.Interact();
+
+        map.FindAction("Slot1").performed += ctx => controlledPlayer?.SelectSlot(0);
+        map.FindAction("Slot2").performed += ctx => controlledPlayer?.SelectSlot(1);
+        map.FindAction("Slot3").performed += ctx => controlledPlayer?.SelectSlot(2);
+        map.FindAction("Slot4").performed += ctx => controlledPlayer?.SelectSlot(3);
     }
 
-    public void OnLook(InputValue value)
-    {
-        controlledPlayer?.Look(value.Get<Vector2>());
-    }
-
-    public void OnJump(InputValue value)
-    {
-        if (value.isPressed)
-            controlledPlayer?.Jump();
-    }
-
-    public void OnSprint(InputValue value)
-    {
-        controlledPlayer?.SetSprint(value.isPressed);
-    }
-
-    public void OnCrouch(InputValue value)
-    {
-        if (value.isPressed)
-            controlledPlayer?.ToggleCrouch();
-    }
-
-    public void OnInteract(InputValue value)
-    {
-        if (value.isPressed)
-            controlledPlayer?.Interact();
-    }
-    public void OnSlot1(InputValue value)
-    {
-        if (value.isPressed) controlledPlayer?.SelectSlot(0);
-    }
-
-    public void OnSlot2(InputValue value)
-    {
-        if (value.isPressed) controlledPlayer?.SelectSlot(1);
-    }
-
-    public void OnSlot3(InputValue value)
-    {
-        if (value.isPressed) controlledPlayer?.SelectSlot(2);
-    }
-
-    public void OnSlot4(InputValue value)
-    {
-        if (value.isPressed) controlledPlayer?.SelectSlot(3);
-    }
+    void OnEnable() => inputActions.Enable();
+    void OnDisable() => inputActions.Disable();
 }
