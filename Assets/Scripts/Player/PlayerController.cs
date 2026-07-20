@@ -35,7 +35,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     [SerializeField] private float timeToCrouch = 0.25f;
     [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
     [SerializeField] private Vector3 standingCenter = new Vector3(0, 0, 0);
-    private bool isCrouching;
+    [SyncVar] private bool isCrouching;
     private bool duringCrouchAnimation;
 
     [Header("Headbob Parameters")]
@@ -69,7 +69,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     private Vector2 currentInput;
     private float rotationX = 0;
 
-    private bool isSprinting;
+    [SyncVar] private bool isSprinting;
     private bool jumpRequested;
 
     public bool IsSprinting => canSprint && isSprinting;
@@ -226,9 +226,10 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         GetComponent<Player>().SelectSlot(slot);
     }
+    [Client]
     private void UpdateAnimations()
     {
-        if (animator == null) return;
+        if (animator == null || !isLocalPlayer) return;
 
         bool isMoving = currentInput.magnitude > 0.1f;
         bool isGrounded = characterController.isGrounded;
