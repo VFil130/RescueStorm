@@ -5040,6 +5040,14 @@ PrefabInstance:
       propertyPath: sceneId
       value: 1328253676
       objectReference: {fileID: 0}
+    - target: {fileID: 4378262879338715190, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
+      propertyPath: syncDirection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6536322355782351081, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
+      propertyPath: syncDirection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
       propertyPath: m_Name
       value: Zombie Idle
