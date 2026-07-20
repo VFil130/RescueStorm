@@ -133,7 +133,7 @@ Material:
     - _Ambient_Light: 2
     - _Ambient_Light_Scale: 0.5
     - _Anisotropy: 1
-    - _Anisotropy_Blend: 0.5
+    - _Anisotropy_Blend: 0.84
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _Blur_Texture_Blend: 1
@@ -144,7 +144,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Density: 0.084
+    - _Density: 0.044
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -231,7 +231,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Steps: 12
+    - _Steps: 14
     - _Surface: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
