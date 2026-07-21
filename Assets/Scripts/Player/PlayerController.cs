@@ -88,7 +88,6 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         if (!isLocalPlayer)
         {
-            interactor.enabled = false;
             playerCamera.gameObject.SetActive(false);
             return;
         }
