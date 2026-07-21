@@ -200,6 +200,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7385924989083935784}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2024430304339457242}
   m_SourcePrefab: {fileID: 100100000, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
 --- !u!4 &476528010889313455 stripped
 Transform:
@@ -451,6 +454,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.08}
   m_Center: {x: 0, y: 0.6, z: 0.33}
+--- !u!114 &2024430304339457242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8278454828837564536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkAnimator
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 8094738673803503230}
 --- !u!4 &8766584753727646402 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
