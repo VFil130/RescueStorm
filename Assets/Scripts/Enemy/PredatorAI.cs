@@ -42,14 +42,12 @@ public class PredatorAI : NetworkBehaviour
 
     void Update()
     {
-        UpdateAnimations();
-        if (isServer)
-        {
-            attackTimer -= Time.deltaTime;
-            if (behaviorTree != null)
-                behaviorTree.Execute();
-        }
+        if (!isServer) return;
 
+        attackTimer -= Time.deltaTime;
+        UpdateAnimations();
+        if (behaviorTree != null)
+            behaviorTree.Execute();
     }
 
     private void BuildBehaviorTree()
