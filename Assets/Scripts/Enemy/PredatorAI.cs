@@ -42,16 +42,14 @@ public class PredatorAI : NetworkBehaviour
 
     void Update()
     {
-        if (!isServer) return;
-
-        attackTimer -= Time.deltaTime;
-        if (target == null)
+        if (isServer)
         {
-            target = FindClosestPlayer();
+            attackTimer -= Time.deltaTime;
+            if (behaviorTree != null)
+                behaviorTree.Execute();
         }
+
         UpdateAnimations();
-        if (behaviorTree != null)
-            behaviorTree.Execute();
     }
 
     private void BuildBehaviorTree()
@@ -65,7 +63,7 @@ public class PredatorAI : NetworkBehaviour
         }),
         new BTSequence(new System.Collections.Generic.List<BTNode>
         {
-            new BTCondition(IsTargetInSight),
+            new BTCondition(() => { target = FindClosestPlayer(); return IsTargetInSight(); }),
             new BTAction(() => HuntUpdate())
         }),
         new BTAction(() => PatrolUpdate())
@@ -182,7 +180,6 @@ public class PredatorAI : NetworkBehaviour
     private bool IsTargetInSight()
     {
         bool result = target != null && Vector3.Distance(transform.position, target.position) <= sightRange;
-        Debug.Log($"IsTargetInSight: {result}");
         return result;
     }
     private bool IsTargetInAttackRange()
