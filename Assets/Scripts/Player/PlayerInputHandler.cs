@@ -5,17 +5,15 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private IControllable controlledPlayer;
-
-    // Ссылка на твой .inputactions файл (перетащи в инспектор)
+    public UnityEvent OnTalkStarted;
+    public UnityEvent OnTalkStopped;
     [SerializeField] private InputActionAsset inputActions;
 
     void Awake()
     {
-        // Находим контроллер (он уже есть на этом объекте)
         controlledPlayer = GetComponent<IControllable>();
 
-        // Подписываемся на события
-        var map = inputActions.FindActionMap("Player"); // Название карты из ассета
+        var map = inputActions.FindActionMap("Player");
 
         map.FindAction("Move").performed += ctx => controlledPlayer?.Move(ctx.ReadValue<Vector2>());
         map.FindAction("Move").canceled += ctx => controlledPlayer?.Move(Vector2.zero);
@@ -35,6 +33,9 @@ public class PlayerInputHandler : MonoBehaviour
         map.FindAction("Slot2").performed += ctx => controlledPlayer?.SelectSlot(1);
         map.FindAction("Slot3").performed += ctx => controlledPlayer?.SelectSlot(2);
         map.FindAction("Slot4").performed += ctx => controlledPlayer?.SelectSlot(3);
+
+        map.FindAction("Talk").performed += ctx => OnTalkStarted?.Invoke();
+        map.FindAction("Talk").canceled += ctx => OnTalkStopped?.Invoke();
     }
 
     void OnEnable() => inputActions.Enable();
