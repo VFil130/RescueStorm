@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7357930724975193836}
   - component: {fileID: -881907903321144244}
   - component: {fileID: -7304260781296442269}
+  - component: {fileID: 8867831876355712873}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -138,6 +139,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c0d929116e2234188c9433cf612366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+  OnTalkStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTalkStopped:
+    m_PersistentCalls:
+      m_Calls: []
   inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &3105807553803532469
 MonoBehaviour:
@@ -290,6 +297,18 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 8002693430709690869}
+--- !u!114 &8867831876355712873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545389564784142826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf6e3a2b945488247b8fbe4e37165f65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceChatController
 --- !u!1 &3786171058836034096
 GameObject:
   m_ObjectHideFlags: 0
