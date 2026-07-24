@@ -1,6 +1,7 @@
 using UnityEngine;
+using Mirror;
 
-public class Interactor : MonoBehaviour
+public class Interactor : NetworkBehaviour
 {
     [SerializeField] private float interactionRange = 2.5f;
     [SerializeField] private LayerMask interactionMask = -1;
@@ -16,8 +17,9 @@ public class Interactor : MonoBehaviour
             promptUI.SetActive(false);
     }
     void Update()
-    {
-        CheckInteraction();
+    {   
+        if (!isLocalPlayer) { return; }
+            CheckInteraction();
     }
     public void DoInteract()
     {
