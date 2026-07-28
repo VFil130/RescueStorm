@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cc70a8037c1b70499f4123cdac0f2fa, type: 3}
   m_Name: FullscreenCustomLightingFeature
   m_EditorClassIdentifier: Assembly-CSharp::Mirza.AERO.FullscreenCustomLightingFeature
-  m_Active: 0
+  m_Active: 1
   renderPassEvent: 500
   material: {fileID: 2100000, guid: fedf334cf2cc1b44d9ae7b524decb528, type: 2}
 --- !u!114 &-4924936192971285933
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
   m_Name: Fog
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
-  m_Active: 0
+  m_Active: 1
   injectionPoint: 600
   fetchColorBuffer: 1
   requirements: 0
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d86bfc599a81242a6163eadf8b1b8c, type: 3}
   m_Name: StaticGrainFeature
   m_EditorClassIdentifier: Assembly-CSharp::StaticGrainFeature
-  m_Active: 0
+  m_Active: 1
   grainMaterial: {fileID: 2100000, guid: 7436563d67ca897459567c3b116fe544, type: 2}
   renderPassEvent: 500
 --- !u!114 &11400000
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   m_Settings:
     AOMethod: 0
     Downsample: 0
