@@ -57,7 +57,11 @@ public class Player : NetworkBehaviour
         health = Mathf.Min(maxHealth, health + amount);
         OnHealthChanged?.Invoke(health, maxHealth);
     }
-
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Debug.Log($"Player OnStopClient: {gameObject.name}, netId: {GetComponent<NetworkIdentity>().netId}");
+    }
     [Server]
     private void Die() { }
 

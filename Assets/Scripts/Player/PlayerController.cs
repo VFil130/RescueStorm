@@ -106,7 +106,11 @@ public class PlayerController : NetworkBehaviour, IControllable
         HandleMovementInput();
         ApplyFinalMovements();
     }
-
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Debug.Log($"PlayerController OnStopClient: {gameObject.name}, netId: {GetComponent<NetworkIdentity>().netId}");
+    }
     public void Move(Vector2 input)
     {
         currentInput = new Vector2(input.x, input.y);
