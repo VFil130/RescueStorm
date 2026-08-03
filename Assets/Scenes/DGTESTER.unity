@@ -4097,8 +4097,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 690474420}
-        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+      - m_Target: {fileID: 690474431}
+        m_TargetAssemblyTypeName: LobbyTelepaty, Assembly-CSharp
         m_MethodName: CreateLobby
         m_Mode: 1
         m_Arguments:
@@ -22941,8 +22941,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 690474420}
-        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+      - m_Target: {fileID: 690474431}
+        m_TargetAssemblyTypeName: LobbyTelepaty, Assembly-CSharp
         m_MethodName: RefreshLobbyList
         m_Mode: 1
         m_Arguments:
@@ -40311,7 +40311,7 @@ GameObject:
   - component: {fileID: 690474423}
   - component: {fileID: 690474422}
   - component: {fileID: 690474421}
-  - component: {fileID: 690474420}
+  - component: {fileID: 690474431}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -40319,22 +40319,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &690474420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690474419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e51a0373cf2417c48a765c0a7177967c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LobbyManager
-  lobbyListContainer: {fileID: 460202453}
-  lobbyItemPrefab: {fileID: 2445008880875366522, guid: 219cb6fa594d062499bdd2be0b3caa37, type: 3}
-  lobbyPanel: {fileID: 1895800081}
-  mainMenuPanel: {fileID: 1895800081}
 --- !u!114 &690474421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40354,7 +40338,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690474419}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
   m_Name: 
@@ -40478,7 +40462,7 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 690474428}
+  transport: {fileID: 690474422}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -40521,6 +40505,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &690474431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690474419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7090618cdc79d8f4a843b1f338151453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LobbyTelepaty
+  lobbyListContainer: {fileID: 460202453}
+  lobbyItemPrefab: {fileID: 2445008880875366522, guid: 219cb6fa594d062499bdd2be0b3caa37, type: 3}
+  lobbyPanel: {fileID: 1895800081}
+  mainMenuPanel: {fileID: 452289115}
 --- !u!1 &693740411
 GameObject:
   m_ObjectHideFlags: 0
