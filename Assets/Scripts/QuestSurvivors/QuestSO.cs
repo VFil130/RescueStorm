@@ -7,6 +7,15 @@ public abstract class QuestSO : ScriptableObject
     public string questName;
     public string requiredRoom;
     public string requiredItem;
+
+    protected Survivor owner;
+    protected bool isCompleted;
+
+    public virtual void Initialize(Survivor survivor)
+    {
+        owner = survivor;
+        isCompleted = false;
+    }
     public abstract bool CheckCompletion(GameObject interactor, Survivor survivor);
     public abstract void OnQuestCompleted(Survivor survivor);
     public abstract QuestRequirement GetRequirement();

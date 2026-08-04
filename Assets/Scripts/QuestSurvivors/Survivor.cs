@@ -21,7 +21,11 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     void Start()
     {
-        if (isServer) gameManager = FindObjectOfType<GameManager>();
+        if (isServer)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+            quest?.Initialize(this);
+        }
     }
 
     void Update()
@@ -86,6 +90,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     public void SetQuest(QuestSO newQuest)
     {
         quest = newQuest;
+        quest.Initialize(this);
     }
     private void OnQuestCompletedChanged(bool oldValue, bool newValue) { }
 
