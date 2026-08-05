@@ -10,6 +10,10 @@ public class LanguageManager
     private Dictionary<string, string> translations = new Dictionary<string, string>();
     private string currentLanguage = "English";
 
+    public LanguageManager()
+    {
+        LoadLanguage(currentLanguage);
+    }
     public void LoadLanguage(string language)
     {
         currentLanguage = language;

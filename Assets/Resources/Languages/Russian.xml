@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+    <text key="btn_start">Начать</text>
+    <text key="btn_settings">Настройки</text>
+    <text key="btn_exit">Выход</text>
+</localization>

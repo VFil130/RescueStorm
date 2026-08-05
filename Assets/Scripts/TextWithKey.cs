@@ -6,15 +6,12 @@ using Zenject;
 public class TextWithKey : MonoBehaviour
 {
     public string key;
-
+    [Inject] private LanguageManager languageManager;
     private TMP_Text textComponent;
-    private LanguageManager languageManager;
 
     void Start()
     {
         textComponent = GetComponent<TMP_Text>();
-        languageManager = ProjectContext.Instance.Container.Resolve<LanguageManager>();
-
         languageManager.OnLanguageChanged += UpdateText;
         UpdateText();
     }

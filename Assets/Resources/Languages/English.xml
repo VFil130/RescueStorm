@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+    <text key="btn_start">Start</text>
+    <text key="btn_settings">Settings</text>
+    <text key="btn_exit">Exit</text>
+</localization>
