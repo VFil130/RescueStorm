@@ -30,6 +30,14 @@ public class SettingsManager : MonoBehaviour
     [Header("Volume Profile")]
     public Volume volumeProfile;
 
+    [Header("Menu Panels")]
+    public GameObject mainMenuPanel;
+    public GameObject settingsPanel;
+    public GameObject graphicsPanel;
+    public GameObject audioPanel;
+    public GameObject controlsPanel;
+    public GameObject exitConfirmationPanel;
+
     // Текущие назначения клавиш
     private KeyCode forwardKey = KeyCode.W;
     private KeyCode backwardKey = KeyCode.S;
@@ -83,9 +91,13 @@ public class SettingsManager : MonoBehaviour
         leftKeyButton.onClick.AddListener(() => StartKeyRebind("left"));
         rightKeyButton.onClick.AddListener(() => StartKeyRebind("right"));
 
-        // Загружаем сохранения (во время загрузки сохранения не вызываются)
+        // Загружаем сохранения
         LoadSettings();
         UpdateKeyButtonTexts();
+
+        // По умолчанию показываем главное меню, скрываем всё остальное
+        CloseAllPanels();
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
 
         Canvas.ForceUpdateCanvases();
         Debug.Log("SettingsManager инициализирован");
@@ -201,7 +213,7 @@ public class SettingsManager : MonoBehaviour
 
     void LoadSettings()
     {
-        isLoading = true; // Начинаем загрузку, сохранения не вызываем
+        isLoading = true;
 
         // Разрешение
         int resIndex = PlayerPrefs.GetInt("ResolutionIndex", resolutionDropdown.value);
@@ -223,7 +235,7 @@ public class SettingsManager : MonoBehaviour
         float sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
         if (mouseSensitivitySlider != null) mouseSensitivitySlider.value = sensitivity;
 
-        // Клавиши — загружаем ДО того, как закончится загрузка
+        // Клавиши
         string forwardStr = PlayerPrefs.GetString("ForwardKey", KeyCode.W.ToString());
         string backwardStr = PlayerPrefs.GetString("BackwardKey", KeyCode.S.ToString());
         string leftStr = PlayerPrefs.GetString("LeftKey", KeyCode.A.ToString());
@@ -245,7 +257,7 @@ public class SettingsManager : MonoBehaviour
             rightKey = KeyCode.D;
         }
 
-        isLoading = false; // Загрузка завершена
+        isLoading = false;
 
         Debug.Log("=== НАСТРОЙКИ ЗАГРУЖЕНЫ ===");
         Debug.Log($"Разрешение: {resolutionOptions[resIndex]}");
@@ -257,7 +269,7 @@ public class SettingsManager : MonoBehaviour
 
     void SaveAllSettings()
     {
-        if (isLoading) return; // Если идёт загрузка — не сохраняем
+        if (isLoading) return;
 
         PlayerPrefs.SetInt("ResolutionIndex", resolutionDropdown.value);
         PlayerPrefs.SetInt("ChromaticAberrationEnabled", chromaticToggle.isOn ? 1 : 0);
@@ -307,7 +319,7 @@ public class SettingsManager : MonoBehaviour
             bloom.active = bloomToggle.isOn;
     }
 
-    // ---- Обработчики UI (с проверкой isLoading) ----
+    // ---- Обработчики UI ----
     void OnResolutionChanged(int index) { if (!isLoading) { ApplyResolution(index); SaveAllSettings(); } }
     void OnChromaticToggleChanged(bool isOn) { if (!isLoading) { ApplyPostProcessing(); SaveAllSettings(); } }
     void OnBloomToggleChanged(bool isOn) { if (!isLoading) { ApplyPostProcessing(); SaveAllSettings(); } }
@@ -339,6 +351,130 @@ public class SettingsManager : MonoBehaviour
     public KeyCode GetLeftKey() => leftKey;
     public KeyCode GetRightKey() => rightKey;
     public float GetMouseSensitivity() => mouseSensitivitySlider != null ? mouseSensitivitySlider.value : 1f;
+
+    // ---- Управление панелями меню ----
+
+    /// <summary>
+    /// Закрывает все панели меню.
+    /// </summary>
+    private void CloseAllPanels()
+    {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (settingsPanel != null) settingsPanel.SetActive(false);
+        if (graphicsPanel != null) graphicsPanel.SetActive(false);
+        if (audioPanel != null) audioPanel.SetActive(false);
+        if (controlsPanel != null) controlsPanel.SetActive(false);
+        if (exitConfirmationPanel != null) exitConfirmationPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Открывает главное меню.
+    /// </summary>
+    public void OpenMainMenu()
+    {
+        CloseAllPanels();
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        Debug.Log("Открыто главное меню");
+    }
+
+    /// <summary>
+    /// Открывает панель настроек.
+    /// </summary>
+    public void OpenSettings()
+    {
+        CloseAllPanels();
+        if (settingsPanel != null) settingsPanel.SetActive(true);
+        Debug.Log("Открыты настройки");
+    }
+
+    /// <summary>
+    /// Открывает панель графики.
+    /// </summary>
+    public void OpenGraphics()
+    {
+        // Закрываем все, потом открываем только графику и саму панель настроек (чтобы был фон)
+        CloseAllPanels();
+        if (settingsPanel != null) settingsPanel.SetActive(true);
+        if (graphicsPanel != null) graphicsPanel.SetActive(true);
+        Debug.Log("Открыта графика");
+    }
+
+    /// <summary>
+    /// Открывает панель аудио.
+    /// </summary>
+    public void OpenAudio()
+    {
+        CloseAllPanels();
+        if (settingsPanel != null) settingsPanel.SetActive(true);
+        if (audioPanel != null) audioPanel.SetActive(true);
+        Debug.Log("Открыто аудио");
+    }
+
+    /// <summary>
+    /// Открывает панель управления (controls).
+    /// </summary>
+    public void OpenControls()
+    {
+        CloseAllPanels();
+        if (settingsPanel != null) settingsPanel.SetActive(true);
+        if (controlsPanel != null) controlsPanel.SetActive(true);
+        Debug.Log("Открыто управление");
+    }
+
+    /// <summary>
+    /// Открывает панель подтверждения выхода.
+    /// </summary>
+    public void OpenExitConfirmation()
+    {
+        CloseAllPanels();
+        if (exitConfirmationPanel != null) exitConfirmationPanel.SetActive(true);
+        Debug.Log("Открыто подтверждение выхода");
+    }
+
+    /// <summary>
+    /// Возвращает из любой подпанели настроек обратно в главное меню.
+    /// </summary>
+    public void BackToMainMenu()
+    {
+        OpenMainMenu();
+    }
+
+    /// <summary>
+    /// Закрывает панель подтверждения выхода (кнопка No).
+    /// </summary>
+    public void CloseExitConfirmation()
+    {
+        if (exitConfirmationPanel != null) exitConfirmationPanel.SetActive(false);
+        // Возвращаемся в главное меню
+        OpenMainMenu();
+        Debug.Log("Выход отменён");
+    }
+
+    /// <summary>
+    /// Выход из игры (кнопка Yes).
+    /// </summary>
+    public void ExitGame()
+    {
+        Debug.Log("Выход из игры");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+    }
+
+    // ---- Заглушки для кнопок Single и Multiplayer ----
+    public void OnSinglePlayer()
+    {
+        Debug.Log("Запуск одиночной игры (заглушка)");
+        // Здесь потом будет загрузка сцены одиночной игры
+    }
+
+    public void OnMultiPlayer()
+    {
+        Debug.Log("Запуск многопользовательской игры (заглушка)");
+        // Здесь потом будет загрузка сцены многопользовательской игры
+    }
 
     void OnApplicationQuit()
     {
