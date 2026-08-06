@@ -6,4 +6,5 @@ public interface IMiniGame
     bool IsCompleted { get; }
     void StartGame(Player player);
     void CompleteGame(bool success);
+    void Initialize(string questId, Survivor survivor);
 }
