@@ -14,7 +14,7 @@ public class InterButton : NetworkBehaviour, IInteractable
     public void Interact(GameObject interactor)
     {
         if (!isServer || isPressed) return;
-
+        Debug.Log("Click");
         isPressed = true;
         onPress.Invoke();
         Invoke(nameof(Release), holdTime);

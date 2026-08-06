@@ -52,7 +52,18 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
             quest.OnQuestCompleted(this);
         }
     }
+    public void CompleteMiniGame(bool success)
+    {
+        if (!isServer) return;
+        if (questCompleted) return;
+        if (quest == null) return;
 
+        if (success && quest.CheckCompletion(null, this))
+        {
+            questCompleted = true;
+            quest.OnQuestCompleted(this);
+        }
+    }
     public bool Pickup(GameObject picker)
     {
         if (state != SurvivorState.Waiting) return false;

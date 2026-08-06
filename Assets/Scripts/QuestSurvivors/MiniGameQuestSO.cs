@@ -18,6 +18,7 @@ public class MinigameQuestSO : QuestSO
 
     public override void OnQuestCompleted(Survivor survivor)
     {
+        Debug.Log("COMPLETE!!!!");
     }
 
     public override QuestRequirement GetRequirement()
