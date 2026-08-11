@@ -70,6 +70,11 @@ public class SettingsManager : MonoBehaviour
     public TMP_InputField joinInputField;
     public TMP_InputField createInputField;
 
+    [Header("SSAO Settings")]
+    public ScriptableRendererFeature ssaoFeature; // можно оставить пустым – найдёт автоматически
+    public UniversalRendererData rendererData;
+    public Toggle ssaoToggle;
+
     // Текущие назначения клавиш
     private KeyCode forwardKey = KeyCode.W;
     private KeyCode backwardKey = KeyCode.S;
@@ -143,6 +148,14 @@ public class SettingsManager : MonoBehaviour
         key3Button.onClick.AddListener(() => StartKeyRebind("key3"));
         key4Button.onClick.AddListener(() => StartKeyRebind("key4"));
         key5Button.onClick.AddListener(() => StartKeyRebind("key5"));
+
+        // SSAO
+        if (ssaoToggle != null)
+            ssaoToggle.onValueChanged.AddListener(ToggleSSAO);
+
+        // Автоматический поиск SSAO, если не назначен вручную
+        if (ssaoFeature == null)
+            FindSSAOFeature();
 
         // Загружаем сохранения
         LoadSettings();
@@ -312,6 +325,20 @@ public class SettingsManager : MonoBehaviour
         key4 = LoadKey("Key4", KeyCode.Alpha4);
         key5 = LoadKey("Key5", KeyCode.Alpha5);
 
+        // SSAO состояние (загружаем после того, как ssaoToggle и ssaoFeature готовы)
+        int ssaoState = PlayerPrefs.GetInt("SSAOEnabled", 1);
+        bool ssaoEnabled = ssaoState == 1;
+        if (ssaoToggle != null)
+        {
+            // Установка вызовет событие, которое применит настройку через ToggleSSAO
+            ssaoToggle.isOn = ssaoEnabled;
+        }
+        else
+        {
+            // Если toggle не привязан, применяем напрямую
+            ToggleSSAO(ssaoEnabled);
+        }
+
         isLoading = false;
 
         Debug.Log("=== НАСТРОЙКИ ЗАГРУЖЕНЫ ===");
@@ -320,6 +347,7 @@ public class SettingsManager : MonoBehaviour
         Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}, Ambient={ambientVolumeSlider.value}");
         Debug.Log($"Чувствительность мыши: {sensitivity}");
         Debug.Log($"Клавиши: Forward={forwardKey}, Backward={backwardKey}, Left={leftKey}, Right={rightKey}, E={eKey}, Space={spaceKey}, LCTRL={leftCtrlKey}, LSHIFT={leftShiftKey}, 1={key1}, 2={key2}, 3={key3}, 4={key4}, 5={key5}");
+        Debug.Log($"SSAO: {(ssaoEnabled ? "Включен" : "Выключен")}");
     }
 
     private KeyCode LoadKey(string key, KeyCode defaultKey)
@@ -336,6 +364,54 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    // ---- SSAO ----
+    private void FindSSAOFeature()
+    {
+        if (rendererData == null)
+        {
+            Debug.LogWarning("Renderer Data не назначен в инспекторе!");
+            return;
+        }
+
+        foreach (var feature in rendererData.rendererFeatures)
+        {
+            if (feature is ScreenSpaceAmbientOcclusion)
+            {
+                ssaoFeature = feature;
+                Debug.Log("SSAO feature found in assigned Renderer Data.");
+                return;
+            }
+        }
+
+        Debug.LogWarning("SSAO feature not found in the assigned Renderer Data.");
+    }
+
+    public void ToggleSSAO(bool isEnabled)
+    {
+        if (ssaoFeature == null)
+        {
+            Debug.LogWarning("SSAO feature not set.");
+            return;
+        }
+
+        // Применяем состояние
+        ssaoFeature.SetActive(isEnabled);
+        Debug.Log($"SSAO {(isEnabled ? "включен" : "выключен")} (SetActive)");
+
+        // Принудительно перезагружаем рендерер, чтобы изменения вступили сразу
+        var pipeline = GraphicsSettings.defaultRenderPipeline;
+        GraphicsSettings.defaultRenderPipeline = null;
+        GraphicsSettings.defaultRenderPipeline = pipeline;
+
+        // Сохраняем состояние немедленно
+        PlayerPrefs.SetInt("SSAOEnabled", isEnabled ? 1 : 0);
+        PlayerPrefs.Save();
+
+        // Обновляем состояние Toggle (на случай, если оно не совпадает)
+        if (ssaoToggle != null && ssaoToggle.isOn != isEnabled)
+            ssaoToggle.isOn = isEnabled;
+    }
+
     void SaveAllSettings()
     {
         if (isLoading) return;
@@ -349,6 +425,19 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("AmbientVolume", ambientVolumeSlider.value);
         PlayerPrefs.SetFloat("MouseSensitivity", mouseSensitivitySlider != null ? mouseSensitivitySlider.value : 1f);
         SaveKeyBindings();
+
+        int ssaoState = PlayerPrefs.GetInt("SSAOEnabled", 1);
+        bool ssaoEnabled = ssaoState == 1;
+        if (ssaoToggle != null)
+        {
+            // Отключаем временно событие, чтобы не вызвать повторное применение
+            ssaoToggle.onValueChanged.RemoveListener(ToggleSSAO);
+            ssaoToggle.isOn = ssaoEnabled;
+            ssaoToggle.onValueChanged.AddListener(ToggleSSAO);
+        }
+        // Применяем состояние (даже если Toggle не привязан)
+        ToggleSSAO(ssaoEnabled);
+
         PlayerPrefs.Save();
 
         Debug.Log("=== НАСТРОЙКИ СОХРАНЕНЫ ===");
@@ -357,6 +446,7 @@ public class SettingsManager : MonoBehaviour
         Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}, Ambient={ambientVolumeSlider.value}");
         Debug.Log($"Чувствительность мыши: {mouseSensitivitySlider.value}");
         Debug.Log($"Клавиши: Forward={forwardKey}, Backward={backwardKey}, Left={leftKey}, Right={rightKey}, E={eKey}, Space={spaceKey}, LCTRL={leftCtrlKey}, LSHIFT={leftShiftKey}, 1={key1}, 2={key2}, 3={key3}, 4={key4}, 5={key5}");
+        Debug.Log($"SSAO: {(ssaoToggle != null && ssaoToggle.isOn ? "Включен" : "Выключен")}");
     }
 
     void SaveKeyBindings()
@@ -594,10 +684,7 @@ public class SettingsManager : MonoBehaviour
     public void OpenJoinPanel()
     {
         CloseAllPanels();
-        // Показываем панель Join, но можно оставить фон (multiplayerPanel) или нет - решать вам
-        // Можно показать только joinPanel, но для удобства можно также показать multiplayerPanel как фон.
-        // Я покажу только joinPanel, а возврат через BackFromJoin вернёт в multiplayerPanel.
-        if (multiplayerPanel != null) multiplayerPanel.SetActive(true); // опционально
+        if (multiplayerPanel != null) multiplayerPanel.SetActive(true);
         if (joinPanel != null) joinPanel.SetActive(true);
         Debug.Log("Открыта панель Join");
     }
@@ -617,7 +704,6 @@ public class SettingsManager : MonoBehaviour
 
     public void BackFromJoin()
     {
-        // Закрываем joinPanel и показываем multiplayerPanel
         if (joinPanel != null) joinPanel.SetActive(false);
         if (multiplayerPanel != null) multiplayerPanel.SetActive(true);
         Debug.Log("Возврат в мультиплеер из Join");
@@ -652,7 +738,6 @@ public class SettingsManager : MonoBehaviour
         // Здесь будет загрузка одиночной игры
     }
 
-    // Метод OnMultiPlayer теперь вызывает OpenMultiplayer
     public void OnMultiPlayer()
     {
         OpenMultiplayer();
