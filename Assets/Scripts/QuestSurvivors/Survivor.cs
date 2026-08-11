@@ -15,7 +15,8 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     private GameObject carrier;
     private GameManager gameManager;
     private GameObject lastInteractor;
-
+    [SerializeField] private GameObject itemPrefab;
+    private GameObject indicatorInstance;
     public enum SurvivorState { Waiting, Carried, Saved }
     public bool IsQuestCompleted => questCompleted;
 
@@ -25,11 +26,13 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         {
             gameManager = FindObjectOfType<GameManager>();
             quest?.Initialize(this);
+            SpawnIndicator();
         }
     }
 
     void Update()
     {
+        RotateIndicator();
         if (!isServer || state != SurvivorState.Carried || carrier == null) return;
         transform.position = carrier.transform.position + Vector3.up * 0.5f;
     }
@@ -102,6 +105,46 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     {
         quest = newQuest;
         quest.Initialize(this);
+        SpawnIndicator();
+    }
+    private void SpawnIndicator()
+    {
+        if (itemPrefab == null) return;
+
+        indicatorInstance = Instantiate(itemPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+        indicatorInstance.transform.SetParent(transform);
+
+        Material indicatorMat = Resources.Load<Material>("Indicator");
+        if (indicatorMat != null)
+        {
+            var renderers = indicatorInstance.GetComponentsInChildren<MeshRenderer>();
+            foreach (var renderer in renderers)
+            {
+                renderer.material = indicatorMat;
+            }
+        }
+
+        var colliders = indicatorInstance.GetComponentsInChildren<Collider>();
+        foreach (var collider in colliders)
+        {
+            collider.enabled = false;
+        }
+    }
+
+    private void RotateIndicator()
+    {
+        if (indicatorInstance != null)
+        {
+            indicatorInstance.transform.Rotate(Vector3.up, 30f * Time.deltaTime);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (indicatorInstance != null)
+        {
+            Destroy(indicatorInstance);
+        }
     }
     private void OnQuestCompletedChanged(bool oldValue, bool newValue) { }
 

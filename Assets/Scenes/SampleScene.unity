@@ -4428,6 +4428,10 @@ PrefabInstance:
       propertyPath: quest
       value: 
       objectReference: {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
+    - target: {fileID: 1277552771819698775, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
+      propertyPath: itemPrefab
+      value: 
+      objectReference: {fileID: 2404826704320307475, guid: f1d46785643617d42870ad0eb5296ae3, type: 3}
     - target: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
       propertyPath: m_Name
       value: Survivor (1)

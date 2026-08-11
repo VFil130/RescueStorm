@@ -10,6 +10,7 @@ public abstract class QuestSO : ScriptableObject
 
     protected Survivor owner;
     protected bool isCompleted;
+    public GameObject itemPrefab;
 
     public virtual void Initialize(Survivor survivor)
     {
