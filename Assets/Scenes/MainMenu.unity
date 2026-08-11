@@ -464,7 +464,6 @@ MonoBehaviour:
   masterVolumeSlider: {fileID: 2044581035}
   musicVolumeSlider: {fileID: 857829278}
   sfxVolumeSlider: {fileID: 892625429}
-  ambientVolumeSlider: {fileID: 1346417387}
   mouseSensitivitySlider: {fileID: 1430140272}
   forwardKeyButton: {fileID: 23617661}
   backwardKeyButton: {fileID: 1256119294}
@@ -3403,7 +3402,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 76}
+  m_SizeDelta: {x: 188.8, y: 76}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &567064492
 MonoBehaviour:
@@ -6338,7 +6337,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 76}
+  m_SizeDelta: {x: 238.68, y: 76}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &862835019
 MonoBehaviour:
@@ -10198,7 +10197,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 310.05, y: 0}
-  m_SizeDelta: {x: 0, y: 76}
+  m_SizeDelta: {x: 620.1, y: 76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1209137949
 CanvasRenderer:
@@ -14862,7 +14861,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1678729773
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17896,7 +17895,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 94, y: 0}
-  m_SizeDelta: {x: 0, y: 76}
+  m_SizeDelta: {x: 182.66, y: 76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1978349777
 MonoBehaviour:

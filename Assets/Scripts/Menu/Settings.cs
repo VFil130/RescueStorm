@@ -16,7 +16,6 @@ public class SettingsManager : MonoBehaviour
     public Slider masterVolumeSlider;
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
-    public Slider ambientVolumeSlider;
     public Slider mouseSensitivitySlider;
 
     // WASD
@@ -129,7 +128,6 @@ public class SettingsManager : MonoBehaviour
         masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
         musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
         sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
-        ambientVolumeSlider.onValueChanged.AddListener(OnAmbientVolumeChanged);
         mouseSensitivitySlider.onValueChanged.AddListener(OnMouseSensitivityChanged);
 
         // Подписки на кнопки WASD
@@ -304,7 +302,7 @@ public class SettingsManager : MonoBehaviour
         masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.8f);
         musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.8f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.8f);
-        ambientVolumeSlider.value = PlayerPrefs.GetFloat("AmbientVolume", 0.8f);
+ 
 
         // Чувствительность мыши
         float sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
@@ -344,7 +342,7 @@ public class SettingsManager : MonoBehaviour
         Debug.Log("=== НАСТРОЙКИ ЗАГРУЖЕНЫ ===");
         Debug.Log($"Разрешение: {resolutionOptions[resIndex]}");
         Debug.Log($"Chromatic: {chromaticToggle.isOn}, Bloom: {bloomToggle.isOn}");
-        Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}, Ambient={ambientVolumeSlider.value}");
+        Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}");
         Debug.Log($"Чувствительность мыши: {sensitivity}");
         Debug.Log($"Клавиши: Forward={forwardKey}, Backward={backwardKey}, Left={leftKey}, Right={rightKey}, E={eKey}, Space={spaceKey}, LCTRL={leftCtrlKey}, LSHIFT={leftShiftKey}, 1={key1}, 2={key2}, 3={key3}, 4={key4}, 5={key5}");
         Debug.Log($"SSAO: {(ssaoEnabled ? "Включен" : "Выключен")}");
@@ -422,7 +420,6 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("MasterVolume", masterVolumeSlider.value);
         PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
         PlayerPrefs.SetFloat("SFXVolume", sfxVolumeSlider.value);
-        PlayerPrefs.SetFloat("AmbientVolume", ambientVolumeSlider.value);
         PlayerPrefs.SetFloat("MouseSensitivity", mouseSensitivitySlider != null ? mouseSensitivitySlider.value : 1f);
         SaveKeyBindings();
 
@@ -443,7 +440,7 @@ public class SettingsManager : MonoBehaviour
         Debug.Log("=== НАСТРОЙКИ СОХРАНЕНЫ ===");
         Debug.Log($"Разрешение: {resolutionOptions[resolutionDropdown.value]}");
         Debug.Log($"Chromatic: {chromaticToggle.isOn}, Bloom: {bloomToggle.isOn}");
-        Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}, Ambient={ambientVolumeSlider.value}");
+        Debug.Log($"Громкость: Master={masterVolumeSlider.value}, Music={musicVolumeSlider.value}, SFX={sfxVolumeSlider.value}");
         Debug.Log($"Чувствительность мыши: {mouseSensitivitySlider.value}");
         Debug.Log($"Клавиши: Forward={forwardKey}, Backward={backwardKey}, Left={leftKey}, Right={rightKey}, E={eKey}, Space={spaceKey}, LCTRL={leftCtrlKey}, LSHIFT={leftShiftKey}, 1={key1}, 2={key2}, 3={key3}, 4={key4}, 5={key5}");
         Debug.Log($"SSAO: {(ssaoToggle != null && ssaoToggle.isOn ? "Включен" : "Выключен")}");
@@ -497,7 +494,6 @@ public class SettingsManager : MonoBehaviour
     void OnMasterVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
     void OnMusicVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
     void OnSFXVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
-    void OnAmbientVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
     void OnMouseSensitivityChanged(float val) { if (!isLoading) SaveAllSettings(); }
 
     // ---- Переназначение клавиш ----
