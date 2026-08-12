@@ -18,6 +18,10 @@ public class Player : NetworkBehaviour
     [SerializeField] private int lightSlotsCount = 4;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
     private int selectedSlot = 0;
+    [Header("Item Display")]
+    [SerializeField] private Transform handTransform;
+    [SerializeField] private Transform headTransform;
+    private GameObject currentDisplayedItem;
 
     private InventorySlot[] inventory;
     private int heavySlotIndex;
@@ -41,7 +45,10 @@ public class Player : NetworkBehaviour
             inventory[i].slotIndex = i;
         }
     }
-
+    private void Update()
+    {
+        DisplayItem();
+    }
     [Server]
     public void TakeDamage(int amount)
     {
@@ -77,6 +84,7 @@ public class Player : NetworkBehaviour
             inventory[heavySlotIndex].slotIndex = heavySlotIndex;
             SelectSlot(heavySlotIndex);
             item.GameObject.SetActive(false);
+            SetCollidersEnabled(item.GameObject, false);
             OnInventoryChanged?.Invoke(inventory);
             OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
             return true;
@@ -89,6 +97,7 @@ public class Player : NetworkBehaviour
                 inventory[i].itemObject = item;
                 inventory[i].slotIndex = i;
                 item.GameObject.SetActive(false);
+                SetCollidersEnabled(item.GameObject, false);
                 OnInventoryChanged?.Invoke(inventory);
                 return true;
             }
@@ -99,11 +108,28 @@ public class Player : NetworkBehaviour
     [Server]
     public void SelectSlot(int slot)
     {
-        if (slot < 0 || slot > heavySlotIndex) return;
-        if (inventory[slot].itemObject == null) return;
+        if (slot > heavySlotIndex) return;
 
         selectedSlot = slot;
-        Debug.Log(slot);
+
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i].itemObject != null)
+            {
+                inventory[i].itemObject.GameObject.SetActive(false);
+            }
+        }
+
+        if (inventory[slot].itemObject != null)
+        {
+            inventory[slot].itemObject.GameObject.SetActive(true);
+            currentDisplayedItem = inventory[slot].itemObject.GameObject;
+        }
+        else
+        {
+            currentDisplayedItem = null;
+        }
+
         OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
     }
 
@@ -159,27 +185,28 @@ public class Player : NetworkBehaviour
 
         item.GameObject.transform.position = transform.position + transform.forward * 2f;
         item.GameObject.SetActive(true);
+        SetCollidersEnabled(item.GameObject, true);
         inventory[selectedSlot].itemObject = null;
-
+        currentDisplayedItem = null;
         OnInventoryChanged?.Invoke(inventory);
         return item.GameObject;
     }
 
-    [Server]
-    public void DropFromSlot(int slotIndex)
+    private void DisplayItem()
     {
-        if (slotIndex < 0 || slotIndex > heavySlotIndex) return;
+        if (currentDisplayedItem == null) return;
 
-        IPickupable item = inventory[slotIndex].itemObject;
-        if (item == null) return;
-
-        item.GameObject.transform.position = transform.position + transform.forward * 2f;
-        item.GameObject.SetActive(true);
-        inventory[slotIndex].itemObject = null;
-
-        OnInventoryChanged?.Invoke(inventory);
+        Transform targetTransform = (selectedSlot == heavySlotIndex) ? headTransform : handTransform;
+        currentDisplayedItem.transform.position = targetTransform.position;
+        currentDisplayedItem.transform.rotation = targetTransform.rotation;
     }
-
+    private void SetCollidersEnabled(GameObject obj, bool enabled)
+    {
+        foreach (var collider in obj.GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = enabled;
+        }
+    }
     private void OnSelectedSlotChanged(int oldValue, int newValue)
     {
         OnSelectedSlotChangedEvent?.Invoke(newValue);
