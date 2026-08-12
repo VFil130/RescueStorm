@@ -16,4 +16,5 @@ MonoBehaviour:
   questName: T1
   requiredRoom: 
   requiredItem: Cube
+  itemPrefab: {fileID: 3051223387696177614, guid: c233351b6a4614042bcb351f60a8c32a, type: 3}
   requiredItemName: Cube
