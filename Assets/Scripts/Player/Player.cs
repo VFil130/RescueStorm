@@ -87,6 +87,7 @@ public class Player : NetworkBehaviour
             SetCollidersEnabled(item.GameObject, false);
             OnInventoryChanged?.Invoke(inventory);
             OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
+            SetItemLayer(item.GameObject, true);
             return true;
         }
 
@@ -99,6 +100,7 @@ public class Player : NetworkBehaviour
                 item.GameObject.SetActive(false);
                 SetCollidersEnabled(item.GameObject, false);
                 OnInventoryChanged?.Invoke(inventory);
+                SetItemLayer(item.GameObject, true);
                 return true;
             }
         }
@@ -129,7 +131,10 @@ public class Player : NetworkBehaviour
         {
             currentDisplayedItem = null;
         }
-
+        if (inventory[slot].itemObject != null)
+        {
+            SetItemLayer(inventory[slot].itemObject.GameObject, true);
+        }
         OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
     }
 
@@ -189,6 +194,7 @@ public class Player : NetworkBehaviour
         inventory[selectedSlot].itemObject = null;
         currentDisplayedItem = null;
         OnInventoryChanged?.Invoke(inventory);
+        SetItemLayer(item.GameObject, false);
         return item.GameObject;
     }
 
@@ -206,6 +212,11 @@ public class Player : NetworkBehaviour
         {
             collider.enabled = enabled;
         }
+    }
+    private void SetItemLayer(GameObject obj, bool isHeld)
+    {
+        int layer = isHeld ? LayerMask.NameToLayer("Item") : LayerMask.NameToLayer("Default");
+        obj.layer = layer;
     }
     private void OnSelectedSlotChanged(int oldValue, int newValue)
     {
