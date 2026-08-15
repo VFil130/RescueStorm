@@ -19,9 +19,9 @@ public class LobbyManager : MonoBehaviour
 
     [SerializeField] private Transform lobbyListContainer;
     [SerializeField] private GameObject lobbyItemPrefab;
-    [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject mainMenuPanel;
-
+    [SerializeField] private TMP_InputField searchField;
+    [SerializeField] private TMP_InputField createPasswordInput;
+    [SerializeField] private TMP_InputField joinPasswordInput;
     void Start()
     {
         networkManager = GetComponent<NetworkManager>();
@@ -46,11 +46,11 @@ public class LobbyManager : MonoBehaviour
         currentLobbyID = new CSteamID(callback.m_ulSteamIDLobby);
         SteamMatchmaking.SetLobbyData(currentLobbyID, "HostAddress", SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(currentLobbyID, "LobbyName", "Игра " + Random.Range(100, 999));
-
+        if (!string.IsNullOrEmpty(createPasswordInput.text))
+        {
+            SteamMatchmaking.SetLobbyData(currentLobbyID, "LobbyPassword", createPasswordInput.text);
+        }
         networkManager.StartHost();
-
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
     }
     #endregion
 
@@ -93,6 +93,7 @@ public class LobbyManager : MonoBehaviour
         if (lobbyUIItems.ContainsKey(lobbyID)) return;
 
         string lobbyName = SteamMatchmaking.GetLobbyData(lobbyID, "LobbyName");
+        if (!IsLobbyMatchesSearch(lobbyName)) return;
         int memberCount = SteamMatchmaking.GetNumLobbyMembers(lobbyID);
         int maxMembers = networkManager.maxConnections;
 
@@ -113,13 +114,34 @@ public class LobbyManager : MonoBehaviour
             button.onClick.AddListener(() => JoinLobby(capturedID));
         }
     }
+    private bool IsLobbyMatchesSearch(string lobbyName)
+    {
+        if (string.IsNullOrEmpty(searchField.text)) return true;
+        return lobbyName.ToLower().Contains(searchField.text.ToLower());
+    }
     #endregion
 
     #region Присоединение к лобби
     public void JoinLobby(CSteamID lobbyID)
     {
-        Debug.Log($"Попытка присоединиться к лобби: {lobbyID}");
-        SteamMatchmaking.JoinLobby(lobbyID);
+        string lobbyPassword = SteamMatchmaking.GetLobbyData(lobbyID, "LobbyPassword");
+
+        if (string.IsNullOrEmpty(lobbyPassword))
+        {
+            SteamMatchmaking.JoinLobby(lobbyID);
+        }
+        else
+        {
+            string enteredPassword = joinPasswordInput.text;
+            if (enteredPassword == lobbyPassword)
+            {
+                SteamMatchmaking.JoinLobby(lobbyID);
+            }
+            else
+            {
+                Debug.LogError("Неверный пароль!");
+            }
+        }
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
@@ -135,9 +157,6 @@ public class LobbyManager : MonoBehaviour
 
         networkManager.networkAddress = hostAddress;
         networkManager.StartClient();
-
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
     }
     #endregion
 
@@ -164,9 +183,6 @@ public class LobbyManager : MonoBehaviour
         {
             networkManager.StopHost();
         }
-
-        lobbyPanel.SetActive(false);
-        mainMenuPanel.SetActive(true);
     }
     #endregion
 }
