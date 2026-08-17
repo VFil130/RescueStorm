@@ -138,6 +138,17 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
             indicatorInstance.transform.Rotate(Vector3.up, 30f * Time.deltaTime);
         }
     }
+    public void SetIndicatorColor(Color color)
+    {
+        if (indicatorInstance != null)
+        {
+            var renderers = indicatorInstance.GetComponentsInChildren<MeshRenderer>();
+            foreach (var renderer in renderers)
+            {
+                renderer.material.color = color;
+            }
+        }
+    }
 
     void OnDestroy()
     {

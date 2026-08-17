@@ -45,7 +45,9 @@ public class LobbyManager : MonoBehaviour
 
         currentLobbyID = new CSteamID(callback.m_ulSteamIDLobby);
         SteamMatchmaking.SetLobbyData(currentLobbyID, "HostAddress", SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(currentLobbyID, "LobbyName", "Игра " + Random.Range(100, 999));
+        string playerName = SteamFriends.GetPersonaName();
+        string lobbyName = playerName + "_" + Random.Range(10000, 99999).ToString();
+        SteamMatchmaking.SetLobbyData(currentLobbyID, "LobbyName", lobbyName);
         if (!string.IsNullOrEmpty(createPasswordInput.text))
         {
             SteamMatchmaking.SetLobbyData(currentLobbyID, "LobbyPassword", createPasswordInput.text);
