@@ -197,7 +197,42 @@ public class Player : NetworkBehaviour
         SetItemLayer(item.GameObject, false);
         return item.GameObject;
     }
+    [Server]
+    public void ReplaceSelectedItem(GameObject newItemPrefab)
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
 
+        if (inventory[selectedSlot].itemObject != null)
+        {
+            NetworkServer.Destroy(inventory[selectedSlot].itemObject.GameObject);
+            inventory[selectedSlot].itemObject = null;
+        }
+
+        GameObject newItem = Instantiate(newItemPrefab, handTransform.position, Quaternion.identity);
+        NetworkServer.Spawn(newItem);
+
+        IPickupable pickupable = newItem.GetComponent<IPickupable>();
+        if (pickupable != null)
+        {
+            inventory[selectedSlot].itemObject = pickupable;
+            pickupable.GameObject.SetActive(false);
+            SetCollidersEnabled(pickupable.GameObject, false);
+            SetItemLayer(pickupable.GameObject, true);
+        }
+
+        OnInventoryChanged?.Invoke(inventory);
+    }
+    [Server]
+    public void DestroySelectedItem()
+    {
+        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        if (inventory[selectedSlot].itemObject == null) return;
+
+        NetworkServer.Destroy(inventory[selectedSlot].itemObject.GameObject);
+        inventory[selectedSlot].itemObject = null;
+        currentDisplayedItem = null;
+        OnInventoryChanged?.Invoke(inventory);
+    }
     private void DisplayItem()
     {
         if (currentDisplayedItem == null) return;
