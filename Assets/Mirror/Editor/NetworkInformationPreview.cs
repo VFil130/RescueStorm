@@ -60,7 +60,9 @@ namespace Mirror
         }
 
         GUIContent title;
-        Styles styles = new Styles();
+        // Unity 6 can instantiate ObjectPreview before EditorStyles is initialized.
+        // Construct styles lazily from OnPreviewGUI, where GUI styles are available.
+        Styles styles;
 
         public override GUIContent GetPreviewTitle()
         {

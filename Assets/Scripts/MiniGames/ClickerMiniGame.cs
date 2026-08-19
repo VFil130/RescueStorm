@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ClickerMiniGame : NetworkBehaviour, IMiniGame, IInteractable
@@ -8,54 +7,59 @@ public class ClickerMiniGame : NetworkBehaviour, IMiniGame, IInteractable
     [SerializeField] private float decayRate = 2f;
     [SerializeField] private float maxProgress = 100f;
 
-    private float currentProggress = 0f;
-    private bool isCompleted = false;
+    private float currentProgress;
+    private bool isCompleted;
     private Survivor linkedSurvivor;
 
     public string QuestId { get; private set; }
     public bool IsCompleted => isCompleted;
 
-    void Start()
-    {
-        if (!isServer) return;
-        ResetPuzzle();
-    }
-    void Update()
-    {
-        if (!isServer || isCompleted) return;
+    private bool HasStateAuthority => NetworkServer.active || !NetworkClient.active;
 
-        currentProggress -= decayRate * Time.deltaTime;
-        currentProggress = Mathf.Max(0, currentProggress);
-        Debug.Log($"Прогресс: {currentProggress}/{maxProgress}");
-
-        if (currentProggress >= maxProgress)
-        {
-            CompleteGame(true);
-        }
+    private void Start()
+    {
+        if (HasStateAuthority)
+            ResetPuzzle();
     }
+
+    private void Update()
+    {
+        if (!HasStateAuthority || isCompleted) return;
+
+        currentProgress = Mathf.Max(0f, currentProgress - decayRate * Time.deltaTime);
+    }
+
     public void Interact(GameObject interactor)
     {
-        if (isCompleted) return;
-        currentProggress += clickPower;
-        currentProggress = Mathf.Min(maxProgress, currentProggress);
-        Debug.Log($"Прогресс: {currentProggress}/{maxProgress}");
+        if (!HasStateAuthority || isCompleted) return;
+
+        currentProgress = Mathf.Min(maxProgress, currentProgress + clickPower);
+        if (currentProgress >= maxProgress)
+            CompleteGame(true);
     }
+
     private void ResetPuzzle()
     {
-        currentProggress = 0f;
+        currentProgress = 0f;
+        isCompleted = false;
     }
+
     public void CompleteGame(bool success)
     {
+        if (!HasStateAuthority || isCompleted) return;
+
         isCompleted = true;
         linkedSurvivor?.CompleteMiniGame(success);
     }
-    public void Initialize (string questId, Survivor survivor)
+
+    public void Initialize(string questId, Survivor survivor)
     {
         QuestId = questId;
         linkedSurvivor = survivor;
     }
     public void StartGame(Player player)
     {
-        //пусто
+        if (HasStateAuthority)
+            ResetPuzzle();
     }
 }

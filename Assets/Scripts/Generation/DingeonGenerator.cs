@@ -1,312 +1,483 @@
-using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.Serialization;
 
+[DisallowMultipleComponent]
 public class DungeonGenerator : MonoBehaviour
 {
-    public GameObject[] roomPrefabs;
-    public GameObject wallPrefab;
-    public int maxRooms = 20;
-    public float cellSize = 10f;
-    public float spacing = 2f;
-    public bool generateOnStart = true;
-    public int gridBounds = 30;
-    public SurvivorManager survivorManager;
+    public const string GeneratedRootName = "__GeneratedLevel";
 
-    private List<GameObject> mandatoryRooms = new List<GameObject>();
-    private List<RoomNode> rooms = new List<RoomNode>();
-    private List<DoorSlot> openSlots = new List<DoorSlot>();
-    private Dictionary<Vector2Int, GameObject> gridOccupied = new Dictionary<Vector2Int, GameObject>();
-    private List<Vector3> roomPositions = new List<Vector3>();
+    private const float NavMeshDoorInset = 0.65f;
+    private const float NavMeshDoorLinkWidth = 0f;
+    private const float NavMeshSampleRadius = 0.35f;
+    private const float NavMeshDoorLaneWidth = 1.5f;
+    private const float NavMeshMinimumRegionArea = 2f;
+    private const int NavMeshTileSize = 256;
+    private const float NavMeshBreakMarkerSize = 0.35f;
 
-    void Start()
+    [Header("Room set")]
+    [SerializeField] private GameObject[] roomPrefabs = Array.Empty<GameObject>();
+    [SerializeField] private GameObject startRoomPrefab;
+    [Tooltip("Rooms available only when an assigned quest requests them by name.")]
+    [SerializeField] private GameObject[] questRoomPrefabs = Array.Empty<GameObject>();
+    [SerializeField] private List<GameObject> mandatoryRoomPrefabs = new List<GameObject>();
+    [FormerlySerializedAs("wallPrefab")]
+    [SerializeField] private GameObject unusedDoorBlockerPrefab;
+
+    [Header("Generation")]
+    [FormerlySerializedAs("maxRooms")]
+    [Tooltip("Number of gameplay rooms. Corridor modules are counted separately.")]
+    [SerializeField, Min(2)] private int targetRoomCount = 20;
+    [SerializeField, Min(0)] private int maxCorridorCount = 60;
+    [SerializeField] private int seed;
+    [SerializeField] private bool generateOnStart = true;
+    [SerializeField, Min(1)] private int generationAttempts = 8;
+    [SerializeField, Min(100)] private int maxSearchSteps = 25000;
+    [SerializeField, Min(0f)] private float overlapTolerance = 0.08f;
+    [SerializeField, Min(0.001f)] private float socketPositionTolerance = 0.05f;
+    [SerializeField, Range(0f, 15f)] private float socketAngleTolerance = 2f;
+    [SerializeField, Min(0f)] private float floorHeightTolerance = 0.05f;
+
+    [Header("Layout topology")]
+    [FormerlySerializedAs("minimumLoopCount")]
+    [SerializeField, Min(0)] private int desiredLoopCount = 3;
+    [SerializeField, Min(1)] private int maxConsecutiveCorridors = 2;
+    [SerializeField, Min(0f)] private float preferredLayoutRadius = 45f;
+    [SerializeField, Min(0f)] private float branchDepthWeight = 3f;
+    [SerializeField, Min(0f)] private float compactnessWeight = 1f;
+    [SerializeField, Min(0f)] private float loopClosureBonus = 100f;
+
+    [Header("Finishing")]
+    [InspectorName("Close Empty Doors")]
+    [SerializeField] private bool closeUnusedSockets = true;
+    [InspectorName("Build NavMesh")]
+    [SerializeField] private bool buildNavMeshAfterGeneration = true;
+    [SerializeField, HideInInspector] private NavMeshSurface navMeshSurface;
+    [InspectorName("Show NavMesh Issues")]
+    [SerializeField] private bool showNavMeshBreakMarkers = true;
+
+    private readonly List<GameObject> runtimeMandatoryRooms = new List<GameObject>();
+    private Transform generatedRoot;
+    private DungeonLayoutBuilder layoutBuilder;
+    private DungeonLayout currentLayout;
+    private DungeonNavigationBuilder navigationBuilder;
+    private Coroutine navMeshValidationCoroutine;
+    private bool automaticGenerationSuppressed;
+
+    public int TargetRoomCount
     {
-        if (generateOnStart) GenerateDungeon();
+        get => targetRoomCount;
+        set => targetRoomCount = Mathf.Max(2, value);
+    }
+
+    public int Seed
+    {
+        get => seed;
+        set => seed = value;
+    }
+
+    public DungeonGenerationResult LastResult { get; private set; }
+    public event Action<DungeonGenerationResult> GenerationCompleted;
+    public event Action<string> GenerationFailed;
+
+    private void Start()
+    {
+        if (generateOnStart && !automaticGenerationSuppressed)
+            GenerateDungeon();
+    }
+
+    public void SuppressAutomaticGeneration()
+    {
+        automaticGenerationSuppressed = true;
+    }
+
+    public int CreateSessionSeed()
+    {
+        return seed == 0 ? CreateRandomSeed() : seed;
+    }
+
+    [ContextMenu("Generate Dungeon")]
+    public bool GenerateDungeon()
+    {
+        return GenerateDungeon(CreateSessionSeed(), buildNavMeshAfterGeneration);
+    }
+
+    public bool GenerateDungeon(int generationSeed, bool buildNavigation)
+    {
+        List<string> errors = ValidateConfiguration();
+        if (errors.Count > 0)
+            return Fail(string.Join(Environment.NewLine, errors));
+
+        ClearDungeon();
+        int baseSeed = generationSeed == 0 ? CreateRandomSeed() : generationSeed;
+
+        for (int attempt = 0; attempt < generationAttempts; attempt++)
+        {
+            int attemptSeed = unchecked(baseSeed + attempt * 7919);
+            CreateGeneratedRoot();
+            layoutBuilder = new DungeonLayoutBuilder(
+                transform,
+                generatedRoot,
+                CreateLayoutSettings(),
+                attemptSeed);
+
+            if (!layoutBuilder.TryBuild())
+            {
+                DiscardCurrentLayout();
+                continue;
+            }
+
+            layoutBuilder.ConnectRemainingSockets();
+            int desiredLoops = layoutBuilder.DesiredLoopCount;
+            if (layoutBuilder.LoopCount < desiredLoops && attempt < generationAttempts - 1)
+            {
+                DiscardCurrentLayout();
+                continue;
+            }
+
+            if (!layoutBuilder.TryComplete(out currentLayout))
+            {
+                DiscardCurrentLayout();
+                continue;
+            }
+
+            if (buildNavigation && buildNavMeshAfterGeneration)
+                BuildRuntimeNavMesh();
+
+            LastResult = currentLayout.CreateResult();
+            GenerationCompleted?.Invoke(LastResult);
+            LogGenerationSuccess(desiredLoops);
+            return true;
+        }
+
+        return Fail(
+            $"Could not generate exactly {targetRoomCount} gameplay rooms with at most " +
+            $"{maxCorridorCount} corridors after {generationAttempts} attempts. " +
+            "Check room sockets, bounds, mandatory rooms, or increase the search limits.");
     }
 
     public void SetMandatoryRooms(List<GameObject> rooms)
     {
-        mandatoryRooms = rooms;
+        runtimeMandatoryRooms.Clear();
+        if (rooms != null)
+            runtimeMandatoryRooms.AddRange(rooms.Where(room => room != null));
+    }
+
+    public List<GameObject> ResolveRoomPrefabs(
+        IEnumerable<string> roomNames,
+        out List<string> missingRoomNames)
+    {
+        missingRoomNames = new List<string>();
+        List<GameObject> resolved = new List<GameObject>();
+        if (roomNames == null) return resolved;
+
+        Dictionary<string, GameObject> prefabsByName = GetConfiguredRoomPrefabs()
+            .GroupBy(prefab => NormalizePrefabName(prefab.name), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (string roomName in roomNames
+                     .Where(name => !string.IsNullOrWhiteSpace(name))
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            string normalizedName = NormalizePrefabName(roomName);
+            if (prefabsByName.TryGetValue(normalizedName, out GameObject prefab))
+                resolved.Add(prefab);
+            else
+                missingRoomNames.Add(roomName);
+        }
+
+        return resolved;
     }
 
     public List<Vector3> GetRandomRoomPositions(int count)
     {
-        List<Vector3> shuffled = new List<Vector3>(roomPositions);
-        for (int i = 0; i < shuffled.Count; i++)
-        {
-            int rand = Random.Range(i, shuffled.Count);
-            Vector3 temp = shuffled[i];
-            shuffled[i] = shuffled[rand];
-            shuffled[rand] = temp;
-        }
-        return shuffled.Take(count).ToList();
+        return layoutBuilder != null
+            ? layoutBuilder.GetRandomRoomPositions(count)
+            : new List<Vector3>();
     }
 
-    [ContextMenu("Generate Dungeon")]
-    public void GenerateDungeon()
+    [ContextMenu("Clear Dungeon")]
+    public void ClearDungeon()
     {
-        ClearDungeon();
-        if (roomPrefabs.Length == 0) return;
+        CancelPendingNavMeshValidation();
+        LastResult = null;
+        navigationBuilder = null;
+        currentLayout = null;
+        layoutBuilder = null;
 
-        if (survivorManager == null)
-            survivorManager = FindObjectOfType<SurvivorManager>();
+        Transform existingRoot = transform.Find(GeneratedRootName);
+        if (existingRoot != null)
+            DungeonObjectLifecycle.Destroy(existingRoot.gameObject);
 
-        if (survivorManager != null)
+        generatedRoot = null;
+    }
+
+    public IReadOnlyList<GameObject> FindLegacyGeneratedChildren()
+    {
+        List<GameObject> legacyChildren = new List<GameObject>();
+        foreach (Transform child in transform)
         {
-            survivorManager.InitializeSurvivors();
-            List<string> requiredRoomNames = survivorManager.GetAllRequiredRooms();
-            mandatoryRooms.Clear();
-            foreach (string roomName in requiredRoomNames)
-            {
-                GameObject roomPrefab = FindRoomPrefabByName(roomName);
-                if (roomPrefab != null) mandatoryRooms.Add(roomPrefab);
-            }
+            if (child.name == GeneratedRootName) continue;
+            if (IsLegacyGeneratedChild(child.gameObject))
+                legacyChildren.Add(child.gameObject);
         }
 
-        List<GameObject> combinedPrefabs = new List<GameObject>();
-        combinedPrefabs.AddRange(roomPrefabs);
-        combinedPrefabs.AddRange(mandatoryRooms);
+        return legacyChildren;
+    }
 
-        GameObject startRoom = Instantiate(combinedPrefabs[0], Vector3.zero, Quaternion.identity);
-        startRoom.transform.parent = this.transform;
-        RoomNode startNode = new RoomNode(startRoom, Vector2Int.zero, GetRoomSize(startRoom));
-        rooms.Add(startNode);
-        roomPositions.Add(startRoom.transform.position);
-        RegisterRoom(startNode);
-        openSlots.AddRange(GetDoorSlots(startRoom, Vector2Int.zero));
+    public List<string> ValidateConfiguration()
+    {
+        List<string> errors = new List<string>();
+        List<GameObject> allPrefabs = GetConfiguredRoomPrefabs();
+        List<GameObject> mandatoryRooms = GetMandatoryRoomPrefabs();
 
-        int attempts = 0;
-        while (openSlots.Count > 0 && rooms.Count < maxRooms && attempts < 1000)
+        if (targetRoomCount < 2)
+            errors.Add("Target room count must be at least 2 so start and evacuation rooms can both exist.");
+        if (roomPrefabs == null || roomPrefabs.Length == 0)
+            errors.Add("At least one regular room prefab is required.");
+        if (allPrefabs.Count == 0)
+            errors.Add("No valid room prefabs are configured.");
+        if (!GetPlacementPrefabs().Any(prefab =>
+                prefab.GetComponent<RoomData>() is RoomData data &&
+                data.ModuleKind == RoomModuleKind.Room &&
+                data.CanBeEvacuationRoom))
+            errors.Add("At least one non-start room prefab must allow the evacuation role.");
+
+        int mandatoryCount = mandatoryRooms
+            .Count(room => room != null &&
+                           room.GetComponent<RoomData>()?.ModuleKind == RoomModuleKind.Room);
+        GameObject configuredStart = startRoomPrefab != null
+            ? startRoomPrefab
+            : roomPrefabs?.FirstOrDefault(room => room != null);
+        if (configuredStart != null &&
+            configuredStart.GetComponent<RoomData>()?.ModuleKind != RoomModuleKind.Room)
+            errors.Add("The start room prefab must be classified as Room, not Corridor.");
+        if (configuredStart != null &&
+            configuredStart.GetComponent<RoomData>()?.ModuleKind == RoomModuleKind.Room &&
+            mandatoryRooms.Contains(configuredStart))
+            mandatoryCount--;
+        if (targetRoomCount < mandatoryCount + 1)
         {
-            attempts++;
-            int slotIndex = Random.Range(0, openSlots.Count);
-            DoorSlot slot = openSlots[slotIndex];
-
-            if (TryPlaceRoom(slot, combinedPrefabs))
-            {
-                openSlots.RemoveAt(slotIndex);
-            }
-            else
-            {
-                CloseSlot(slot);
-                openSlots.RemoveAt(slotIndex);
-            }
+            errors.Add(
+                $"Target room count {targetRoomCount} is too small for the start room and " +
+                $"{mandatoryCount} mandatory rooms.");
         }
-        CloseRemainingSlots();
 
-        if (survivorManager != null && NetworkServer.active)
+        foreach (GameObject prefab in allPrefabs)
+            ValidateRoomPrefab(prefab, errors, buildNavMeshAfterGeneration);
+
+        return errors.Distinct().ToList();
+    }
+
+    private DungeonLayoutSettings CreateLayoutSettings()
+    {
+        return new DungeonLayoutSettings
         {
-            List<Vector3> positions = GetRandomRoomPositions(survivorManager.GetAssignedQuests().Count);
-            survivorManager.SpawnSurvivorsAtPositions(positions);
+            RoomPrefabs = roomPrefabs ?? Array.Empty<GameObject>(),
+            StartRoomPrefab = startRoomPrefab,
+            MandatoryRoomPrefabs = GetMandatoryRoomPrefabs(),
+            UnusedDoorBlockerPrefab = unusedDoorBlockerPrefab,
+            TargetRoomCount = targetRoomCount,
+            MaxCorridorCount = maxCorridorCount,
+            MaxSearchSteps = maxSearchSteps,
+            OverlapTolerance = overlapTolerance,
+            SocketPositionTolerance = socketPositionTolerance,
+            SocketAngleTolerance = socketAngleTolerance,
+            FloorHeightTolerance = floorHeightTolerance,
+            DesiredLoopCount = desiredLoopCount,
+            MaxConsecutiveCorridors = maxConsecutiveCorridors,
+            PreferredLayoutRadius = preferredLayoutRadius,
+            BranchDepthWeight = branchDepthWeight,
+            CompactnessWeight = compactnessWeight,
+            LoopClosureBonus = loopClosureBonus,
+            CloseUnusedSockets = closeUnusedSockets
+        };
+    }
+
+    private DungeonNavigationSettings CreateNavigationSettings()
+    {
+        return new DungeonNavigationSettings
+        {
+            DoorInset = NavMeshDoorInset,
+            DoorLinkWidth = NavMeshDoorLinkWidth,
+            SampleRadius = NavMeshSampleRadius,
+            DoorLaneWidth = NavMeshDoorLaneWidth,
+            MinimumRegionArea = NavMeshMinimumRegionArea,
+            TileSize = NavMeshTileSize
+        };
+    }
+
+    private void BuildRuntimeNavMesh()
+    {
+        navigationBuilder = new DungeonNavigationBuilder(
+            this,
+            generatedRoot,
+            currentLayout,
+            CreateNavigationSettings(),
+            navMeshSurface);
+
+        if (!navigationBuilder.TryBuild())
+            return;
+
+        navMeshSurface = navigationBuilder.Surface;
+        CancelPendingNavMeshValidation();
+        if (Application.isPlaying && isActiveAndEnabled)
+        {
+            navMeshValidationCoroutine = StartCoroutine(
+                ValidateRuntimeNavMeshNextFrame());
+        }
+        else
+        {
+            navigationBuilder.LogConnectivity();
         }
     }
 
-    private GameObject FindRoomPrefabByName(string roomName)
+    private IEnumerator ValidateRuntimeNavMeshNextFrame()
     {
-        foreach (var prefab in roomPrefabs)
-        {
-            if (prefab.name == roomName || prefab.name.Replace("(Clone)", "").Trim() == roomName)
-            {
-                return prefab;
-            }
-        }
-        return null;
+        yield return null;
+        navMeshValidationCoroutine = null;
+        navigationBuilder?.LogConnectivity();
     }
 
-    private Vector2Int GetRoomSize(GameObject room)
+    private void OnDrawGizmos()
     {
-        RoomData data = room.GetComponent<RoomData>();
-        return data != null ? data.size : Vector2Int.one;
+        navigationBuilder?.DrawGizmos(showNavMeshBreakMarkers, NavMeshBreakMarkerSize);
     }
 
-    private bool TryPlaceRoom(DoorSlot slot, List<GameObject> prefabs)
+    private void CancelPendingNavMeshValidation()
     {
-        List<GameObject> compatible = GetCompatibleRooms(slot.direction, prefabs);
-        if (compatible.Count == 0) return false;
+        if (navMeshValidationCoroutine == null) return;
 
-        for (int i = 0; i < 5; i++)
+        StopCoroutine(navMeshValidationCoroutine);
+        navMeshValidationCoroutine = null;
+    }
+
+    private void LogGenerationSuccess(int desiredLoops)
+    {
+        Debug.Log(
+            $"Dungeon generated: {currentLayout.RoomCount} rooms + " +
+            $"{currentLayout.CorridorCount} corridors, {currentLayout.LoopCount} loops, " +
+            $"seed {currentLayout.Seed}, search steps {currentLayout.SearchSteps}.",
+            this);
+
+        if (currentLayout.LoopCount < desiredLoops)
         {
-            GameObject chosen = compatible[Random.Range(0, compatible.Count)];
-            Vector2Int roomSize = GetRoomSize(chosen);
-            Vector2Int targetGrid = slot.gridPosition + slot.direction;
-
-            if (IsOverlapping(targetGrid, roomSize)) continue;
-            if (IsOutsideBounds(targetGrid, roomSize)) continue;
-
-            Vector3 worldPos = new Vector3(
-                targetGrid.x * (cellSize + spacing),
-                0,
-                targetGrid.y * (cellSize + spacing)
-            );
-
-            Quaternion rotation = GetRotationForDirection(slot.direction);
-            GameObject newRoom = Instantiate(chosen, worldPos, rotation);
-            newRoom.transform.parent = this.transform;
-
-            RoomNode node = new RoomNode(newRoom, targetGrid, roomSize);
-            rooms.Add(node);
-            roomPositions.Add(newRoom.transform.position);
-            RegisterRoom(node);
-
-            List<DoorSlot> newSlots = GetDoorSlots(newRoom, targetGrid);
-            foreach (var newSlot in newSlots)
-            {
-                if (!IsSlotConnectedToExisting(newSlot))
-                {
-                    openSlots.Add(newSlot);
-                }
-            }
-            return true;
+            Debug.LogWarning(
+                $"Generated layout has {currentLayout.LoopCount}/{desiredLoops} desired loops. " +
+                "The bounded retry budget was exhausted; the usable layout was kept instead of " +
+                "stalling generation.",
+                this);
         }
+    }
+
+    private void CreateGeneratedRoot()
+    {
+        GameObject root = new GameObject(GeneratedRootName);
+        generatedRoot = root.transform;
+        generatedRoot.SetParent(transform, false);
+    }
+
+    private void DiscardCurrentLayout()
+    {
+        navigationBuilder = null;
+        currentLayout = null;
+        layoutBuilder = null;
+
+        if (generatedRoot != null)
+        {
+            DungeonObjectLifecycle.Destroy(generatedRoot.gameObject);
+            generatedRoot = null;
+        }
+    }
+
+    private List<GameObject> GetConfiguredRoomPrefabs()
+    {
+        return EnumeratePlacementPrefabs()
+            .Concat(questRoomPrefabs ?? Array.Empty<GameObject>())
+            .Append(startRoomPrefab)
+            .Where(prefab => prefab != null)
+            .Distinct()
+            .ToList();
+    }
+
+    private bool IsLegacyGeneratedChild(GameObject child)
+    {
+        string childName = NormalizePrefabName(child.name);
+        if (childName.StartsWith("SocketCap_", StringComparison.Ordinal)) return true;
+        if (unusedDoorBlockerPrefab != null && childName == unusedDoorBlockerPrefab.name) return true;
+
+        return GetConfiguredRoomPrefabs().Any(prefab => childName == prefab.name);
+    }
+
+    private static string NormalizePrefabName(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Replace("(Clone)", string.Empty).Trim();
+    }
+
+    private List<GameObject> GetPlacementPrefabs()
+    {
+        return EnumeratePlacementPrefabs()
+            .Where(prefab => prefab != null)
+            .Distinct()
+            .ToList();
+    }
+
+    private IEnumerable<GameObject> EnumeratePlacementPrefabs()
+    {
+        IEnumerable<GameObject> regularRooms = roomPrefabs ?? Array.Empty<GameObject>();
+        return regularRooms.Concat(GetMandatoryRoomPrefabs());
+    }
+
+    private List<GameObject> GetMandatoryRoomPrefabs()
+    {
+        IEnumerable<GameObject> configuredRooms = mandatoryRoomPrefabs ?? new List<GameObject>();
+        return configuredRooms.Concat(runtimeMandatoryRooms).ToList();
+    }
+
+    private static void ValidateRoomPrefab(
+        GameObject prefab,
+        ICollection<string> errors,
+        bool requireNavigationGeometry)
+    {
+        RoomData data = prefab.GetComponent<RoomData>();
+        if (data == null)
+        {
+            errors.Add($"Room prefab '{prefab.name}' needs RoomData on its root.");
+            return;
+        }
+
+        IReadOnlyList<DoorPoint> sockets = data.GetDoorPoints();
+        if (sockets.Count == 0)
+            errors.Add($"Room prefab '{prefab.name}' has no DoorPoint sockets.");
+        if (prefab.GetComponentsInChildren<Renderer>(true).Length == 0)
+            errors.Add($"Room prefab '{prefab.name}' has no renderers and no usable automatic bounds.");
+        if (requireNavigationGeometry && prefab.GetComponentsInChildren<Collider>(true).Length == 0)
+            errors.Add($"Room prefab '{prefab.name}' has no colliders for runtime NavMesh generation.");
+
+        foreach (DoorPoint socket in sockets)
+        {
+            if (socket == null) continue;
+            if (!socket.UsesTransformForward && socket.direction == Vector2Int.zero)
+                errors.Add($"Room prefab '{prefab.name}' has a DoorPoint with a zero direction.");
+        }
+    }
+
+    private bool Fail(string message)
+    {
+        Debug.LogError(message, this);
+        GenerationFailed?.Invoke(message);
         return false;
     }
 
-    private bool IsOverlapping(Vector2Int pos, Vector2Int size)
+    private static int CreateRandomSeed()
     {
-        for (int x = pos.x; x < pos.x + size.x; x++)
-        {
-            for (int y = pos.y; y < pos.y + size.y; y++)
-            {
-                if (gridOccupied.ContainsKey(new Vector2Int(x, y))) return true;
-            }
-        }
-        return false;
-    }
-
-    private bool IsOutsideBounds(Vector2Int pos, Vector2Int size)
-    {
-        int half = gridBounds / 2;
-        return pos.x < -half || pos.x + size.x > half || pos.y < -half || pos.y + size.y > half;
-    }
-
-    private List<DoorSlot> GetDoorSlots(GameObject room, Vector2Int gridPos)
-    {
-        List<DoorSlot> slots = new List<DoorSlot>();
-        DoorPoint[] doors = room.GetComponentsInChildren<DoorPoint>();
-        foreach (var door in doors)
-        {
-            slots.Add(new DoorSlot
-            {
-                gridPosition = gridPos + GetDoorGridOffset(door.transform.localPosition, GetRoomSize(room)),
-                direction = door.direction,
-                doorObject = door.gameObject
-            });
-        }
-        return slots;
-    }
-
-    private Vector2Int GetDoorGridOffset(Vector3 localPos, Vector2Int roomSize)
-    {
-        float halfX = roomSize.x * (cellSize + spacing) / 2f;
-        float halfY = roomSize.y * (cellSize + spacing) / 2f;
-
-        if (Mathf.Approximately(localPos.z, halfY)) return new Vector2Int(0, roomSize.y);
-        if (Mathf.Approximately(localPos.z, -halfY)) return new Vector2Int(0, -1);
-        if (Mathf.Approximately(localPos.x, halfX)) return new Vector2Int(roomSize.x, 0);
-        if (Mathf.Approximately(localPos.x, -halfX)) return new Vector2Int(-1, 0);
-        return Vector2Int.zero;
-    }
-
-    private List<GameObject> GetCompatibleRooms(Vector2Int direction, List<GameObject> prefabs)
-    {
-        List<GameObject> compatible = new List<GameObject>();
-        foreach (var prefab in prefabs)
-        {
-            DoorPoint[] doors = prefab.GetComponentsInChildren<DoorPoint>();
-            foreach (var door in doors)
-            {
-                if (door.direction.x == -direction.x && door.direction.y == -direction.y)
-                {
-                    compatible.Add(prefab);
-                    break;
-                }
-            }
-        }
-        return compatible;
-    }
-
-    private Quaternion GetRotationForDirection(Vector2Int direction)
-    {
-        if (direction.x == 0 && direction.y == 1) return Quaternion.identity;
-        if (direction.x == 0 && direction.y == -1) return Quaternion.Euler(0, 180, 0);
-        if (direction.x == 1 && direction.y == 0) return Quaternion.Euler(0, 90, 0);
-        if (direction.x == -1 && direction.y == 0) return Quaternion.Euler(0, -90, 0);
-        return Quaternion.identity;
-    }
-
-    private void CloseSlot(DoorSlot slot)
-    {
-        Vector3 worldPos = new Vector3(
-            slot.gridPosition.x * (cellSize + spacing),
-            0,
-            slot.gridPosition.y * (cellSize + spacing)
-        );
-        worldPos += GetDoorWorldOffset(slot.direction) * (cellSize / 2f);
-        Quaternion rotation = GetRotationForDirection(slot.direction);
-        Instantiate(wallPrefab, worldPos, rotation, this.transform);
-    }
-
-    private Vector3 GetDoorWorldOffset(Vector2Int direction)
-    {
-        if (direction.x == 0 && direction.y == 1) return new Vector3(0, 0, 1);
-        if (direction.x == 0 && direction.y == -1) return new Vector3(0, 0, -1);
-        if (direction.x == 1 && direction.y == 0) return new Vector3(1, 0, 0);
-        if (direction.x == -1 && direction.y == 0) return new Vector3(-1, 0, 0);
-        return Vector3.zero;
-    }
-
-    private void CloseRemainingSlots()
-    {
-        foreach (var slot in openSlots) CloseSlot(slot);
-        openSlots.Clear();
-    }
-
-    private bool IsSlotConnectedToExisting(DoorSlot slot)
-    {
-        Vector2Int checkPos = slot.gridPosition + slot.direction;
-        return gridOccupied.ContainsKey(checkPos);
-    }
-
-    private void RegisterRoom(RoomNode node)
-    {
-        for (int x = node.gridPosition.x; x < node.gridPosition.x + node.size.x; x++)
-        {
-            for (int y = node.gridPosition.y; y < node.gridPosition.y + node.size.y; y++)
-            {
-                gridOccupied[new Vector2Int(x, y)] = node.roomObject;
-            }
-        }
-    }
-
-    private void ClearDungeon()
-    {
-        foreach (Transform child in transform) DestroyImmediate(child.gameObject);
-        rooms.Clear();
-        openSlots.Clear();
-        gridOccupied.Clear();
-        mandatoryRooms.Clear();
-        roomPositions.Clear();
-    }
-
-    private class RoomNode
-    {
-        public GameObject roomObject;
-        public Vector2Int gridPosition;
-        public Vector2Int size;
-
-        public RoomNode(GameObject obj, Vector2Int pos, Vector2Int s)
-        {
-            roomObject = obj;
-            gridPosition = pos;
-            size = s;
-        }
-    }
-
-    private class DoorSlot
-    {
-        public Vector2Int gridPosition;
-        public Vector2Int direction;
-        public GameObject doorObject;
+        int generatedSeed = unchecked(Environment.TickCount * 397 ^ Guid.NewGuid().GetHashCode());
+        return generatedSeed == 0 ? 1 : generatedSeed;
     }
 }

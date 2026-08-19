@@ -1,7 +1,8 @@
+using System;
 using Mirror;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class InventorySlot
 {
     public IPickupable itemObject;
@@ -17,7 +18,8 @@ public class Player : NetworkBehaviour
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
-    private int selectedSlot = 0;
+    private int selectedSlot;
+
     [Header("Item Display")]
     [SerializeField] private Transform handTransform;
     [SerializeField] private Transform headTransform;
@@ -26,68 +28,66 @@ public class Player : NetworkBehaviour
     private InventorySlot[] inventory;
     private int heavySlotIndex;
 
-    public event System.Action<int, int> OnHealthChanged;
-    public event System.Action<InventorySlot[]> OnInventoryChanged;
-    public event System.Action<int> OnSelectedSlotChangedEvent;
+    public event Action<int, int> OnHealthChanged;
+    public event Action<InventorySlot[]> OnInventoryChanged;
+    public event Action<int> OnSelectedSlotChangedEvent;
 
     public int Health => health;
     public int MaxHealth => maxHealth;
     public int SelectedSlot => selectedSlot;
     public InventorySlot[] InventoryItems => inventory;
 
-    void Awake()
+    private bool HasStateAuthority => NetworkServer.active || !NetworkClient.active;
+
+    private void Awake()
     {
         heavySlotIndex = lightSlotsCount;
         inventory = new InventorySlot[lightSlotsCount + 1];
         for (int i = 0; i < inventory.Length; i++)
         {
-            inventory[i] = new InventorySlot();
-            inventory[i].slotIndex = i;
+            inventory[i] = new InventorySlot { slotIndex = i };
         }
     }
-    private void Update()
+    private void LateUpdate()
     {
         DisplayItem();
     }
-    [Server]
+
     public void TakeDamage(int amount)
     {
-        if (health <= 0) return;
+        if (!HasStateAuthority || health <= 0) return;
         health = Mathf.Max(0, health - amount);
         OnHealthChanged?.Invoke(health, maxHealth);
         if (health <= 0) Die();
     }
 
-    [Server]
     public void Heal(int amount)
     {
+        if (!HasStateAuthority) return;
         health = Mathf.Min(maxHealth, health + amount);
         OnHealthChanged?.Invoke(health, maxHealth);
     }
+
     public override void OnStopClient()
     {
         base.OnStopClient();
         Debug.Log($"Player OnStopClient: {gameObject.name}, netId: {GetComponent<NetworkIdentity>().netId}");
     }
-    [Server]
+
     private void Die() { }
 
-    [Server]
     public bool PickupItem(IPickupable item)
     {
-        if (item == null) return false;
+        if (!HasStateAuthority || item == null) return false;
 
         if (item.IsHeavy)
         {
             if (inventory[heavySlotIndex].itemObject != null) return false;
             inventory[heavySlotIndex].itemObject = item;
             inventory[heavySlotIndex].slotIndex = heavySlotIndex;
+            PrepareHeldItem(item.GameObject);
             SelectSlot(heavySlotIndex);
-            item.GameObject.SetActive(false);
-            SetCollidersEnabled(item.GameObject, false);
             OnInventoryChanged?.Invoke(inventory);
-            OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
-            SetItemLayer(item.GameObject, true);
             return true;
         }
 
@@ -97,20 +97,18 @@ public class Player : NetworkBehaviour
             {
                 inventory[i].itemObject = item;
                 inventory[i].slotIndex = i;
+                PrepareHeldItem(item.GameObject);
                 item.GameObject.SetActive(false);
-                SetCollidersEnabled(item.GameObject, false);
                 OnInventoryChanged?.Invoke(inventory);
-                SetItemLayer(item.GameObject, true);
                 return true;
             }
         }
         return false;
     }
 
-    [Server]
     public void SelectSlot(int slot)
     {
-        if (slot > heavySlotIndex) return;
+        if (!HasStateAuthority || !IsValidSlot(slot)) return;
 
         selectedSlot = slot;
 
@@ -126,133 +124,182 @@ public class Player : NetworkBehaviour
         {
             inventory[slot].itemObject.GameObject.SetActive(true);
             currentDisplayedItem = inventory[slot].itemObject.GameObject;
+            SetItemLayer(currentDisplayedItem, true);
+            DisplayItem();
         }
         else
         {
             currentDisplayedItem = null;
         }
-        if (inventory[slot].itemObject != null)
-        {
-            SetItemLayer(inventory[slot].itemObject.GameObject, true);
-        }
+
         OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
     }
 
-    [Server]
     public void UseItem()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        if (!HasStateAuthority || !IsValidSlot(selectedSlot)) return;
 
         IPickupable item = inventory[selectedSlot].itemObject;
         if (item == null) return;
 
-        item.Use(this.gameObject);
+        item.Use(gameObject);
 
-        ItemObject itemObject = item as ItemObject;
-        if (itemObject != null)
+        if (item is ItemObject itemObject)
         {
             itemObject.charges--;
             if (itemObject.charges <= 0)
             {
-                NetworkServer.Destroy(itemObject.gameObject);
+                if (currentDisplayedItem == itemObject.gameObject)
+                    currentDisplayedItem = null;
+                DestroyConsumedItem(itemObject.gameObject);
                 inventory[selectedSlot].itemObject = null;
             }
         }
 
         OnInventoryChanged?.Invoke(inventory);
     }
+
     public GameObject GetSelectedItem()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
+        if (!IsValidSlot(selectedSlot)) return null;
         Debug.Log("GetSelectedItem" + inventory[selectedSlot]?.itemObject);
         return inventory[selectedSlot]?.itemObject.GameObject;
     }
+
     public IPickupable GetSelectedIPickable()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
+        if (!IsValidSlot(selectedSlot)) return null;
         Debug.Log("GetSelectedItem" + inventory[selectedSlot]?.itemObject);
         return inventory[selectedSlot]?.itemObject;
     }
 
     public void RemoveSelectedItem()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        if (!IsValidSlot(selectedSlot)) return;
+
+        GameObject removedObject = inventory[selectedSlot].itemObject?.GameObject;
+        if (currentDisplayedItem == removedObject)
+            currentDisplayedItem = null;
         inventory[selectedSlot].itemObject = null;
         OnInventoryChanged?.Invoke(inventory);
     }
-    [Server]
-    public GameObject DropItem()
-    {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return null;
 
-        IPickupable item = inventory[selectedSlot].itemObject;
-        if (item == null) return null;
-
-        item.GameObject.transform.position = transform.position + transform.forward * 2f;
-        item.GameObject.SetActive(true);
-        SetCollidersEnabled(item.GameObject, true);
-        inventory[selectedSlot].itemObject = null;
-        currentDisplayedItem = null;
-        OnInventoryChanged?.Invoke(inventory);
-        SetItemLayer(item.GameObject, false);
-        return item.GameObject;
-    }
-    [Server]
     public void ReplaceSelectedItem(GameObject newItemPrefab)
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
+        if (!HasStateAuthority || !IsValidSlot(selectedSlot) || newItemPrefab == null) return;
 
-        if (inventory[selectedSlot].itemObject != null)
-        {
-            NetworkServer.Destroy(inventory[selectedSlot].itemObject.GameObject);
-            inventory[selectedSlot].itemObject = null;
-        }
+        DestroySelectedItem();
 
-        GameObject newItem = Instantiate(newItemPrefab, handTransform.position, Quaternion.identity);
-        NetworkServer.Spawn(newItem);
+        Transform spawnPoint = handTransform != null ? handTransform : transform;
+        GameObject newItem = Instantiate(newItemPrefab, spawnPoint.position, spawnPoint.rotation);
+        if (NetworkServer.active)
+            NetworkServer.Spawn(newItem);
 
         IPickupable pickupable = newItem.GetComponent<IPickupable>();
-        if (pickupable != null)
+        if (pickupable == null)
         {
-            inventory[selectedSlot].itemObject = pickupable;
-            pickupable.GameObject.SetActive(false);
-            SetCollidersEnabled(pickupable.GameObject, false);
-            SetItemLayer(pickupable.GameObject, true);
+            DestroyConsumedItem(newItem);
+            return;
         }
 
+        inventory[selectedSlot].itemObject = pickupable;
+        PrepareHeldItem(newItem);
+        newItem.SetActive(false);
         OnInventoryChanged?.Invoke(inventory);
     }
-    [Server]
+
     public void DestroySelectedItem()
     {
-        if (selectedSlot < 0 || selectedSlot > heavySlotIndex) return;
-        if (inventory[selectedSlot].itemObject == null) return;
+        if (!HasStateAuthority || !IsValidSlot(selectedSlot)) return;
 
-        NetworkServer.Destroy(inventory[selectedSlot].itemObject.GameObject);
+        GameObject selectedItem = inventory[selectedSlot].itemObject?.GameObject;
+        if (selectedItem == null) return;
+
+        if (currentDisplayedItem == selectedItem)
+            currentDisplayedItem = null;
+
         inventory[selectedSlot].itemObject = null;
-        currentDisplayedItem = null;
+        DestroyConsumedItem(selectedItem);
         OnInventoryChanged?.Invoke(inventory);
     }
+
+    public GameObject DropItem()
+    {
+        if (!HasStateAuthority) return null;
+        return DropItemFromSlot(selectedSlot);
+    }
+
+    public void DropFromSlot(int slotIndex)
+    {
+        if (!HasStateAuthority) return;
+        DropItemFromSlot(slotIndex);
+    }
+
+    private GameObject DropItemFromSlot(int slotIndex)
+    {
+        if (!IsValidSlot(slotIndex)) return null;
+
+        IPickupable item = inventory[slotIndex].itemObject;
+        if (item == null) return null;
+
+        GameObject droppedObject = item.GameObject;
+        if (currentDisplayedItem == droppedObject)
+            currentDisplayedItem = null;
+
+        droppedObject.transform.SetParent(null, true);
+        droppedObject.transform.position = transform.position + transform.forward * 2f;
+        SetCollidersEnabled(droppedObject, true);
+        SetItemLayer(droppedObject, false);
+        droppedObject.SetActive(true);
+        inventory[slotIndex].itemObject = null;
+        OnInventoryChanged?.Invoke(inventory);
+        return droppedObject;
+    }
+
     private void DisplayItem()
     {
         if (currentDisplayedItem == null) return;
 
-        Transform targetTransform = (selectedSlot == heavySlotIndex) ? headTransform : handTransform;
-        currentDisplayedItem.transform.position = targetTransform.position;
-        currentDisplayedItem.transform.rotation = targetTransform.rotation;
+        Transform target = selectedSlot == heavySlotIndex ? headTransform : handTransform;
+        if (target == null) return;
+
+        currentDisplayedItem.transform.SetPositionAndRotation(target.position, target.rotation);
     }
-    private void SetCollidersEnabled(GameObject obj, bool enabled)
+
+    private static void PrepareHeldItem(GameObject item)
     {
-        foreach (var collider in obj.GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = enabled;
-        }
+        SetCollidersEnabled(item, false);
+        SetItemLayer(item, true);
     }
-    private void SetItemLayer(GameObject obj, bool isHeld)
+
+    private static void SetCollidersEnabled(GameObject item, bool enabled)
     {
-        int layer = isHeld ? LayerMask.NameToLayer("Item") : LayerMask.NameToLayer("Default");
-        obj.layer = layer;
+        foreach (Collider itemCollider in item.GetComponentsInChildren<Collider>(true))
+            itemCollider.enabled = enabled;
     }
+
+    private static void SetItemLayer(GameObject item, bool isHeld)
+    {
+        int layer = LayerMask.NameToLayer(isHeld ? "Item" : "Default");
+        if (layer < 0) return;
+
+        foreach (Transform child in item.GetComponentsInChildren<Transform>(true))
+            child.gameObject.layer = layer;
+    }
+
+    private bool IsValidSlot(int slotIndex)
+    {
+        return slotIndex >= 0 && slotIndex <= heavySlotIndex;
+    }
+
+    private static void DestroyConsumedItem(GameObject item)
+    {
+        if (NetworkServer.active)
+            NetworkServer.Destroy(item);
+        else
+            Destroy(item);
+    }
+
     private void OnSelectedSlotChanged(int oldValue, int newValue)
     {
         OnSelectedSlotChangedEvent?.Invoke(newValue);

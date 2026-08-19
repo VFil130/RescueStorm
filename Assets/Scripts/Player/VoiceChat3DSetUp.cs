@@ -1,3 +1,4 @@
+using Adrenak.UniVoice;
 using Adrenak.UniVoice.Outputs;
 using Adrenak.UniVoice.Samples;
 using Mirror;
@@ -7,70 +8,91 @@ using UnityEngine;
 
 public class VoiceChat3DSetUp : MonoBehaviour
 {
-    private Dictionary<int, bool> assignedPeers = new Dictionary<int, bool>();
+    private readonly HashSet<int> configuredPeers = new HashSet<int>();
+    private IAudioClient<int> subscribedClient;
 
-    void Start()
+    private IEnumerator Start()
     {
-        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
-        client.OnPeerJoined += SetUpPeer;
-    }
+        if (!NetworkClient.active) yield break;
 
-    void OnDestroy()
-    {
-        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
-        if (client != null)
-            client.OnPeerJoined -= Setup3DForPeer;
-    }
-
-    private void SetUpPeer(int peerId)
-    {
-        Invoke(nameof(GetAllPeers), 1f);
-    }
-
-    private void GetAllPeers()
-    {
-        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
-        foreach (var peerId in client.PeerIDs)
+        // Start order is not guaranteed between this component and UniVoice setup.
+        while (!UniVoiceMirrorSetupSample.HasSetUp || UniVoiceMirrorSetupSample.ClientSession?.Client == null)
         {
-            if (!assignedPeers.ContainsKey(peerId))
-            {
-                Setup3DForPeer(peerId);
-            }
+            yield return null;
+        }
+
+        subscribedClient = UniVoiceMirrorSetupSample.ClientSession.Client;
+        subscribedClient.OnPeerJoined += OnPeerJoined;
+        ConfigurePeerAudioSources();
+        SchedulePeerScan();
+    }
+
+    private void OnDestroy()
+    {
+        CancelInvoke();
+        if (subscribedClient != null)
+        {
+            subscribedClient.OnPeerJoined -= OnPeerJoined;
+            subscribedClient = null;
         }
     }
 
-    private void Setup3DForPeer(int peerId)
+    private void OnPeerJoined(int peerId)
     {
-        var localNetId = NetworkClient.connection.identity.netId;
-        if (peerId == (int)localNetId) return;
+        SchedulePeerScan();
+    }
 
-        var output = UniVoiceMirrorSetupSample.ClientSession.PeerOutputs[peerId] as StreamedAudioSourceOutput;
+    private void SchedulePeerScan()
+    {
+        Invoke(nameof(ConfigurePeerAudioSources), 1f);
+    }
+
+    private void ConfigurePeerAudioSources()
+    {
+        ClientSession<int> session = UniVoiceMirrorSetupSample.ClientSession;
+        IAudioClient<int> client = session?.Client;
+        if (client == null) return;
+
+        foreach (int peerId in client.PeerIDs)
+        {
+            if (configuredPeers.Contains(peerId)) continue;
+            ConfigurePeerAudio(peerId);
+        }
+    }
+
+    private void ConfigurePeerAudio(int peerId)
+    {
+        ClientSession<int> session = UniVoiceMirrorSetupSample.ClientSession;
+        if (session == null || session.Client == null) return;
+        if (peerId == session.Client.ID) return;
+
+        if (!session.PeerOutputs.TryGetValue(peerId, out IAudioOutput peerOutput)) return;
+        StreamedAudioSourceOutput output = peerOutput as StreamedAudioSourceOutput;
         if (output == null) return;
 
-        var audioSource = output.Stream.UnityAudioSource;
+        AudioSource audioSource = output.Stream.UnityAudioSource;
         audioSource.spatialBlend = 1f;
         audioSource.maxDistance = 20f;
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
 
-        var controllers = FindObjectsOfType<VoiceChatController>();
+        VoiceChatController[] controllers = FindObjectsByType<VoiceChatController>(FindObjectsSortMode.None);
 
-        foreach (var controller in controllers)
+        foreach (VoiceChatController controller in controllers)
         {
             if (IsLocalPlayer(controller.gameObject) || controller.audioSource != null) continue;
-            if (controller.GetPlayerId()== peerId)
+            if (controller.GetPlayerId() == peerId)
             {
                 controller.SetAudioSource(audioSource);
-                assignedPeers[peerId] = true;
+                configuredPeers.Add(peerId);
                 Debug.Log($"Назначен AudioSource для {controller.name} (peerId: {peerId})");
                 break;
             }
         }
     }
 
-    private bool IsLocalPlayer(GameObject player)
+    private static bool IsLocalPlayer(GameObject player)
     {
-        var networkIdentity = player.GetComponent<NetworkIdentity>();
-        if (networkIdentity == null) return false;
-        return networkIdentity.isLocalPlayer;
+        NetworkIdentity networkIdentity = player.GetComponent<NetworkIdentity>();
+        return networkIdentity != null && networkIdentity.isLocalPlayer;
     }
 }

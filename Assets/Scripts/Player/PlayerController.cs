@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,6 +64,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : IsSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
 
     private Camera playerCamera;
+    private readonly List<Camera> suppressedSceneCameras = new List<Camera>();
     private CharacterController characterController;
     private Interactor interactor;
     private Vector3 moveDirection;
@@ -73,8 +75,10 @@ public class PlayerController : NetworkBehaviour, IControllable
     private bool jumpRequested;
 
     public bool IsSprinting => canSprint && isSprinting;
+    private bool IsStandalone => !NetworkClient.active && !NetworkServer.active;
+    private bool HasLocalControl => isLocalPlayer || IsStandalone;
 
-    void Awake()
+    private void Awake()
     {
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
@@ -84,13 +88,14 @@ public class PlayerController : NetworkBehaviour, IControllable
         Cursor.visible = false;
     }
 
-    void Update()
+    private void Start()
     {
-        if (!isLocalPlayer)
-        {
-            playerCamera.gameObject.SetActive(false);
-            return;
-        }
+        if (IsStandalone) EnablePlayerCamera();
+    }
+
+    private void Update()
+    {
+        if (!HasLocalControl) return;
 
         if (jumpRequested)
         {
@@ -106,6 +111,47 @@ public class PlayerController : NetworkBehaviour, IControllable
         HandleMovementInput();
         ApplyFinalMovements();
     }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (!isLocalPlayer && playerCamera != null)
+        {
+            playerCamera.gameObject.SetActive(false);
+        }
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        EnablePlayerCamera();
+    }
+
+    private void EnablePlayerCamera()
+    {
+        if (playerCamera != null) playerCamera.gameObject.SetActive(true);
+
+        foreach (Camera sceneCamera in FindObjectsByType<Camera>(FindObjectsSortMode.None))
+        {
+            if (sceneCamera == null || sceneCamera == playerCamera || !sceneCamera.CompareTag("MainCamera")) continue;
+            if (sceneCamera.GetComponentInParent<NetworkIdentity>() != null) continue;
+
+            suppressedSceneCameras.Add(sceneCamera);
+            sceneCamera.gameObject.SetActive(false);
+        }
+    }
+
+    public override void OnStopLocalPlayer()
+    {
+        base.OnStopLocalPlayer();
+        foreach (Camera sceneCamera in suppressedSceneCameras)
+        {
+            if (sceneCamera != null) sceneCamera.gameObject.SetActive(true);
+        }
+
+        suppressedSceneCameras.Clear();
+    }
+
     public override void OnStopClient()
     {
         base.OnStopClient();
@@ -221,19 +267,22 @@ public class PlayerController : NetworkBehaviour, IControllable
     }
     public void SelectSlot(int slot)
     {
-        if (!isLocalPlayer) return;
-        CmdSelectSlot(slot);
+        if (!HasLocalControl) return;
+
+        if (IsStandalone)
+            GetComponent<Player>().SelectSlot(slot);
+        else
+            CmdSelectSlot(slot);
     }
 
     [Command]
-    void CmdSelectSlot(int slot)
+    private void CmdSelectSlot(int slot)
     {
         GetComponent<Player>().SelectSlot(slot);
     }
-    [Client]
     private void UpdateAnimations()
     {
-        if (animator == null || !isLocalPlayer) return;
+        if (animator == null || !HasLocalControl) return;
 
         bool isMoving = currentInput.magnitude > 0.1f;
         bool isGrounded = characterController.isGrounded;

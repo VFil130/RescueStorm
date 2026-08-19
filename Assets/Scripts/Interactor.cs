@@ -1,5 +1,5 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class Interactor : NetworkBehaviour
 {
@@ -10,20 +10,23 @@ public class Interactor : NetworkBehaviour
     private Camera playerCamera;
     private IInteractable currentInteractable;
 
-    void Start()
+    private bool HasLocalControl => isLocalPlayer || (!NetworkClient.active && !NetworkServer.active);
+
+    private void Start()
     {
         playerCamera = GetComponentInChildren<Camera>();
-        if (promptUI != null)
-            promptUI.SetActive(false);
+        ShowPrompt(false);
     }
-    void Update()
-    {   
-        if (!isLocalPlayer) { return; }
-            CheckInteraction();
+
+    private void Update()
+    {
+        if (!HasLocalControl) return;
+        CheckInteraction();
     }
+
     public void DoInteract()
     {
-        currentInteractable?.Interact(this.gameObject);
+        currentInteractable?.Interact(gameObject);
     }
 
     private void CheckInteraction()
@@ -51,11 +54,12 @@ public class Interactor : NetworkBehaviour
             ShowPrompt(false);
         }
     }
+
     private void ShowPrompt(bool show)
     {
-        if (promptUI != null)
-            promptUI.SetActive(show);
+        if (promptUI != null) promptUI.SetActive(show);
     }
+
     public bool HasTarget()
     {
         return currentInteractable != null;

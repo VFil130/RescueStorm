@@ -37,8 +37,8 @@ public class MinigameQuestSO : QuestSO
         return new QuestRequirement
         {
             questId = questId,
-            requiredRoom = requiredRoom,
-            requiredItem = requiredItem
+            requiredRoom = RequiredRoomName,
+            requiredItem = RequiredItemName
         };
     }
 }

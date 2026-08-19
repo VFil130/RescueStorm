@@ -1,32 +1,43 @@
-using Mirror;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class SurvivorManager : NetworkBehaviour
 {
-    [SerializeField] private GameObject survivorPrefab;
-    [SerializeField] private List<QuestSO> availableQuests;
-    [SerializeField] private int survivorsCount = 5;
+    private const float SurvivorSpawnHeight = 2f;
+    private const float QuestItemSpawnHeight = 1.5f;
 
-    private List<Survivor> survivors = new List<Survivor>();
+    [Header("Survivor spawning")]
+    [InspectorName("Survivor Character")]
+    [Tooltip("Character prefab spawned for every selected quest.")]
+    [SerializeField] private GameObject survivorPrefab;
+    [InspectorName("Quests Per Level")]
+    [Tooltip("Maximum number of survivors and quests selected for one generated level.")]
+    [SerializeField, Min(0)] private int survivorsCount = 5;
+
+    [Header("Quest selection")]
+    [InspectorName("Quest Pool")]
+    [Tooltip("Quests that may be assigned to survivors in this scene.")]
+    [SerializeField] private List<QuestSO> availableQuests;
+    [InspectorName("Legacy Item Lookup")]
+    [Tooltip("Fallback lookup for old quests that still store an item name instead of a prefab reference.")]
+    [SerializeField] private List<GameObject> questItemPrefabs = new List<GameObject>();
+
+    private readonly List<Survivor> survivors = new List<Survivor>();
     private List<QuestSO> assignedQuests = new List<QuestSO>();
 
     public List<QuestRequirement> GetAllQuestRequirements()
     {
-        var requirements = new List<QuestRequirement>();
-        foreach (var quest in assignedQuests)
-        {
-            requirements.Add(quest.GetRequirement());
-        }
-        return requirements;
+        return assignedQuests.Select(quest => quest.GetRequirement()).ToList();
     }
 
     public List<string> GetAllRequiredRooms()
     {
         return assignedQuests
-            .Where(q => !string.IsNullOrEmpty(q.requiredRoom))
-            .Select(q => q.requiredRoom)
+            .Select(quest => quest.RequiredRoomName)
+            .Where(roomName => !string.IsNullOrEmpty(roomName))
             .Distinct()
             .ToList();
     }
@@ -34,10 +45,27 @@ public class SurvivorManager : NetworkBehaviour
     public List<string> GetAllRequiredItems()
     {
         return assignedQuests
-            .Where(q => !string.IsNullOrEmpty(q.requiredItem))
-            .Select(q => q.requiredItem)
+            .Select(quest => quest.RequiredItemName)
+            .Where(itemName => !string.IsNullOrEmpty(itemName))
             .Distinct()
             .ToList();
+    }
+
+    public List<GameObject> ResolveRequiredRoomPrefabs(
+        DungeonGenerator generator,
+        out List<string> missingRoomNames)
+    {
+        List<GameObject> roomPrefabs = assignedQuests
+            .Select(quest => quest.RequiredRoomPrefab)
+            .Where(prefab => prefab != null)
+            .Distinct()
+            .ToList();
+
+        IEnumerable<string> legacyRoomNames = assignedQuests
+            .Where(quest => quest.RequiredRoomPrefab == null)
+            .Select(quest => quest.RequiredRoomName);
+        roomPrefabs.AddRange(generator.ResolveRoomPrefabs(legacyRoomNames, out missingRoomNames));
+        return roomPrefabs;
     }
 
     public void InitializeSurvivors()
@@ -45,8 +73,9 @@ public class SurvivorManager : NetworkBehaviour
         if (availableQuests == null || availableQuests.Count == 0) return;
         if (survivorPrefab == null) return;
 
-        var shuffledQuests = new List<QuestSO>(availableQuests);
-        shuffledQuests = shuffledQuests.OrderBy(x => Random.value).ToList();
+        List<QuestSO> shuffledQuests = availableQuests
+            .OrderBy(_ => UnityEngine.Random.value)
+            .ToList();
 
         int questCount = Mathf.Min(survivorsCount, shuffledQuests.Count);
         assignedQuests = shuffledQuests.Take(questCount).ToList();
@@ -57,30 +86,153 @@ public class SurvivorManager : NetworkBehaviour
         if (survivorPrefab == null) return;
         if (!NetworkServer.active) return;
 
+        SpawnAssignedSurvivors(positions, networked: true);
+    }
+
+    public void SpawnSurvivorsLocallyAtPositions(List<Vector3> positions)
+    {
+        if (survivorPrefab == null) return;
+        if (NetworkServer.active || NetworkClient.active)
+        {
+            Debug.LogWarning("Local survivor spawning is unavailable while Mirror is active.", this);
+            return;
+        }
+
+        SpawnAssignedSurvivors(positions, networked: false);
+    }
+
+    public List<Vector3> ResolveSurvivorPositions(DungeonGenerationResult result)
+    {
+        List<Vector3> positions = new List<Vector3>();
+        if (result == null || assignedQuests.Count == 0) return positions;
+
+        List<RoomData> availableRooms = result.Rooms
+            .Where(room => room != null)
+            .ToList();
+        HashSet<RoomData> usedRooms = new HashSet<RoomData>();
+
+        foreach (QuestSO quest in assignedQuests)
+        {
+            string requiredRoomName = quest.RequiredRoomName;
+            RoomData room;
+            if (string.IsNullOrWhiteSpace(requiredRoomName))
+            {
+                room = FindAvailableRoom(availableRooms, usedRooms);
+            }
+            else
+            {
+                room = FindQuestRoom(availableRooms, usedRooms, requiredRoomName);
+                if (room == null)
+                {
+                    Debug.LogError(
+                        $"Generated dungeon has no mandatory room '{requiredRoomName}' for quest '{quest.questName}'.",
+                        this);
+                    return new List<Vector3>();
+                }
+            }
+
+            if (room == null) break;
+
+            usedRooms.Add(room);
+            positions.Add(GetSurvivorSpawnPosition(room));
+        }
+
+        return positions;
+    }
+
+    private static RoomData FindAvailableRoom(
+        IEnumerable<RoomData> rooms,
+        ISet<RoomData> usedRooms)
+    {
+        RoomData roomWithSpawnPoint = rooms.FirstOrDefault(room =>
+            !usedRooms.Contains(room) && room.survivorSpawnPoint != null);
+
+        return roomWithSpawnPoint ?? rooms.FirstOrDefault(room => !usedRooms.Contains(room));
+    }
+
+    private static RoomData FindQuestRoom(
+        IEnumerable<RoomData> rooms,
+        ISet<RoomData> usedRooms,
+        string requiredRoom)
+    {
+        if (string.IsNullOrWhiteSpace(requiredRoom)) return null;
+
+        string expectedName = NormalizeRoomName(requiredRoom);
+        return rooms.FirstOrDefault(room =>
+            !usedRooms.Contains(room) &&
+            (room.RuntimeRole & RoomRuntimeRole.Mandatory) != 0 &&
+            string.Equals(
+                NormalizeRoomName(room.name),
+                expectedName,
+                StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string NormalizeRoomName(string roomName)
+    {
+        return roomName.Replace("(Clone)", string.Empty).Trim();
+    }
+
+    private static Vector3 GetSurvivorSpawnPosition(RoomData room)
+    {
+        return room.survivorSpawnPoint != null
+            ? room.survivorSpawnPoint.position
+            : room.transform.position;
+    }
+
+    private void SpawnAssignedSurvivors(List<Vector3> positions, bool networked)
+    {
+        if (positions == null) return;
+
         for (int i = 0; i < assignedQuests.Count && i < positions.Count; i++)
         {
-            Vector3 spawnPos = positions[i] + Vector3.up * 2f;
-            GameObject survivorObj = Instantiate(survivorPrefab, spawnPos, Quaternion.identity);
-            NetworkServer.Spawn(survivorObj);
+            QuestSO quest = assignedQuests[i];
+            Vector3 survivorPosition = positions[i] + Vector3.up * SurvivorSpawnHeight;
+            GameObject survivorObject = Instantiate(survivorPrefab, survivorPosition, Quaternion.identity);
+            if (networked) NetworkServer.Spawn(survivorObject);
 
-            Survivor survivor = survivorObj.GetComponent<Survivor>();
+            Survivor survivor = survivorObject.GetComponent<Survivor>();
             if (survivor != null)
             {
-                survivor.SetQuest(assignedQuests[i]);
+                survivor.SetQuest(quest);
                 survivors.Add(survivor);
             }
 
-            if (!string.IsNullOrEmpty(assignedQuests[i].requiredItem))
+            if (!string.IsNullOrEmpty(quest.RequiredItemName))
             {
-                GameObject itemPrefab = Resources.Load<GameObject>($"Items/{assignedQuests[i].requiredItem}");
-                if (itemPrefab != null)
-                {
-                    Vector3 itemPos = positions[i] + Vector3.up * 1.5f;
-                    GameObject item = Instantiate(itemPrefab, itemPos, Quaternion.identity);
-                    NetworkServer.Spawn(item);
-                }
+                SpawnQuestItem(quest, positions[i], networked);
             }
         }
+    }
+
+    private void SpawnQuestItem(QuestSO quest, Vector3 roomSpawnPosition, bool networked)
+    {
+        GameObject itemPrefab = quest.ItemPrefab != null
+            ? quest.ItemPrefab
+            : ResolveQuestItemPrefab(quest.RequiredItemName);
+        if (itemPrefab == null)
+        {
+            Debug.LogError($"Quest item prefab '{quest.RequiredItemName}' is not configured.", this);
+            return;
+        }
+
+        Vector3 itemPosition = roomSpawnPosition + Vector3.up * QuestItemSpawnHeight;
+        GameObject item = Instantiate(itemPrefab, itemPosition, Quaternion.identity);
+        if (networked) NetworkServer.Spawn(item);
+    }
+
+    private GameObject ResolveQuestItemPrefab(string itemName)
+    {
+        foreach (GameObject prefab in questItemPrefabs)
+        {
+            if (prefab == null) continue;
+
+            ItemObject item = prefab.GetComponent<ItemObject>();
+            string configuredName = item != null ? item.Name : prefab.name;
+            if (string.Equals(configuredName, itemName, StringComparison.OrdinalIgnoreCase))
+                return prefab;
+        }
+
+        return null;
     }
 
     public List<Survivor> GetSurvivors() => survivors;

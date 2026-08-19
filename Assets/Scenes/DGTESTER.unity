@@ -526,6 +526,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &15726127
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -975,7 +977,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1477375894}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &26788025
 GameObject:
@@ -1021,7 +1023,7 @@ Transform:
   - {fileID: 93642459}
   - {fileID: 815535636}
   - {fileID: 693740412}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &26788027
 MonoBehaviour:
@@ -1036,8 +1038,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &26788028
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2585,6 +2594,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &63912002
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5300,6 +5311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &108474918
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5606,6 +5619,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &117048974
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5693,7 +5708,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 114632103}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &120556640
 GameObject:
@@ -6014,6 +6029,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &123219940
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6767,7 +6784,7 @@ Transform:
   - {fileID: 92071384}
   - {fileID: 1237730980}
   - {fileID: 74921205}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &136784473
 MonoBehaviour:
@@ -6782,8 +6799,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &136784474
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7075,6 +7099,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &139052481
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8201,12 +8227,12 @@ Transform:
   m_GameObject: {fileID: 157643333}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -5.1000004, y: -0.00000037748953, z: 50.9}
+  m_LocalPosition: {x: -5.1000004, y: -0, z: 50.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1815924926}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &159711169
 GameObject:
@@ -8885,6 +8911,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &171647475
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8989,6 +9017,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &172884084
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9540,7 +9570,7 @@ Transform:
   - {fileID: 418288389}
   - {fileID: 1360114362}
   - {fileID: 1979835984}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &180846530
 MonoBehaviour:
@@ -9555,8 +9585,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &180846531
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9839,7 +9876,7 @@ Transform:
   - {fileID: 1793606673}
   - {fileID: 365446767}
   - {fileID: 1169148207}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &193151640
 MonoBehaviour:
@@ -9854,8 +9891,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &193151641
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10593,6 +10637,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &203976086
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12408,6 +12454,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &232332477
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12875,6 +12923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &239547513
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13429,6 +13479,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &252785621
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14073,6 +14125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &268217268
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17821,6 +17875,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &322054099
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18015,6 +18071,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &326554934
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21721,6 +21779,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &388566276
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -23288,12 +23348,12 @@ Transform:
   m_GameObject: {fileID: 420189982}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20.100002, y: -0.00000037748953, z: 55.9}
+  m_LocalPosition: {x: -20.100002, y: -0, z: 55.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1004420475}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &420286048
 GameObject:
@@ -23410,12 +23470,12 @@ Transform:
   m_GameObject: {fileID: 421302774}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: 14.9, y: 0.00000037748953, z: 40.900005}
+  m_LocalPosition: {x: 14.9, y: 0, z: 40.900005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 87363956}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &422822149
 GameObject:
@@ -23914,6 +23974,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &425887184
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24018,6 +24080,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &427240640
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24392,6 +24456,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &433583461
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -25034,7 +25100,7 @@ Transform:
   - {fileID: 16812125}
   - {fileID: 430907004}
   - {fileID: 1792428702}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &447259637
 MonoBehaviour:
@@ -25049,8 +25115,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &447259638
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -25977,7 +26050,7 @@ Transform:
   - {fileID: 1445080558}
   - {fileID: 1007396794}
   - {fileID: 1662386144}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &461595410
 MonoBehaviour:
@@ -25992,8 +26065,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &461595411
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28098,6 +28178,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &488617955
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28289,7 +28371,7 @@ Transform:
   - {fileID: 61109895}
   - {fileID: 2066842001}
   - {fileID: 676725196}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &489985395
 MonoBehaviour:
@@ -28304,8 +28386,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &489985396
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28754,7 +28843,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 750221045}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &501850219
 GameObject:
@@ -29073,6 +29162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &504539495
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -31406,12 +31497,12 @@ Transform:
   m_GameObject: {fileID: 538674715}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: -5.1000004, y: 0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: -5.1000004, y: 0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 532826603}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &540211152
 GameObject:
@@ -31912,6 +32003,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &549967440
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -33276,6 +33369,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &569624677
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -37432,7 +37527,7 @@ Transform:
   - {fileID: 736767970}
   - {fileID: 1262025899}
   - {fileID: 1043582143}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &647914159
 MonoBehaviour:
@@ -37447,8 +37542,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &647914160
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -37911,7 +38013,7 @@ Transform:
   - {fileID: 606049975}
   - {fileID: 1604084968}
   - {fileID: 1381883789}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &654881555
 MonoBehaviour:
@@ -37926,8 +38028,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &654881556
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -38457,7 +38566,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2078580507}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &663824184
 GameObject:
@@ -39387,12 +39496,12 @@ Transform:
   m_GameObject: {fileID: 680166575}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: 24.9, y: 0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: 24.9, y: 0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1836866938}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680619130
 GameObject:
@@ -40318,7 +40427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &690474421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41467,7 +41576,7 @@ Transform:
   - {fileID: 840450069}
   - {fileID: 784200726}
   - {fileID: 2076173267}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &708135998
 MonoBehaviour:
@@ -41482,8 +41591,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &708135999
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -41657,12 +41773,12 @@ Transform:
   m_GameObject: {fileID: 710833011}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 24.9, y: -0.00000037748953, z: 40.9}
+  m_LocalPosition: {x: 24.9, y: -0, z: 40.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1349405738}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &712092817
 GameObject:
@@ -41983,6 +42099,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &717952226
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -43151,12 +43269,12 @@ Transform:
   m_GameObject: {fileID: 744540175}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 24.9, y: -0.00000037748953, z: 50.9}
+  m_LocalPosition: {x: 24.9, y: -0, z: 50.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1999251161}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &746384870
 GameObject:
@@ -43385,6 +43503,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &749397681
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -44860,7 +44980,7 @@ Transform:
   - {fileID: 1248592853}
   - {fileID: 1062896623}
   - {fileID: 2033945616}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &774135651
 MonoBehaviour:
@@ -44875,8 +44995,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &774135652
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -45157,7 +45284,7 @@ Transform:
   - {fileID: 1818498793}
   - {fileID: 1227110997}
   - {fileID: 1180217837}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &779190413
 MonoBehaviour:
@@ -45172,8 +45299,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 2, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &779190414
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -47656,6 +47790,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &820815730
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -48638,12 +48774,12 @@ Transform:
   m_GameObject: {fileID: 837659330}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.10000229, y: -0.00000037748947, z: 45.9}
+  m_LocalPosition: {x: -0.10000229, y: -0, z: 45.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 645439140}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &839867310
 GameObject:
@@ -50771,6 +50907,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &888610933
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -51290,6 +51428,7 @@ GameObject:
   - component: {fileID: 895398793}
   - component: {fileID: 895398792}
   - component: {fileID: 895398791}
+  - component: {fileID: 895398796}
   m_Layer: 0
   m_Name: DG
   m_TagString: Untagged
@@ -51304,7 +51443,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895398790}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
@@ -51321,7 +51460,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895398790}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1ff9212c6c38d54dbf126cb8eb73fc3, type: 3}
   m_Name: 
@@ -51332,6 +51471,7 @@ MonoBehaviour:
   survivorPrefab: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
+  questItemPrefabs: []
   survivorsCount: 5
 --- !u!114 &895398793
 MonoBehaviour:
@@ -51349,13 +51489,32 @@ MonoBehaviour:
   - {fileID: 6046942506379599462, guid: d42dc4ae10ee733408fb42a34c6c201a, type: 3}
   - {fileID: 7294677515173973200, guid: df26ca5a2139d6a4a8f8d9dedfd8f7c3, type: 3}
   - {fileID: 3906211145985178178, guid: e49465fcd17e87c43aac63e8b748ab4e, type: 3}
-  wallPrefab: {fileID: 5324050097767707275, guid: 442a2da12564af64bad2dc7e98705e8e, type: 3}
-  maxRooms: 20
-  cellSize: 1
-  spacing: 2
+  - {fileID: 6064486416381042561, guid: 06e99bc8f844571449239484854ccd80, type: 3}
+  - {fileID: 6699440977101323357, guid: 4c9d5b695347f6345906e177122158c5, type: 3}
+  startRoomPrefab: {fileID: 0}
+  questRoomPrefabs: []
+  mandatoryRoomPrefabs: []
+  unusedDoorBlockerPrefab: {fileID: 5324050097767707275, guid: 442a2da12564af64bad2dc7e98705e8e, type: 3}
+  targetRoomCount: 20
+  maxCorridorCount: 60
+  seed: 0
   generateOnStart: 1
-  gridBounds: 200
-  survivorManager: {fileID: 895398792}
+  generationAttempts: 8
+  maxSearchSteps: 25000
+  overlapTolerance: 0.08
+  socketPositionTolerance: 0.05
+  socketAngleTolerance: 2
+  floorHeightTolerance: 0.05
+  desiredLoopCount: 3
+  maxConsecutiveCorridors: 2
+  preferredLayoutRadius: 45
+  branchDepthWeight: 3
+  compactnessWeight: 1
+  loopClosureBonus: 100
+  closeUnusedSockets: 1
+  buildNavMeshAfterGeneration: 1
+  navMeshSurface: {fileID: 0}
+  showNavMeshBreakMarkers: 1
 --- !u!4 &895398794
 Transform:
   m_ObjectHideFlags: 0
@@ -51369,56 +51528,25 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 26788026}
-  - {fileID: 981253204}
-  - {fileID: 1442419888}
-  - {fileID: 899588030}
-  - {fileID: 2087645437}
-  - {fileID: 654881554}
-  - {fileID: 193151639}
-  - {fileID: 1539578278}
-  - {fileID: 447259636}
-  - {fileID: 1098009901}
-  - {fileID: 1591065600}
-  - {fileID: 1609063946}
-  - {fileID: 774135650}
-  - {fileID: 779190412}
-  - {fileID: 499066334}
-  - {fileID: 1779771966}
-  - {fileID: 180846529}
-  - {fileID: 1929180374}
-  - {fileID: 1998999553}
-  - {fileID: 136784472}
-  - {fileID: 538674716}
-  - {fileID: 953067080}
-  - {fileID: 1935272038}
-  - {fileID: 2136963154}
-  - {fileID: 461595409}
-  - {fileID: 708135997}
-  - {fileID: 2024534474}
-  - {fileID: 489985394}
-  - {fileID: 647914158}
-  - {fileID: 952348741}
-  - {fileID: 1643286940}
-  - {fileID: 119419344}
-  - {fileID: 1068693042}
-  - {fileID: 1283044974}
-  - {fileID: 680166576}
-  - {fileID: 662933791}
-  - {fileID: 420189983}
-  - {fileID: 837659331}
-  - {fileID: 157643334}
-  - {fileID: 26395149}
-  - {fileID: 2057565165}
-  - {fileID: 710833012}
-  - {fileID: 421302775}
-  - {fileID: 1731440441}
-  - {fileID: 1948062983}
-  - {fileID: 2024635201}
-  - {fileID: 744540176}
-  - {fileID: 1442634109}
+  - {fileID: 1554560943}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &895398796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895398790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7e529e702fe41e6af746fe421af29ad, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonLocalSessionCoordinator
+  generator: {fileID: 895398793}
+  survivorManager: {fileID: 895398792}
+  localPlayerPrefab: {fileID: 545389564784142826, guid: 9ceba6db7ff24954e9bb3ff6c1c94562, type: 3}
+  spawnGameplayContent: 1
 --- !u!1 &895719084
 GameObject:
   m_ObjectHideFlags: 0
@@ -51646,6 +51774,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &896779950
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -51747,7 +51877,7 @@ Transform:
   - {fileID: 615605707}
   - {fileID: 1758523706}
   - {fileID: 379940324}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &899588031
 MonoBehaviour:
@@ -51762,8 +51892,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &899588032
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -54300,6 +54437,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &945921032
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -54562,12 +54701,12 @@ Transform:
   m_GameObject: {fileID: 952348740}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -5.1000004, y: -0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: -5.1000004, y: -0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1319460887}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &953014177
 GameObject:
@@ -54701,7 +54840,7 @@ Transform:
   - {fileID: 669822210}
   - {fileID: 769134128}
   - {fileID: 1559641724}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &953067081
 MonoBehaviour:
@@ -54716,8 +54855,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 2, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &953067082
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -55545,6 +55691,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &966525796
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -56618,12 +56766,12 @@ Transform:
   m_GameObject: {fileID: 981253203}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.00000004371139}
-  m_LocalPosition: {x: -20.100002, y: 0.00000037748953, z: 15.9}
+  m_LocalPosition: {x: -20.100002, y: 0, z: 15.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2078189539}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &983232127
 GameObject:
@@ -61611,12 +61759,12 @@ Transform:
   m_GameObject: {fileID: 1068693041}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.100002, y: -0.00000037748947, z: 45.9}
+  m_LocalPosition: {x: -10.100002, y: -0, z: 45.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1130474767}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1070243177
 GameObject:
@@ -62060,7 +62208,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 658439589}
   m_HandleRect: {fileID: 658439588}
   m_Direction: 2
-  m_Value: 1.0000004
+  m_Value: 1.0000006
   m_Size: 0.6666667
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -63231,6 +63379,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1097682134
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -63313,12 +63463,12 @@ Transform:
   m_GameObject: {fileID: 1098009900}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: 4.8999996, y: 0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: 4.8999996, y: 0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1041610611}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1098714954
 GameObject:
@@ -63547,6 +63697,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1106624443
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64573,6 +64725,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1133912663
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -64857,6 +65011,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1136455317
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -65772,6 +65928,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1157364436
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -67317,6 +67475,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1182219756
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68231,6 +68391,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1205124217
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -72393,6 +72555,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1271607552
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -72497,6 +72661,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1272957989
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -72669,12 +72835,12 @@ Transform:
   m_GameObject: {fileID: 1283044973}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 34.9, y: -0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: 34.9, y: -0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2009715436}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1283200955
 GameObject:
@@ -74549,6 +74715,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1321567963
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -74653,6 +74821,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1323678626
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75027,6 +75197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1327685545
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81438,7 +81610,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 268465882}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1442634108
 GameObject:
@@ -81470,7 +81642,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1825665005}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1444812344
 GameObject:
@@ -82151,6 +82323,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1460609221
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82975,6 +83149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1468993396
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84598,6 +84774,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1511843213
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -85242,6 +85420,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1531773858
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -85433,7 +85613,7 @@ Transform:
   - {fileID: 1851810052}
   - {fileID: 1995466970}
   - {fileID: 1286867382}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1539578279
 MonoBehaviour:
@@ -85448,8 +85628,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &1539578280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -85960,6 +86147,85 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1553618847}
   m_Mesh: {fileID: 2363565981455421637, guid: f6cfb3cbe2b38394493d7a964a6eab0e, type: 3}
+--- !u!1 &1554560942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1554560943}
+  m_Layer: 0
+  m_Name: __GeneratedLevel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1554560943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554560942}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 26788026}
+  - {fileID: 981253204}
+  - {fileID: 1442419888}
+  - {fileID: 899588030}
+  - {fileID: 2087645437}
+  - {fileID: 654881554}
+  - {fileID: 193151639}
+  - {fileID: 1539578278}
+  - {fileID: 447259636}
+  - {fileID: 1098009901}
+  - {fileID: 1591065600}
+  - {fileID: 1609063946}
+  - {fileID: 774135650}
+  - {fileID: 779190412}
+  - {fileID: 499066334}
+  - {fileID: 1779771966}
+  - {fileID: 180846529}
+  - {fileID: 1929180374}
+  - {fileID: 1998999553}
+  - {fileID: 136784472}
+  - {fileID: 538674716}
+  - {fileID: 953067080}
+  - {fileID: 1935272038}
+  - {fileID: 2136963154}
+  - {fileID: 461595409}
+  - {fileID: 708135997}
+  - {fileID: 2024534474}
+  - {fileID: 489985394}
+  - {fileID: 647914158}
+  - {fileID: 952348741}
+  - {fileID: 1643286940}
+  - {fileID: 119419344}
+  - {fileID: 1068693042}
+  - {fileID: 1283044974}
+  - {fileID: 680166576}
+  - {fileID: 662933791}
+  - {fileID: 420189983}
+  - {fileID: 837659331}
+  - {fileID: 157643334}
+  - {fileID: 26395149}
+  - {fileID: 2057565165}
+  - {fileID: 710833012}
+  - {fileID: 421302775}
+  - {fileID: 1731440441}
+  - {fileID: 1948062983}
+  - {fileID: 2024635201}
+  - {fileID: 744540176}
+  - {fileID: 1442634109}
+  m_Father: {fileID: 895398794}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1556056631
 GameObject:
   m_ObjectHideFlags: 0
@@ -87901,7 +88167,7 @@ Transform:
   - {fileID: 506305273}
   - {fileID: 1929970753}
   - {fileID: 2145031054}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1591065601
 MonoBehaviour:
@@ -87916,8 +88182,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &1591065602
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -89261,12 +89534,12 @@ Transform:
   m_GameObject: {fileID: 1609063945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: -15.1, y: 0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: -15.1, y: 0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 795774776}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1610966594
 GameObject:
@@ -89499,6 +89772,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 9e196a9afb0f58a4eae010c453170a4c, type: 3}
       propertyPath: m_Name
       value: ROOMKEY_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9e196a9afb0f58a4eae010c453170a4c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -91248,7 +91525,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1230628352}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1643884762
 GameObject:
@@ -91567,6 +91844,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1648539184
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -93851,6 +94130,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1684233486
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -96081,6 +96362,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1720927091
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -96618,7 +96901,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1960291738}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1732001124
 GameObject:
@@ -99821,12 +100104,12 @@ Transform:
   m_GameObject: {fileID: 1779771965}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
-  m_LocalPosition: {x: 14.9, y: 0.00000037748953, z: 20.900002}
+  m_LocalPosition: {x: 14.9, y: 0, z: 20.900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 301015356}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1780068776
 GameObject:
@@ -100055,6 +100338,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1788454350
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -101061,6 +101346,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1802098333
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -102562,6 +102849,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1836640659
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -102961,6 +103250,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1842182837
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -106679,7 +106970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1906757915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107440,6 +107731,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1916007426
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -108349,7 +108642,7 @@ Transform:
   - {fileID: 1023992732}
   - {fileID: 1543209395}
   - {fileID: 535076013}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1929180375
 MonoBehaviour:
@@ -108364,8 +108657,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 2, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &1929180376
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -108936,7 +109236,7 @@ Transform:
   - {fileID: 2136814665}
   - {fileID: 817724837}
   - {fileID: 816190276}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1935272039
 MonoBehaviour:
@@ -108951,8 +109251,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &1935272040
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -109853,7 +110160,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1586994796}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1948262765
 GameObject:
@@ -110532,6 +110839,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1959524514
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -111558,6 +111867,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &1967777535
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -113085,7 +113396,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 66448319}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1999251160
 GameObject:
@@ -113606,6 +113917,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: -1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2003245630
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -114633,6 +114946,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2020935768
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -114912,7 +115227,7 @@ Transform:
   - {fileID: 1319480331}
   - {fileID: 238772908}
   - {fileID: 1245333094}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2024534475
 MonoBehaviour:
@@ -114927,8 +115242,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 2, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &2024534476
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -115012,12 +115334,12 @@ Transform:
   m_GameObject: {fileID: 2024635200}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.899998, y: -0.00000037748953, z: 55.9}
+  m_LocalPosition: {x: 9.899998, y: -0, z: 55.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1261010017}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2030449894
 GameObject:
@@ -115246,6 +115568,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2032220900
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -116340,6 +116664,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2044064739
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -116556,6 +116882,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2044615143
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -117020,6 +117348,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2050981519
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -117124,6 +117454,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2051969287
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -117301,7 +117633,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 130896323}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2058902313
 GameObject:
@@ -117710,6 +118042,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2061861872
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -117904,6 +118238,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2064741124
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -118188,6 +118524,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: 1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2067922143
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -118292,6 +118630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2069613574
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -119427,7 +119767,7 @@ Transform:
   - {fileID: 449094507}
   - {fileID: 1677343976}
   - {fileID: 1906616055}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2087645438
 MonoBehaviour:
@@ -119442,8 +119782,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 10, y: 10}
+  doors: []
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
+  playerSpawnPoints: []
+  enemySpawnPoints: []
 --- !u!23 &2087645439
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -119999,6 +120346,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2096592574
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -120735,6 +121084,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2107019261
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -120839,6 +121190,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2110279332
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -122294,6 +122647,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2134559449
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -122448,7 +122803,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2135706740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122614,6 +122969,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
   direction: {x: 0, y: -1}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!23 &2135726528
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -122973,7 +123330,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2044087067}
-  m_Father: {fileID: 895398794}
+  m_Father: {fileID: 1554560943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2139927717
 GameObject:

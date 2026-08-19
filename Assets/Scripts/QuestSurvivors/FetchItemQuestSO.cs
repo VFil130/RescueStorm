@@ -1,40 +1,51 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewFetchItemQuest", menuName = "Quest/FetchItemQuest")]
 public class FetchItemQuestSO : QuestSO
 {
+    [HideInInspector]
     public string requiredItemName;
 
     public override bool CheckCompletion(GameObject interactor, Survivor survivor)
     {
-        var player = interactor.GetComponent<Player>();
+        if (interactor == null) return false;
+
+        Player player = interactor.GetComponent<Player>();
         if (player == null) return false;
-        var item = player.GetSelectedIPickable();
+
+        IPickupable item = player.GetSelectedIPickable();
         if (item == null) return false;
-        return item.Name == requiredItemName;
+
+        return item.Name == RequiredItemName;
     }
 
     public override void OnQuestCompleted(Survivor survivor)
     {
-        var player = survivor.GetLastInteractor();
+        GameObject interactor = survivor.GetLastInteractor();
+        if (interactor == null) return;
+
+        Player player = interactor.GetComponent<Player>();
         if (player == null) return;
 
-        var item = player.GetComponent<Player>().GetSelectedItem();
+        GameObject item = player.GetSelectedItem();
         if (item != null)
         {
-            NetworkServer.Destroy(item.gameObject);
-            player.GetComponent<Player>().RemoveSelectedItem();
+            player.RemoveSelectedItem();
+            if (NetworkServer.active)
+                NetworkServer.Destroy(item);
+            else
+                Destroy(item);
         }
     }
+
     public override QuestRequirement GetRequirement()
     {
         return new QuestRequirement
         {
             questId = questId,
-            requiredRoom = requiredRoom,
-            requiredItem = requiredItem
+            requiredRoom = RequiredRoomName,
+            requiredItem = RequiredItemName
         };
     }
 }
