@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Menu principale -->
+	<text key="btn_single">Giocatore singolo</text>
+	<text key="btn_multiplayer">Multigiocatore</text>
+	<text key="btn_settings">Impostazioni</text>
+	<text key="btn_exit">Esci</text>
+
+	<!-- Conferma uscita -->
+	<text key="label_exit_confirmation">Uscire dal gioco?</text>
+	<text key="btn_yes">Sì</text>
+	<text key="btn_no">No</text>
+
+	<!-- Impostazioni (generale) -->
+	<text key="label_settings">Impostazioni</text>
+	<text key="btn_back">Indietro</text>
+	<text key="btn_graphics">Grafica</text>
+	<text key="btn_audio">Audio</text>
+	<text key="btn_controls">Comandi</text>
+
+	<!-- Grafica -->
+	<text key="label_resolution">Risoluzione</text>
+	<text key="label_chromatic_aberration">Aberrazione cromatica</text>
+	<text key="label_bloom">Bloom</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Gamma</text>
+	<!-- Audio -->
+	<text key="label_master_volume">Volume principale</text>
+	<text key="label_music_volume">Musica</text>
+	<text key="label_sfx_volume">Effetti sonori</text>
+
+	<!-- Comandi (tasti) -->
+	<text key="label_mouse_sensitivity">Sensibilità del mouse</text>
+	<text key="label_forward">Avanti</text>
+	<text key="label_backward">Indietro</text>
+	<text key="label_left">Sinistra</text>
+	<text key="label_right">Destra</text>
+	<text key="label_e">Interagisci</text>
+	<text key="label_space">Salta</text>
+	<text key="label_leftctrl">Accovacciati</text>
+	<text key="label_leftshift">Scatta</text>
+	<text key="label_key1">Slot 1</text>
+	<text key="label_key2">Slot 2</text>
+	<text key="label_key3">Slot 3</text>
+	<text key="label_key4">Slot 4</text>
+	<text key="label_key5">Slot 5</text>
+	<text key="btn_reset_keys">Ripristina tasti</text>
+
+	<!-- Multigiocatore -->
+	<text key="label_multiplayer">Multigiocatore</text>
+	<text key="btn_join">Unisciti</text>
+	<text key="btn_create">Crea</text>
+
+	<!-- Unisciti -->
+	<text key="label_join">Unisciti alla partita</text>
+	<text key="input_join_hint">Inserisci indirizzo IP</text>
+	<text key="btn_connect">Connetti</text>
+
+	<!-- Crea -->
+	<text key="label_create">Crea partita</text>
+	<text key="input_create_hint">Nome stanza</text>
+	<text key="btn_create_room">Crea</text>
+
+	<!-- Testi aggiuntivi -->
+	<text key="input_enter_text">Inserisci testo</text>
+	<text key="label_password">Password</text>
+
+</localization>

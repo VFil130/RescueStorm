@@ -24,7 +24,7 @@
 	<text key="label_chromatic_aberration">Chromatic Aberration</text>
 	<text key="label_bloom">Bloom</text>
 	<text key="label_ssao">SSAO</text>
-
+	<text key="btn_gamma">Gamma</text>
 	<!-- Панель аудио -->
 	<text key="label_master_volume">Master Volume</text>
 	<text key="label_music_volume">Music</text>
@@ -61,5 +61,9 @@
 	<text key="label_create">Create Game</text>
 	<text key="input_create_hint">Room name</text>
 	<text key="btn_create_room">Create</text>
+
+	<!-- Дополнительные тексты -->
+	<text key="input_enter_text">Enter text</text>
+	<text key="label_password">Password</text>
 
 </localization>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Главное меню -->
+	<text key="btn_single">Одиночная игра</text>
+	<text key="btn_multiplayer">Мультиплеер</text>
+	<text key="btn_settings">Настройки</text>
+	<text key="btn_exit">Выход</text>
+
+	<!-- Подтверждение выхода -->
+	<text key="label_exit_confirmation">Выйти из игры?</text>
+	<text key="btn_yes">Да</text>
+	<text key="btn_no">Нет</text>
+
+	<!-- Панель настроек (общая) -->
+	<text key="label_settings">Настройки</text>
+	<text key="btn_back">Назад</text>
+	<text key="btn_graphics">Графика</text>
+	<text key="btn_audio">Звук</text>
+	<text key="btn_controls">Управление</text>
+
+	<!-- Панель графики -->
+	<text key="label_resolution">Разрешение</text>
+	<text key="label_chromatic_aberration">Хроматическая аберрация</text>
+	<text key="label_bloom">Свечение (Bloom)</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Гамма</text>
+	<!-- Панель аудио -->
+	<text key="label_master_volume">Общая громкость</text>
+	<text key="label_music_volume">Музыка</text>
+	<text key="label_sfx_volume">Звуки</text>
+
+	<!-- Панель управления (клавиши) -->
+	<text key="label_mouse_sensitivity">Чувствительность мыши</text>
+	<text key="label_forward">Вперёд</text>
+	<text key="label_backward">Назад</text>
+	<text key="label_left">Влево</text>
+	<text key="label_right">Вправо</text>
+	<text key="label_e">Взаимодействие</text>
+	<text key="label_space">Прыжок</text>
+	<text key="label_leftctrl">Присесть</text>
+	<text key="label_leftshift">Бег</text>
+	<text key="label_key1">Слот 1</text>
+	<text key="label_key2">Слот 2</text>
+	<text key="label_key3">Слот 3</text>
+	<text key="label_key4">Слот 4</text>
+	<text key="label_key5">Слот 5</text>
+	<text key="btn_reset_keys">Сбросить клавиши</text>
+
+	<!-- Панель мультиплеера -->
+	<text key="label_multiplayer">Мультиплеер</text>
+	<text key="btn_join">Подключиться</text>
+	<text key="btn_create">Создать</text>
+
+	<!-- Панель Join -->
+	<text key="label_join">Подключение к игре</text>
+	<text key="input_join_hint">Введите IP-адрес</text>
+	<text key="btn_connect">Подключиться</text>
+
+	<!-- Панель Create -->
+	<text key="label_create">Создание игры</text>
+	<text key="input_create_hint">Название комнаты</text>
+	<text key="btn_create_room">Создать</text>
+
+	<!-- Дополнительные тексты -->
+	<text key="input_enter_text">Введите текст</text>
+	<text key="label_password">Пароль</text>
+
+</localization>

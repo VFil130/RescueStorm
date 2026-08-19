@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Ana menü -->
+	<text key="btn_single">Tek Oyunculu</text>
+	<text key="btn_multiplayer">Çok Oyunculu</text>
+	<text key="btn_settings">Ayarlar</text>
+	<text key="btn_exit">Çıkış</text>
+
+	<!-- Çıkış onayı -->
+	<text key="label_exit_confirmation">Oyundan çıkılsın mı?</text>
+	<text key="btn_yes">Evet</text>
+	<text key="btn_no">Hayır</text>
+
+	<!-- Ayarlar (genel) -->
+	<text key="label_settings">Ayarlar</text>
+	<text key="btn_back">Geri</text>
+	<text key="btn_graphics">Grafik</text>
+	<text key="btn_audio">Ses</text>
+	<text key="btn_controls">Kontroller</text>
+
+	<!-- Grafik -->
+	<text key="label_resolution">Çözünürlük</text>
+	<text key="label_chromatic_aberration">Kromatik sapma</text>
+	<text key="label_bloom">Bloom</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Gama</text>
+	<!-- Ses -->
+	<text key="label_master_volume">Ana Ses</text>
+	<text key="label_music_volume">Müzik</text>
+	<text key="label_sfx_volume">Ses efektleri</text>
+
+	<!-- Kontroller (tuşlar) -->
+	<text key="label_mouse_sensitivity">Fare hassasiyeti</text>
+	<text key="label_forward">İleri</text>
+	<text key="label_backward">Geri</text>
+	<text key="label_left">Sol</text>
+	<text key="label_right">Sağ</text>
+	<text key="label_e">Etkileşim</text>
+	<text key="label_space">Zıpla</text>
+	<text key="label_leftctrl">Çömel</text>
+	<text key="label_leftshift">Koş</text>
+	<text key="label_key1">Yer 1</text>
+	<text key="label_key2">Yer 2</text>
+	<text key="label_key3">Yer 3</text>
+	<text key="label_key4">Yer 4</text>
+	<text key="label_key5">Yer 5</text>
+	<text key="btn_reset_keys">Varsayılanları geri yükle</text>
+
+	<!-- Çok oyunculu -->
+	<text key="label_multiplayer">Çok Oyunculu</text>
+	<text key="btn_join">Katıl</text>
+	<text key="btn_create">Oluştur</text>
+
+	<!-- Katıl -->
+	<text key="label_join">Oyuna katıl</text>
+	<text key="input_join_hint">IP adresini girin</text>
+	<text key="btn_connect">Bağlan</text>
+
+	<!-- Oluştur -->
+	<text key="label_create">Oyun oluştur</text>
+	<text key="input_create_hint">Oda adı</text>
+	<text key="btn_create_room">Oluştur</text>
+
+	<!-- Ek metinler -->
+	<text key="input_enter_text">Metin girin</text>
+	<text key="label_password">Şifre</text>
+
+</localization>
