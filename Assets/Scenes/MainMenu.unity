@@ -4807,7 +4807,7 @@ MonoBehaviour:
   editorAutoStart: 0
   sendRate: 60
   offlineScene: 
-  onlineScene: 
+  onlineScene: Assets/Scenes/DGTESTER.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 618993085}
   networkAddress: localhost

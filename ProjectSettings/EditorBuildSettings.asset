@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: b5fed220d219d6849a3b518dc306102b
+  - enabled: 1
+    path: Assets/Scenes/DGTESTER.unity
+    guid: 9a0c77ff509512c4ea6f93fa713bffb9
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05

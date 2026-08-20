@@ -70,6 +70,7 @@ public class SurvivorManager : NetworkBehaviour
 
     public void InitializeSurvivors()
     {
+        assignedQuests.Clear();
         if (availableQuests == null || availableQuests.Count == 0) return;
         if (survivorPrefab == null) return;
 
@@ -79,6 +80,38 @@ public class SurvivorManager : NetworkBehaviour
 
         int questCount = Mathf.Min(survivorsCount, shuffledQuests.Count);
         assignedQuests = shuffledQuests.Take(questCount).ToList();
+    }
+
+    public List<string> GetAssignedQuestIds()
+    {
+        return assignedQuests
+            .Where(quest => quest != null)
+            .Select(quest => quest.questId)
+            .ToList();
+    }
+
+    public bool AssignQuestsById(
+        IEnumerable<string> questIds,
+        out List<string> missingQuestIds)
+    {
+        missingQuestIds = new List<string>();
+        assignedQuests = new List<QuestSO>();
+        if (questIds == null) return true;
+
+        Dictionary<string, QuestSO> questsById = (availableQuests ?? new List<QuestSO>())
+            .Where(quest => quest != null && !string.IsNullOrWhiteSpace(quest.questId))
+            .GroupBy(quest => quest.questId, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+
+        foreach (string questId in questIds.Where(id => !string.IsNullOrWhiteSpace(id)))
+        {
+            if (questsById.TryGetValue(questId, out QuestSO quest))
+                assignedQuests.Add(quest);
+            else
+                missingQuestIds.Add(questId);
+        }
+
+        return missingQuestIds.Count == 0;
     }
 
     public void SpawnSurvivorsAtPositions(List<Vector3> positions)
@@ -188,7 +221,6 @@ public class SurvivorManager : NetworkBehaviour
             QuestSO quest = assignedQuests[i];
             Vector3 survivorPosition = positions[i] + Vector3.up * SurvivorSpawnHeight;
             GameObject survivorObject = Instantiate(survivorPrefab, survivorPosition, Quaternion.identity);
-            if (networked) NetworkServer.Spawn(survivorObject);
 
             Survivor survivor = survivorObject.GetComponent<Survivor>();
             if (survivor != null)
@@ -196,6 +228,8 @@ public class SurvivorManager : NetworkBehaviour
                 survivor.SetQuest(quest);
                 survivors.Add(survivor);
             }
+
+            if (networked) NetworkServer.Spawn(survivorObject);
 
             if (!string.IsNullOrEmpty(quest.RequiredItemName))
             {

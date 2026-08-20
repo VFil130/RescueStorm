@@ -51429,6 +51429,7 @@ GameObject:
   - component: {fileID: 895398792}
   - component: {fileID: 895398791}
   - component: {fileID: 895398796}
+  - component: {fileID: 895398797}
   m_Layer: 0
   m_Name: DG
   m_TagString: Untagged
@@ -51547,6 +51548,25 @@ MonoBehaviour:
   survivorManager: {fileID: 895398792}
   localPlayerPrefab: {fileID: 545389564784142826, guid: 9ceba6db7ff24954e9bb3ff6c1c94562, type: 3}
   spawnGameplayContent: 1
+--- !u!114 &895398797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895398790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da78473e41a4a8492aee62d8a504e75, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonNetworkSessionCoordinator
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  generator: {fileID: 895398793}
+  survivorManager: {fileID: 895398792}
+  spawnGameplayContent: 1
+  clientGenerationTimeout: 20
 --- !u!1 &895719084
 GameObject:
   m_ObjectHideFlags: 0

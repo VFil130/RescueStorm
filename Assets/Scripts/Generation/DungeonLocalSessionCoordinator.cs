@@ -82,6 +82,12 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
 
     private void Start()
     {
+        if (NetworkServer.active || NetworkClient.active)
+        {
+            Debug.Log("Mirror is active; the network dungeon coordinator owns this session.", this);
+            return;
+        }
+
         Debug.Log("Starting local dungeon session.", this);
 
         if (survivorManager == null)
