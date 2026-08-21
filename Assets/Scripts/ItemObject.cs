@@ -23,11 +23,11 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
         }
     }
 
-    public bool Pickup(GameObject picker)
+    public void Pickup(GameObject picker)
     {
         Player player = picker.GetComponent<Player>();
-        if (player == null) return false;
-        return player.PickupItem(this);
+        if (player == null) return;
+        player.PickupItem(this);
     }
 
     public void Drop(Vector3 position)

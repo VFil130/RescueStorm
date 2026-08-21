@@ -79,18 +79,18 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         }
     }
 
-    public bool Pickup(GameObject picker)
+    public void Pickup(GameObject picker)
     {
-        if (state != SurvivorState.Waiting) return false;
-        if (!questCompleted) return false;
+        if (state != SurvivorState.Waiting) return;
+        if (!questCompleted) return;
 
         Player player = picker.GetComponent<Player>();
-        if (player == null) return false;
+        if (player == null) return;
         carrier = picker;
         NetworkIdentity identity = picker.GetComponent<NetworkIdentity>();
         carrierNetId = identity != null ? identity.netId : 0;
         state = SurvivorState.Carried;
-        return player.PickupItem(this);
+        player.PickupItem(this);
     }
 
     public void Drop(Vector3 position)
