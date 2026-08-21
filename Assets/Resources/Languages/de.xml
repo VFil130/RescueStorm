@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Hauptmenü -->
+	<text key="btn_single">Einzelspieler</text>
+	<text key="btn_multiplayer">Mehrspieler</text>
+	<text key="btn_settings">Einstellungen</text>
+	<text key="btn_exit">Beenden</text>
+
+	<!-- Bestätigung beenden -->
+	<text key="label_exit_confirmation">Spiel beenden?</text>
+	<text key="btn_yes">Ja</text>
+	<text key="btn_no">Nein</text>
+
+	<!-- Einstellungen (allgemein) -->
+	<text key="label_settings">Einstellungen</text>
+	<text key="btn_back">Zurück</text>
+	<text key="btn_graphics">Grafik</text>
+	<text key="btn_audio">Audio</text>
+	<text key="btn_controls">Steuerung</text>
+
+	<!-- Grafik -->
+	<text key="label_resolution">Auflösung</text>
+	<text key="label_chromatic_aberration">Chromatische Aberration</text>
+	<text key="label_bloom">Bloom</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Gamma</text>
+	<!-- Audio -->
+	<text key="label_master_volume">Hauptlautstärke</text>
+	<text key="label_music_volume">Musik</text>
+	<text key="label_sfx_volume">Soundeffekte</text>
+
+	<!-- Steuerung (Tasten) -->
+	<text key="label_mouse_sensitivity">Mausempfindlichkeit</text>
+	<text key="label_forward">Vorwärts</text>
+	<text key="label_backward">Rückwärts</text>
+	<text key="label_left">Links</text>
+	<text key="label_right">Rechts</text>
+	<text key="label_e">Interagieren</text>
+	<text key="label_space">Springen</text>
+	<text key="label_leftctrl">Ducken</text>
+	<text key="label_leftshift">Sprinten</text>
+	<text key="label_key1">Slot 1</text>
+	<text key="label_key2">Slot 2</text>
+	<text key="label_key3">Slot 3</text>
+	<text key="label_key4">Slot 4</text>
+	<text key="label_key5">Slot 5</text>
+	<text key="btn_reset_keys">Standard wiederherstellen</text>
+
+	<!-- Mehrspieler -->
+	<text key="label_multiplayer">Mehrspieler</text>
+	<text key="btn_join">Beitreten</text>
+	<text key="btn_create">Erstellen</text>
+
+	<!-- Beitreten -->
+	<text key="label_join">Spiel beitreten</text>
+	<text key="input_join_hint">IP-Adresse eingeben</text>
+	<text key="btn_connect">Verbinden</text>
+
+	<!-- Erstellen -->
+	<text key="label_create">Spiel erstellen</text>
+	<text key="input_create_hint">Raumname</text>
+	<text key="btn_create_room">Erstellen</text>
+
+	<!-- Zusätzliche Texte -->
+	<text key="input_enter_text">Text eingeben</text>
+	<text key="label_password">Passwort</text>
+
+</localization>

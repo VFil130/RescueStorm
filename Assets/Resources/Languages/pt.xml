@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Menu principal -->
+	<text key="btn_single">Um jogador</text>
+	<text key="btn_multiplayer">Multijogador</text>
+	<text key="btn_settings">Configurações</text>
+	<text key="btn_exit">Sair</text>
+
+	<!-- Confirmação de saída -->
+	<text key="label_exit_confirmation">Sair do jogo?</text>
+	<text key="btn_yes">Sim</text>
+	<text key="btn_no">Não</text>
+
+	<!-- Configurações (geral) -->
+	<text key="label_settings">Configurações</text>
+	<text key="btn_back">Voltar</text>
+	<text key="btn_graphics">Gráficos</text>
+	<text key="btn_audio">Áudio</text>
+	<text key="btn_controls">Controles</text>
+
+	<!-- Gráficos -->
+	<text key="label_resolution">Resolução</text>
+	<text key="label_chromatic_aberration">Aberração cromática</text>
+	<text key="label_bloom">Bloom</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Gama</text>
+	<!-- Áudio -->
+	<text key="label_master_volume">Volume principal</text>
+	<text key="label_music_volume">Música</text>
+	<text key="label_sfx_volume">Efeitos sonoros</text>
+
+	<!-- Controles (teclas) -->
+	<text key="label_mouse_sensitivity">Sensibilidade do mouse</text>
+	<text key="label_forward">Frente</text>
+	<text key="label_backward">Trás</text>
+	<text key="label_left">Esquerda</text>
+	<text key="label_right">Direita</text>
+	<text key="label_e">Interagir</text>
+	<text key="label_space">Pular</text>
+	<text key="label_leftctrl">Agachar</text>
+	<text key="label_leftshift">Correr</text>
+	<text key="label_key1">Espaço 1</text>
+	<text key="label_key2">Espaço 2</text>
+	<text key="label_key3">Espaço 3</text>
+	<text key="label_key4">Espaço 4</text>
+	<text key="label_key5">Espaço 5</text>
+	<text key="btn_reset_keys">Restaurar padrões</text>
+
+	<!-- Multijogador -->
+	<text key="label_multiplayer">Multijogador</text>
+	<text key="btn_join">Entrar</text>
+	<text key="btn_create">Criar</text>
+
+	<!-- Entrar -->
+	<text key="label_join">Entrar na partida</text>
+	<text key="input_join_hint">Insira o endereço IP</text>
+	<text key="btn_connect">Conectar</text>
+
+	<!-- Criar -->
+	<text key="label_create">Criar partida</text>
+	<text key="input_create_hint">Nome da sala</text>
+	<text key="btn_create_room">Criar</text>
+
+	<!-- Textos adicionais -->
+	<text key="input_enter_text">Insira texto</text>
+	<text key="label_password">Senha</text>
+
+</localization>

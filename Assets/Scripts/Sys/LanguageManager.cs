@@ -8,7 +8,7 @@ public class LanguageManager
     public event System.Action OnLanguageChanged;
 
     private Dictionary<string, string> translations = new Dictionary<string, string>();
-    private string currentLanguage = "English";
+    private string currentLanguage = "en";
 
     public LanguageManager()
     {

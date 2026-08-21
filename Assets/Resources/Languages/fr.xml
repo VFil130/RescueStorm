@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization>
+
+	<!-- Menu principal -->
+	<text key="btn_single">Solo</text>
+	<text key="btn_multiplayer">Multijoueur</text>
+	<text key="btn_settings">Paramètres</text>
+	<text key="btn_exit">Quitter</text>
+
+	<!-- Confirmation de sortie -->
+	<text key="label_exit_confirmation">Quitter le jeu ?</text>
+	<text key="btn_yes">Oui</text>
+	<text key="btn_no">Non</text>
+
+	<!-- Paramètres (général) -->
+	<text key="label_settings">Paramètres</text>
+	<text key="btn_back">Retour</text>
+	<text key="btn_graphics">Graphismes</text>
+	<text key="btn_audio">Audio</text>
+	<text key="btn_controls">Commandes</text>
+
+	<!-- Graphismes -->
+	<text key="label_resolution">Résolution</text>
+	<text key="label_chromatic_aberration">Aberration chromatique</text>
+	<text key="label_bloom">Lueur (Bloom)</text>
+	<text key="label_ssao">SSAO</text>
+	<text key="btn_gamma">Gamma</text>
+	<!-- Audio -->
+	<text key="label_master_volume">Volume général</text>
+	<text key="label_music_volume">Musique</text>
+	<text key="label_sfx_volume">Effets sonores</text>
+
+	<!-- Commandes (touches) -->
+	<text key="label_mouse_sensitivity">Sensibilité de la souris</text>
+	<text key="label_forward">Avancer</text>
+	<text key="label_backward">Reculer</text>
+	<text key="label_left">Gauche</text>
+	<text key="label_right">Droite</text>
+	<text key="label_e">Interagir</text>
+	<text key="label_space">Sauter</text>
+	<text key="label_leftctrl">S'accroupir</text>
+	<text key="label_leftshift">Courir</text>
+	<text key="label_key1">Emplacement 1</text>
+	<text key="label_key2">Emplacement 2</text>
+	<text key="label_key3">Emplacement 3</text>
+	<text key="label_key4">Emplacement 4</text>
+	<text key="label_key5">Emplacement 5</text>
+	<text key="btn_reset_keys">Réinitialiser les touches</text>
+
+	<!-- Multijoueur -->
+	<text key="label_multiplayer">Multijoueur</text>
+	<text key="btn_join">Rejoindre</text>
+	<text key="btn_create">Créer</text>
+
+	<!-- Rejoindre -->
+	<text key="label_join">Rejoindre une partie</text>
+	<text key="input_join_hint">Entrez l'adresse IP</text>
+	<text key="btn_connect">Se connecter</text>
+
+	<!-- Créer -->
+	<text key="label_create">Créer une partie</text>
+	<text key="input_create_hint">Nom de la salle</text>
+	<text key="btn_create_room">Créer</text>
+
+	<!-- Textes supplémentaires -->
+	<text key="input_enter_text">Entrez du texte</text>
+	<text key="label_password">Mot de passe</text>
+
+</localization>
