@@ -114,6 +114,16 @@ public class SurvivorManager : NetworkBehaviour
         return missingQuestIds.Count == 0;
     }
 
+    public QuestSO ResolveQuestById(string questId)
+    {
+        if (string.IsNullOrWhiteSpace(questId)) return null;
+
+        return (availableQuests ?? new List<QuestSO>())
+            .FirstOrDefault(quest =>
+                quest != null &&
+                string.Equals(quest.questId, questId, StringComparison.Ordinal));
+    }
+
     public void SpawnSurvivorsAtPositions(List<Vector3> positions)
     {
         if (survivorPrefab == null) return;

@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
@@ -16,10 +15,9 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
     public void Interact(GameObject interactor)
     {
         Player player = interactor.GetComponent<Player>();
-        if (player != null && player.isLocalPlayer)
-        {
-            player.CmdPickupItem(netIdentity);
-        }
+        if (player == null) return;
+
+        Pickup(interactor);
     }
 
     public void Pickup(GameObject picker)
@@ -32,7 +30,6 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
     public void Drop(Vector3 position)
     {
         transform.position = position;
-        gameObject.SetActive(true);
     }
     public void Use(GameObject GM)
     {

@@ -32,12 +32,24 @@ public class PredatorAI : NetworkBehaviour
     private float patrolTimer = 0f;
     private BTNode behaviorTree;
 
-    void Start()
+    private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        agent.enabled = true;
         agent.speed = walkSpeed;
         SetNewPatrolTarget();
         BuildBehaviorTree();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (!isServer) agent.enabled = false;
     }
 
     void Update()

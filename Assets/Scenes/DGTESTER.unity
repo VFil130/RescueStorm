@@ -40584,6 +40584,8 @@ MonoBehaviour:
   - {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
   - {fileID: 3051223387696177614, guid: c233351b6a4614042bcb351f60a8c32a, type: 3}
   - {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
+  - {fileID: 692555095294960364, guid: ba2184e11f62a1048ba0064de3c49ebf, type: 3}
+  - {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -51430,6 +51432,7 @@ GameObject:
   - component: {fileID: 895398791}
   - component: {fileID: 895398796}
   - component: {fileID: 895398797}
+  - component: {fileID: 895398798}
   m_Layer: 0
   m_Name: DG
   m_TagString: Untagged
@@ -51546,7 +51549,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonLocalSessionCoordinator
   generator: {fileID: 895398793}
   survivorManager: {fileID: 895398792}
+  gameManager: {fileID: 895398798}
   localPlayerPrefab: {fileID: 545389564784142826, guid: 9ceba6db7ff24954e9bb3ff6c1c94562, type: 3}
+  evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
   spawnGameplayContent: 1
 --- !u!114 &895398797
 MonoBehaviour:
@@ -51565,8 +51570,28 @@ MonoBehaviour:
   syncInterval: 0
   generator: {fileID: 895398793}
   survivorManager: {fileID: 895398792}
+  gameManager: {fileID: 895398798}
+  evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+  enemyPrefab: {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
+  enemyCount: 1
   spawnGameplayContent: 1
   clientGenerationTimeout: 20
+--- !u!114 &895398798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895398790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f911a67ed92b514c97b161f887e7d5f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  matchDuration: 300
 --- !u!1 &895719084
 GameObject:
   m_ObjectHideFlags: 0

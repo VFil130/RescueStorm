@@ -18,5 +18,6 @@ public class EvacuateZone : NetworkBehaviour, IInteractable
 
         survivor.Save();
         player.RemoveSelectedItem();
+        NetworkServer.Destroy(survivor.gameObject);
     }
 }

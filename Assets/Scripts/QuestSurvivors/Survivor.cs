@@ -18,6 +18,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     [SyncVar(hook = nameof(OnQuestCompletedChanged))] private bool questCompleted;
     [SyncVar] private SurvivorState state = SurvivorState.Waiting;
     [SyncVar] private uint carrierNetId;
+    [SyncVar(hook = nameof(OnQuestIdChanged))] private string questId = string.Empty;
 
     private GameObject carrier;
     private GameManager gameManager;
@@ -33,11 +34,15 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     private void Start()
     {
-        if (!HasStateAuthority) return;
-
         gameManager = FindFirstObjectByType<GameManager>();
-        quest?.Initialize(this);
-        SpawnIndicator();
+        if (HasStateAuthority) quest?.Initialize(this);
+        if (quest != null) SpawnIndicator();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        ApplyQuestId(questId);
     }
 
     private void Update()
@@ -81,16 +86,18 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public void Pickup(GameObject picker)
     {
+        if (!HasStateAuthority) return;
         if (state != SurvivorState.Waiting) return;
         if (!questCompleted) return;
 
         Player player = picker.GetComponent<Player>();
         if (player == null) return;
+        if (!player.PickupItem(this)) return;
+
         carrier = picker;
         NetworkIdentity identity = picker.GetComponent<NetworkIdentity>();
         carrierNetId = identity != null ? identity.netId : 0;
         state = SurvivorState.Carried;
-        player.PickupItem(this);
     }
 
     public void Drop(Vector3 position)
@@ -119,6 +126,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     public void SetQuest(QuestSO newQuest)
     {
         quest = newQuest;
+        questId = newQuest != null ? newQuest.questId : string.Empty;
         quest?.Initialize(this);
         SpawnIndicator();
     }
@@ -170,7 +178,31 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         if (indicatorInstance != null) Destroy(indicatorInstance);
     }
 
-    private void OnQuestCompletedChanged(bool oldValue, bool newValue) { }
+    private void OnQuestCompletedChanged(bool _, bool completed)
+    {
+        if (completed) SetIndicatorColor(Color.green);
+    }
+
+    private void OnQuestIdChanged(string _, string newQuestId)
+    {
+        ApplyQuestId(newQuestId);
+    }
+
+    private void ApplyQuestId(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id)) return;
+
+        SurvivorManager manager = FindFirstObjectByType<SurvivorManager>();
+        QuestSO resolvedQuest = manager != null ? manager.ResolveQuestById(id) : null;
+        if (resolvedQuest == null)
+        {
+            Debug.LogError($"Could not resolve quest '{id}' for survivor '{name}'.", this);
+            return;
+        }
+
+        quest = resolvedQuest;
+        SpawnIndicator();
+    }
 
     public SurvivorState GetState() => state;
     public GameObject GetCarrier() => carrier;

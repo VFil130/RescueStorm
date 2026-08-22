@@ -5,14 +5,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(DungeonGenerator), typeof(SurvivorManager))]
+[RequireComponent(typeof(DungeonGenerator), typeof(SurvivorManager), typeof(GameManager))]
 public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
 {
     private const string TestSceneName = "DGTESTER";
 
     [SerializeField] private DungeonGenerator generator;
     [SerializeField] private SurvivorManager survivorManager;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private GameObject localPlayerPrefab;
+    [SerializeField] private GameObject evacuationZonePrefab;
     [SerializeField] private bool spawnGameplayContent = true;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -69,6 +71,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
     {
         if (generator == null) generator = GetComponent<DungeonGenerator>();
         if (survivorManager == null) survivorManager = GetComponent<SurvivorManager>();
+        if (gameManager == null) gameManager = GetComponent<GameManager>();
 
         // The inactive NetworkManager is used only as a prefab reference in local mode.
         // It is never started and no networking code runs.
@@ -117,6 +120,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
 
         DungeonGenerationResult result = generator.LastResult;
         SpawnLocalPlayer(result);
+        SpawnEvacuationZone(result);
         if (spawnGameplayContent) SpawnGameplayContent(result);
     }
 
@@ -154,5 +158,14 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
         }
 
         survivorManager.SpawnSurvivorsLocallyAtPositions(positions);
+        gameManager?.StartMatch(survivorCount);
+    }
+
+    private void SpawnEvacuationZone(DungeonGenerationResult result)
+    {
+        if (evacuationZonePrefab == null || result?.EvacuationRoom == null) return;
+
+        Transform room = result.EvacuationRoom.transform;
+        Instantiate(evacuationZonePrefab, room.position + Vector3.up, room.rotation);
     }
 }

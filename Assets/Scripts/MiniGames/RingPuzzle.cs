@@ -14,19 +14,32 @@ public class RingPuzzle : NetworkBehaviour, IMiniGame
     private bool isCompleted = false;
     private Survivor linkedSurvivor;
     private int selectedRing = 0;
+    private readonly SyncList<int> ringSteps = new SyncList<int>();
 
     public string QuestId { get; private set; }
     public bool IsCompleted => isCompleted;
 
-    void Start()
+    public override void OnStartServer()
     {
-        if (!isServer) return;
+        base.OnStartServer();
 
         ResetPuzzle();
-
         selectButton.onPress.AddListener(SelectNextRing);
         leftButton.onPress.AddListener(RotateLeft);
         rightButton.onPress.AddListener(RotateRight);
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        ringSteps.Callback += OnRingStepsChanged;
+        ApplyAllRingSteps();
+    }
+
+    public override void OnStopClient()
+    {
+        ringSteps.Callback -= OnRingStepsChanged;
+        base.OnStopClient();
     }
 
     private void SelectNextRing()
@@ -53,12 +66,11 @@ public class RingPuzzle : NetworkBehaviour, IMiniGame
         if (ringIndex < 0 || ringIndex >= rings.Count) return;
 
         int direction = clockwise ? 1 : -1;
-        rings[ringIndex].currentStep += direction;
-        rings[ringIndex].currentStep %= 8;
-        if (rings[ringIndex].currentStep < 0) rings[ringIndex].currentStep += 8;
+        int step = (ringSteps[ringIndex] + direction) % 8;
+        if (step < 0) step += 8;
 
-        ApplyRotation(ringIndex, rings[ringIndex].currentStep);
-        RpcRotateRing(ringIndex, rings[ringIndex].currentStep);
+        ringSteps[ringIndex] = step;
+        ApplyRotation(ringIndex, step);
 
         CheckCompletion();
     }
@@ -67,33 +79,45 @@ public class RingPuzzle : NetworkBehaviour, IMiniGame
     {
         if (ringIndex < rings.Count && rings[ringIndex].transform != null)
         {
+            rings[ringIndex].currentStep = step;
             rings[ringIndex].transform.localRotation = Quaternion.Euler(0, 0, step * rotationStep);
         }
     }
 
-    [ClientRpc]
-    private void RpcRotateRing(int ringIndex, int step)
+    private void OnRingStepsChanged(
+        SyncList<int>.Operation _,
+        int index,
+        int __,
+        int newStep)
     {
-        ApplyRotation(ringIndex, step);
+        if (index >= 0) ApplyRotation(index, newStep);
     }
 
     private void CheckCompletion()
     {
         for (int i = 0; i < ringCount; i++)
         {
-            if (rings[i].currentStep != 0) return;
+            if (i >= ringSteps.Count || ringSteps[i] != 0) return;
         }
         CompleteGame(true);
     }
 
     private void ResetPuzzle()
     {
+        ringSteps.Clear();
         for (int i = 0; i < rings.Count; i++)
         {
-            rings[i].currentStep = Random.Range(0, 8);
-            ApplyRotation(i, rings[i].currentStep);
+            int step = Random.Range(0, 8);
+            ringSteps.Add(step);
+            ApplyRotation(i, step);
         }
         selectedRing = 0;
+    }
+
+    private void ApplyAllRingSteps()
+    {
+        int count = Mathf.Min(rings.Count, ringSteps.Count);
+        for (int i = 0; i < count; i++) ApplyRotation(i, ringSteps[i]);
     }
 
     public void CompleteGame(bool success)

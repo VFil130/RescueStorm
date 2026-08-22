@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -459,6 +460,14 @@ public class DungeonGenerator : MonoBehaviour
             errors.Add($"Room prefab '{prefab.name}' has no renderers and no usable automatic bounds.");
         if (requireNavigationGeometry && prefab.GetComponentsInChildren<Collider>(true).Length == 0)
             errors.Add($"Room prefab '{prefab.name}' has no colliders for runtime NavMesh generation.");
+        if (prefab.GetComponentsInChildren<NetworkBehaviour>(true).Length > 0 ||
+            prefab.GetComponentsInChildren<NetworkIdentity>(true).Length > 0)
+        {
+            errors.Add(
+                $"Room prefab '{prefab.name}' contains a NetworkBehaviour. " +
+                "Generated room modules must contain only local geometry and spawn markers; " +
+                "the server must spawn networked gameplay objects separately.");
+        }
 
         foreach (DoorPoint socket in sockets)
         {

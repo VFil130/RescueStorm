@@ -7,12 +7,17 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(NetworkIdentity), typeof(DungeonGenerator), typeof(SurvivorManager))]
+[RequireComponent(typeof(GameManager))]
 public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
 {
     private const char QuestIdSeparator = '\n';
 
     [SerializeField] private DungeonGenerator generator;
     [SerializeField] private SurvivorManager survivorManager;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private GameObject evacuationZonePrefab;
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField, Min(0)] private int enemyCount = 1;
     [SerializeField] private bool spawnGameplayContent = true;
     [SerializeField, Min(1f)] private float clientGenerationTimeout = 20f;
 
@@ -39,6 +44,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     {
         if (generator == null) generator = GetComponent<DungeonGenerator>();
         if (survivorManager == null) survivorManager = GetComponent<SurvivorManager>();
+        if (gameManager == null) gameManager = GetComponent<GameManager>();
     }
 
     public override void OnStartServer()
@@ -288,7 +294,14 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
 
         DungeonGenerationResult result = generator.LastResult;
         int survivorCount = survivorManager.GetAssignedQuests().Count;
-        if (result == null || survivorCount == 0) return;
+        if (result == null) return;
+
+        SpawnEvacuationZone(result);
+        if (survivorCount == 0)
+        {
+            Debug.LogError("No quests were selected, so no survivors can be spawned.", this);
+            return;
+        }
 
         List<Vector3> positions = survivorManager.ResolveSurvivorPositions(result);
         if (positions.Count < survivorCount)
@@ -300,6 +313,60 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         }
 
         survivorManager.SpawnSurvivorsAtPositions(positions);
+        SpawnEnemies(result);
+        gameManager.StartMatch(survivorCount);
+    }
+
+    [Server]
+    private void SpawnEvacuationZone(DungeonGenerationResult result)
+    {
+        if (evacuationZonePrefab == null || result.EvacuationRoom == null)
+        {
+            Debug.LogError("Evacuation zone prefab or evacuation room is missing.", this);
+            return;
+        }
+
+        Transform room = result.EvacuationRoom.transform;
+        GameObject zone = Instantiate(
+            evacuationZonePrefab,
+            room.position + Vector3.up,
+            room.rotation);
+        NetworkServer.Spawn(zone);
+    }
+
+    [Server]
+    private void SpawnEnemies(DungeonGenerationResult result)
+    {
+        if (enemyCount <= 0) return;
+        if (enemyPrefab == null)
+        {
+            Debug.LogError("Enemy prefab is not assigned.", this);
+            return;
+        }
+
+        List<Transform> spawnPoints = result.EnemySpawnPoints
+            .Where(point => point != null)
+            .ToList();
+        if (spawnPoints.Count == 0)
+        {
+            spawnPoints = result.Rooms
+                .Where(room => room != null && room != result.StartRoom)
+                .Select(room => room.transform)
+                .ToList();
+        }
+
+        if (spawnPoints.Count == 0) return;
+
+        int count = Mathf.Min(enemyCount, spawnPoints.Count);
+        for (int i = 0; i < count; i++)
+        {
+            Transform spawnPoint = spawnPoints[i];
+            GameObject enemy = Instantiate(
+                enemyPrefab,
+                spawnPoint.position + Vector3.up,
+                spawnPoint.rotation);
+            NetworkServer.Spawn(enemy);
+        }
     }
 
     [Server]

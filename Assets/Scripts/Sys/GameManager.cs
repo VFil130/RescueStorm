@@ -6,143 +6,121 @@ public class GameManager : NetworkBehaviour
 {
     [Header("Game Settings")]
     [SerializeField] private float matchDuration = 300f;
-    [SerializeField] private int survivorsToWin = 6;
-    [SerializeField] private int maxSurvivors = 10;
 
     [SyncVar(hook = nameof(OnTimeLeftChanged))]
     private float timeLeft;
-
     [SyncVar(hook = nameof(OnSurvivorsSavedChanged))]
     private int survivorsSaved;
-
-    [SyncVar] private bool isGameActive = false;
-    [SyncVar] private bool isGameOver = false;
+    [SyncVar(hook = nameof(OnTotalSurvivorsChanged))]
+    private int totalSurvivors;
+    [SyncVar] private bool isGameActive;
+    [SyncVar] private bool isGameOver;
 
     private float matchTimer;
-    private int totalSurvivors;
 
     [Inject] private AudioManager audioManager;
     [Inject] private ParticleManager particleManager;
-    [Inject] private SceneManagerService sceneManager;
 
     public event System.Action<float> OnTimeUpdated;
     public event System.Action<int, int> OnSurvivorsUpdated;
     public event System.Action<bool> OnGameEnded;
 
-    void Start()
+    private bool HasStateAuthority =>
+        isServer || (!NetworkServer.active && !NetworkClient.active);
+
+    public void StartMatch(int survivorCount)
     {
-        if (isServer)
+        if (!HasStateAuthority) return;
+        if (survivorCount <= 0)
         {
-            StartMatch();
+            Debug.LogError("A match cannot start without spawned survivors.", this);
+            return;
         }
-    }
 
-    void Update()
-    {
-        UpdateTimer();
-    }
-
-    [Server]
-    private void StartMatch()
-    {
         matchTimer = matchDuration;
         timeLeft = matchDuration;
         survivorsSaved = 0;
+        totalSurvivors = survivorCount;
         isGameActive = true;
         isGameOver = false;
-        totalSurvivors = Random.Range(8, maxSurvivors + 1);
-
-        RpcOnMatchStarted(totalSurvivors);
-        Debug.Log($"Match started. Total survivors: {totalSurvivors}");
+        if (NetworkServer.active)
+            RpcOnMatchStarted(survivorCount);
+        else
+            OnSurvivorsUpdated?.Invoke(0, survivorCount);
     }
 
-    [Server]
+    private void Update()
+    {
+        if (!HasStateAuthority || !isGameActive || isGameOver) return;
+
+        matchTimer -= Time.deltaTime;
+        timeLeft = Mathf.Max(0f, matchTimer);
+        if (matchTimer <= 0f) EndMatch(false);
+    }
+
     public void AddSavedSurvivor()
     {
-        if (!isGameActive || isGameOver) return;
+        if (!HasStateAuthority || !isGameActive || isGameOver) return;
 
         survivorsSaved++;
-        RpcOnSurvivorSaved(survivorsSaved);
-
-        if (survivorsSaved >= totalSurvivors)
-        {
-            EndMatch(true);
-        }
+        if (NetworkServer.active)
+            RpcOnSurvivorSaved();
+        if (survivorsSaved >= totalSurvivors) EndMatch(true);
     }
 
-    [Server]
     public void EndMatch(bool victory)
     {
-        if (isGameOver) return;
+        if (!HasStateAuthority || isGameOver) return;
 
         isGameActive = false;
         isGameOver = true;
-
-        RpcOnMatchEnded(victory, survivorsSaved, totalSurvivors);
-        Debug.Log($"Match ended. Victory: {victory}. Saved: {survivorsSaved}/{totalSurvivors}");
+        if (NetworkServer.active)
+            RpcOnMatchEnded(victory);
+        else
+            OnGameEnded?.Invoke(victory);
     }
 
     [ClientRpc]
     private void RpcOnMatchStarted(int total)
     {
-        totalSurvivors = total;
         OnSurvivorsUpdated?.Invoke(0, total);
     }
 
     [ClientRpc]
-    private void RpcOnSurvivorSaved(int saved)
+    private void RpcOnSurvivorSaved()
     {
-        survivorsSaved = saved;
-        OnSurvivorsUpdated?.Invoke(saved, totalSurvivors);
-
-        if (isLocalPlayer)
-        {
-            audioManager?.PlaySFX("SurvivorSaved", Vector3.zero);
-            particleManager?.PlayParticle("SavedParticle", Vector3.zero);
-        }
+        audioManager?.PlaySFX("SurvivorSaved", Vector3.zero);
+        particleManager?.PlayParticle("SavedParticle", Vector3.zero);
     }
 
     [ClientRpc]
-    private void RpcOnMatchEnded(bool victory, int saved, int total)
+    private void RpcOnMatchEnded(bool victory)
     {
-        isGameActive = false;
-        isGameOver = true;
         OnGameEnded?.Invoke(victory);
-
-        if (isLocalPlayer)
+        if (victory)
         {
-            if (victory)
-            {
-                audioManager?.PlayMusic("Victory");
-                particleManager?.PlayParticle("VictoryParticle", Vector3.zero);
-            }
-            else
-            {
-                audioManager?.PlaySFX("Defeat", Vector3.zero);
-            }
+            audioManager?.PlayMusic("Victory");
+            particleManager?.PlayParticle("VictoryParticle", Vector3.zero);
         }
-        Debug.Log($"Match ended: {saved}/{total} saved. Victory: {victory}");
-    }
-    private void UpdateTimer()
-    {
-        if (!isServer || !isGameActive || isGameOver) return;
-
-        matchTimer -= Time.deltaTime;
-        timeLeft = matchTimer;
-
-        if (matchTimer <= 0)
+        else
         {
-            EndMatch(false);
+            audioManager?.PlaySFX("Defeat", Vector3.zero);
         }
     }
-    private void OnTimeLeftChanged(float oldValue, float newValue)
+
+    private void OnTimeLeftChanged(float _, float newValue)
     {
         OnTimeUpdated?.Invoke(newValue);
     }
 
-    private void OnSurvivorsSavedChanged(int oldValue, int newValue)
+    private void OnSurvivorsSavedChanged(int _, int newValue)
     {
         OnSurvivorsUpdated?.Invoke(newValue, totalSurvivors);
+    }
+
+    private void OnTotalSurvivorsChanged(int _, int newValue)
+    {
+        OnSurvivorsUpdated?.Invoke(survivorsSaved, newValue);
     }
 
     public float GetTimeLeft() => timeLeft;

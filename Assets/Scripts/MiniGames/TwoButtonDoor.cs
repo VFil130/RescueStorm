@@ -7,13 +7,14 @@ public class TwoButtonDoor : NetworkBehaviour
     [SerializeField] private float openHeight = 3f;
     [SerializeField] private float speed = 2f;
 
-    [SyncVar] private bool isOpen = false;
+    [SyncVar(hook = nameof(OnOpenChanged))] private bool isOpen = false;
     private int pressCount = 0;
     private Vector3 targetPos;
 
     void Start()
     {
         targetPos = doorTransform.localPosition;
+        ApplyOpenState(isOpen);
     }
 
     void Update()
@@ -40,6 +41,17 @@ public class TwoButtonDoor : NetworkBehaviour
     private void Open()
     {
         isOpen = true;
-        targetPos.y = openHeight;
+        ApplyOpenState(true);
+    }
+
+    private void OnOpenChanged(bool _, bool opened)
+    {
+        ApplyOpenState(opened);
+    }
+
+    private void ApplyOpenState(bool opened)
+    {
+        targetPos = doorTransform.localPosition;
+        targetPos.y = opened ? openHeight : doorTransform.localPosition.y;
     }
 }

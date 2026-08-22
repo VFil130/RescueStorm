@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewMinigameQuest", menuName = "Quest/MinigameQuest")]
@@ -15,10 +16,27 @@ public class MinigameQuestSO : QuestSO
         {
             GameObject obj = Instantiate(miniGamePrefab);
             miniGameInstance = obj.GetComponent<IMiniGame>();
-            if (miniGameInstance != null)
+            if (miniGameInstance == null)
             {
-                miniGameInstance.Initialize(questId, survivor);
+                Destroy(obj);
+                return;
             }
+
+            miniGameInstance.Initialize(questId, survivor);
+            if (!NetworkServer.active) return;
+
+            NetworkIdentity identity = obj.GetComponent<NetworkIdentity>();
+            if (identity == null)
+            {
+                Debug.LogError(
+                    $"Minigame prefab '{miniGamePrefab.name}' needs NetworkIdentity.",
+                    obj);
+                Destroy(obj);
+                miniGameInstance = null;
+                return;
+            }
+
+            NetworkServer.Spawn(obj);
         }
     }
 
