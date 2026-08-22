@@ -15,11 +15,10 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
 
     public void Interact(GameObject interactor)
     {
-        Debug.Log("inter");
         Player player = interactor.GetComponent<Player>();
-        if (player != null)
+        if (player != null && player.isLocalPlayer)
         {
-            Pickup(interactor);
+            player.CmdPickupItem(netIdentity);
         }
     }
 

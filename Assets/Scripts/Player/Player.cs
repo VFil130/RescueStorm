@@ -1,5 +1,5 @@
-using System;
 using Mirror;
+using System;
 using UnityEngine;
 
 [Serializable]
@@ -85,9 +85,10 @@ public class Player : NetworkBehaviour
             if (inventory[heavySlotIndex].itemObject != null) return false;
             inventory[heavySlotIndex].itemObject = item;
             inventory[heavySlotIndex].slotIndex = heavySlotIndex;
-            PrepareHeldItem(item.GameObject);
+            RpcPickupItemVisual(item.GameObject);
             SelectSlot(heavySlotIndex);
             OnInventoryChanged?.Invoke(inventory);
+            RpcUpdateInventory();
             return true;
         }
 
@@ -97,13 +98,34 @@ public class Player : NetworkBehaviour
             {
                 inventory[i].itemObject = item;
                 inventory[i].slotIndex = i;
-                PrepareHeldItem(item.GameObject);
+                RpcPickupItemVisual(item.GameObject);
                 item.GameObject.SetActive(false);
                 OnInventoryChanged?.Invoke(inventory);
+                RpcUpdateInventory();
                 return true;
             }
         }
         return false;
+    }
+    [Command]
+    public void CmdPickupItem(NetworkIdentity itemIdentity)
+    {
+        IPickupable item = itemIdentity.GetComponent<IPickupable>();
+        if (item == null) return;
+
+        item.Pickup(gameObject);
+    }
+    [ClientRpc]
+    private void RpcUpdateInventory()
+    {
+        OnInventoryChanged?.Invoke(inventory);
+    }
+    [ClientRpc]
+    private void RpcPickupItemVisual(GameObject item)
+    {
+        SetCollidersEnabled(item, false);
+        SetItemLayer(item, true);
+        item.SetActive(false);
     }
 
     public void SelectSlot(int slot)
@@ -203,7 +225,7 @@ public class Player : NetworkBehaviour
         }
 
         inventory[selectedSlot].itemObject = pickupable;
-        PrepareHeldItem(newItem);
+        RpcPickupItemVisual(newItem);
         newItem.SetActive(false);
         OnInventoryChanged?.Invoke(inventory);
     }
@@ -264,12 +286,6 @@ public class Player : NetworkBehaviour
         if (target == null) return;
 
         currentDisplayedItem.transform.SetPositionAndRotation(target.position, target.rotation);
-    }
-
-    private static void PrepareHeldItem(GameObject item)
-    {
-        SetCollidersEnabled(item, false);
-        SetItemLayer(item, true);
     }
 
     private static void SetCollidersEnabled(GameObject item, bool enabled)

@@ -695,7 +695,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 324998245}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
@@ -724,7 +724,7 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 324998246}
+  transport: {fileID: 324998254}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 324998245}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
   m_Name: 
@@ -4232,6 +4232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DrinkPlaceablePoint
   drinkMachine: {fileID: 1747553519}
   wrongItemDestroyDelay: 3
+  correctColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &1276501410
 BoxCollider:
   m_ObjectHideFlags: 0
