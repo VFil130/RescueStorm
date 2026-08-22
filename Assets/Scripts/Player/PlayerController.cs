@@ -67,6 +67,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     private readonly List<Camera> suppressedSceneCameras = new List<Camera>();
     private CharacterController characterController;
     private Interactor interactor;
+    private PlayerInputHandler inputHandler;
     private Vector3 moveDirection;
     private Vector2 currentInput;
     private float rotationX = 0;
@@ -83,6 +84,7 @@ public class PlayerController : NetworkBehaviour, IControllable
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         interactor = GetComponent<Interactor>();
+        inputHandler = GetComponent<PlayerInputHandler>();
         defaultYPos = playerCamera.transform.localPosition.y;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -90,7 +92,10 @@ public class PlayerController : NetworkBehaviour, IControllable
 
     private void Start()
     {
-        if (IsStandalone) EnablePlayerCamera();
+        if (!IsStandalone) return;
+
+        inputHandler.EnableInput();
+        EnablePlayerCamera();
     }
 
     private void Update()
@@ -124,6 +129,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
+        inputHandler.EnableInput();
         EnablePlayerCamera();
     }
 
@@ -144,6 +150,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     public override void OnStopLocalPlayer()
     {
         base.OnStopLocalPlayer();
+        inputHandler.DisableInput();
         foreach (Camera sceneCamera in suppressedSceneCameras)
         {
             if (sceneCamera != null) sceneCamera.gameObject.SetActive(true);
