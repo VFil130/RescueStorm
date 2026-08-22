@@ -127,36 +127,42 @@ public class Player : NetworkBehaviour
         SetItemLayer(item, true);
         item.SetActive(false);
     }
-
-    public void SelectSlot(int slot)
+    [ClientRpc]
+    private void RpcUpdateSlotVisual(int slot)
     {
-        if (!HasStateAuthority || !IsValidSlot(slot)) return;
-
-        selectedSlot = slot;
-
         for (int i = 0; i < inventory.Length; i++)
         {
             if (inventory[i].itemObject != null)
-            {
                 inventory[i].itemObject.GameObject.SetActive(false);
-            }
         }
 
         if (inventory[slot].itemObject != null)
         {
             inventory[slot].itemObject.GameObject.SetActive(true);
+            SetItemLayer(inventory[slot].itemObject.GameObject, true);
             currentDisplayedItem = inventory[slot].itemObject.GameObject;
-            SetItemLayer(currentDisplayedItem, true);
-            DisplayItem();
         }
         else
         {
             currentDisplayedItem = null;
         }
-
+    }
+    [ClientRpc]
+    private void RpcDropItemVisual(GameObject item, Vector3 position)
+    {
+        item.transform.SetParent(null, true);
+        item.transform.position = position;
+        SetCollidersEnabled(item, true);
+        SetItemLayer(item, false);
+        item.SetActive(true);
+    }
+    public void SelectSlot(int slot)
+    {
+        if (!HasStateAuthority || !IsValidSlot(slot)) return;
+        selectedSlot = slot;
+        RpcUpdateSlotVisual(slot);
         OnSelectedSlotChangedEvent?.Invoke(selectedSlot);
     }
-
     public void UseItem()
     {
         if (!HasStateAuthority || !IsValidSlot(selectedSlot)) return;
@@ -268,11 +274,9 @@ public class Player : NetworkBehaviour
         if (currentDisplayedItem == droppedObject)
             currentDisplayedItem = null;
 
-        droppedObject.transform.SetParent(null, true);
-        droppedObject.transform.position = transform.position + transform.forward * 2f;
-        SetCollidersEnabled(droppedObject, true);
-        SetItemLayer(droppedObject, false);
-        droppedObject.SetActive(true);
+        Vector3 dropPos = transform.position + transform.forward * 2f;
+        RpcDropItemVisual(droppedObject, dropPos);
+
         inventory[slotIndex].itemObject = null;
         OnInventoryChanged?.Invoke(inventory);
         return droppedObject;
