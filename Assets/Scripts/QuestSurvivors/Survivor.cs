@@ -35,7 +35,6 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     private void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
-        if (HasStateAuthority) quest?.Initialize(this);
         if (quest != null) SpawnIndicator();
     }
 
@@ -172,7 +171,10 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
             renderer.material.color = color;
         }
     }
-
+    public void SetIndicator(GameObject gm)
+    {
+        itemPrefab = gm;
+    }
     private void OnDestroy()
     {
         if (indicatorInstance != null) Destroy(indicatorInstance);

@@ -4143,6 +4143,7 @@ MonoBehaviour:
   survivorsCount: 5
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
+  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
   questItemPrefabs: []
 --- !u!114 &1141529819
 MonoBehaviour:
@@ -4366,7 +4367,7 @@ GameObject:
   - component: {fileID: 1276501410}
   - component: {fileID: 1276501409}
   m_Layer: 0
-  m_Name: Cube (6)
+  m_Name: Drinkplacer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4473,12 +4474,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276501408}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -25.2, y: -2.03, z: 5.64531}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.354881, y: -0.1607486, z: -0.16783594}
+  m_LocalScale: {x: 0.2870511, y: 0.2870511, z: 0.2870511}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1747553520}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1294447105
 GameObject:
@@ -5535,6 +5536,7 @@ Transform:
   - {fileID: 1497299337}
   - {fileID: 1261775008}
   - {fileID: 835474000}
+  - {fileID: 1276501413}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1747553521
@@ -5779,10 +5781,8 @@ GameObject:
   - component: {fileID: 1890457857}
   - component: {fileID: 1890457856}
   - component: {fileID: 1890457855}
-  - component: {fileID: 1890457859}
   - component: {fileID: 1890457860}
   - component: {fileID: 1890457861}
-  - component: {fileID: 1890457862}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -5884,18 +5884,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1890457859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890457854}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3b0c6c54562dcd4a8ea8170ba3e82c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FichaTester
 --- !u!114 &1890457860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5945,18 +5933,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &1890457862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890457854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f24d1ec0360e2d4e88d02376b52efa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1 &2002169481
 GameObject:
   m_ObjectHideFlags: 0
@@ -6252,5 +6228,4 @@ SceneRoots:
   - {fileID: 630455749}
   - {fileID: 575083525}
   - {fileID: 1747553520}
-  - {fileID: 1276501413}
   - {fileID: 512858839}

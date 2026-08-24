@@ -15,7 +15,7 @@ public abstract class QuestSO : ScriptableObject
     private GameObject requiredRoomPrefab;
     [Tooltip("Item prefab spawned for this quest.")]
     public GameObject itemPrefab;
-
+    public GameObject questIndicatorPrefab;
     [HideInInspector]
     public string requiredRoom;
     [HideInInspector]
@@ -42,6 +42,7 @@ public abstract class QuestSO : ScriptableObject
     {
         owner = survivor;
         isCompleted = false;
+        survivor.SetIndicator(questIndicatorPrefab);
     }
 
     public abstract bool CheckCompletion(GameObject interactor, Survivor survivor);

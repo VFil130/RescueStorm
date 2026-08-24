@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MinigameQuestSO
   questId: 2
   questName: Drink
+  requiredRoomPrefab: {fileID: 6046942506379599462, guid: 03f1f81c0fc623946bf9c6af896e44d7, type: 3}
+  itemPrefab: {fileID: 0}
+  questIndicatorPrefab: {fileID: 2404826704320307475, guid: f1d46785643617d42870ad0eb5296ae3, type: 3}
   requiredRoom: 
   requiredItem: 
-  itemPrefab: {fileID: 0}
-  miniGamePrefab: {fileID: 0}
+  miniGamePrefab: {fileID: 3706330075134515904, guid: 89592f0bfe2324149bb2176013d3801d, type: 3}
