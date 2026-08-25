@@ -355,6 +355,11 @@ public sealed class RoomDataEditor : Editor
                 "Survivor Spawn",
                 "Preferred position for a survivor assigned to this room. The room center is used when empty."));
         EditorGUILayout.PropertyField(
+            serializedObject.FindProperty("miniGameSpawnPoint"),
+            new GUIContent(
+                "Mini Game Spawn",
+                "Position for a quest mini-game in this room."));
+        EditorGUILayout.PropertyField(
             serializedObject.FindProperty("itemSpawnPoints"),
             new GUIContent("Item Spawns", "Possible positions for items in this room."),
             includeChildren: true);

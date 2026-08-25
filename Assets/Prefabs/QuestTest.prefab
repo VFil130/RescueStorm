@@ -5164,7 +5164,7 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 2258121196713948080}
-  miniGameSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 5308363207129919610}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
