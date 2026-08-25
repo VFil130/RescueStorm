@@ -17,9 +17,8 @@ public class RoomData : MonoBehaviour
     [SerializeField, Min(0.01f)] private float selectionWeight = 1f;
     [SerializeField] private BoxCollider occupancyVolume;
     [SerializeField] private bool canBeEvacuationRoom = true;
-
-    [Header("Gameplay spawn points")]
     public Transform survivorSpawnPoint;
+    public Transform miniGameSpawnPoint;
     public List<Transform> itemSpawnPoints = new List<Transform>();
     [SerializeField] private List<Transform> playerSpawnPoints = new List<Transform>();
     [SerializeField] private List<Transform> enemySpawnPoints = new List<Transform>();

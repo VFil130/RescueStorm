@@ -5058,6 +5058,7 @@ Transform:
   - {fileID: 5115024425830992556}
   - {fileID: 8661329120099932999}
   - {fileID: 2258121196713948080}
+  - {fileID: 5308363207129919610}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8002620638689233785
@@ -5163,6 +5164,7 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 2258121196713948080}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
@@ -5731,6 +5733,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6405055333489277325, guid: f6cfb3cbe2b38394493d7a964a6eab0e, type: 3}
+--- !u!1 &6348583676693255096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5308363207129919610}
+  m_Layer: 0
+  m_Name: MINIGAMESPAWN
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5308363207129919610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6348583676693255096}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.39, y: 0.41, z: -3.11}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6386348945148675292}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6407134193958976618
 GameObject:
   m_ObjectHideFlags: 0

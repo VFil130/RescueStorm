@@ -12,32 +12,38 @@ public class MinigameQuestSO : QuestSO
         base.Initialize(survivor);
         owner = survivor;
 
-        if (miniGamePrefab != null)
+        if (miniGamePrefab == null) return;
+
+        Transform spawnPoint = GetMiniGameSpawnPoint();
+        if (spawnPoint == null)
         {
-            GameObject obj = Instantiate(miniGamePrefab);
-            miniGameInstance = obj.GetComponent<IMiniGame>();
-            if (miniGameInstance == null)
-            {
-                Destroy(obj);
-                return;
-            }
-
-            miniGameInstance.Initialize(questId, survivor);
-            if (!NetworkServer.active) return;
-
-            NetworkIdentity identity = obj.GetComponent<NetworkIdentity>();
-            if (identity == null)
-            {
-                Debug.LogError(
-                    $"Minigame prefab '{miniGamePrefab.name}' needs NetworkIdentity.",
-                    obj);
-                Destroy(obj);
-                miniGameInstance = null;
-                return;
-            }
-
-            NetworkServer.Spawn(obj);
+            Debug.LogError($"[MinigameQuest] '{questName}': no mini-game spawn point");
+            return;
         }
+
+        GameObject obj = Instantiate(miniGamePrefab, spawnPoint.position, spawnPoint.rotation);
+        miniGameInstance = obj.GetComponent<IMiniGame>();
+        if (miniGameInstance == null)
+        {
+            Destroy(obj);
+            return;
+        }
+
+        miniGameInstance.Initialize(questId, survivor);
+        if (!NetworkServer.active) return;
+
+        NetworkIdentity identity = obj.GetComponent<NetworkIdentity>();
+        if (identity == null)
+        {
+            Debug.LogError(
+                $"Minigame prefab '{miniGamePrefab.name}' needs NetworkIdentity.",
+                obj);
+            Destroy(obj);
+            miniGameInstance = null;
+            return;
+        }
+
+        NetworkServer.Spawn(obj);
     }
 
     public override bool CheckCompletion(GameObject interactor, Survivor survivor)

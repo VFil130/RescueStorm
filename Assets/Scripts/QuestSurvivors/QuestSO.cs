@@ -23,6 +23,14 @@ public abstract class QuestSO : ScriptableObject
 
     protected Survivor owner;
     protected bool isCompleted;
+    private Transform miniGameSpawnPoint;
+
+    public void SetMiniGameSpawnPoint(Transform point)
+    {
+        miniGameSpawnPoint = point;
+    }
+
+    protected Transform GetMiniGameSpawnPoint() => miniGameSpawnPoint;
 
     public GameObject RequiredRoomPrefab => requiredRoomPrefab;
     public GameObject ItemPrefab => itemPrefab;

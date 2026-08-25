@@ -27,6 +27,7 @@ public class SurvivorManager : NetworkBehaviour
 
     private readonly List<Survivor> survivors = new List<Survivor>();
     private List<QuestSO> assignedQuests = new List<QuestSO>();
+    private readonly Dictionary<QuestSO, Transform> questMiniGamePoints = new Dictionary<QuestSO, Transform>();
 
     public List<QuestRequirement> GetAllQuestRequirements()
     {
@@ -149,6 +150,8 @@ public class SurvivorManager : NetworkBehaviour
         List<Vector3> positions = new List<Vector3>();
         if (result == null || assignedQuests.Count == 0) return positions;
 
+        questMiniGamePoints.Clear();
+
         List<RoomData> availableRooms = result.Rooms
             .Where(room => room != null)
             .ToList();
@@ -177,6 +180,7 @@ public class SurvivorManager : NetworkBehaviour
             if (room == null) break;
 
             usedRooms.Add(room);
+            questMiniGamePoints[quest] = room.miniGameSpawnPoint;
             positions.Add(GetSurvivorSpawnPosition(room));
         }
 
@@ -229,6 +233,9 @@ public class SurvivorManager : NetworkBehaviour
         for (int i = 0; i < assignedQuests.Count && i < positions.Count; i++)
         {
             QuestSO quest = assignedQuests[i];
+            if (questMiniGamePoints.TryGetValue(quest, out Transform miniGamePoint))
+                quest.SetMiniGameSpawnPoint(miniGamePoint);
+
             Vector3 survivorPosition = positions[i] + Vector3.up * SurvivorSpawnHeight;
             GameObject survivorObject = Instantiate(survivorPrefab, survivorPosition, Quaternion.identity);
 
