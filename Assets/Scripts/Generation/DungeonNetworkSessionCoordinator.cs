@@ -15,6 +15,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     [SerializeField] private DungeonGenerator generator;
     [SerializeField] private SurvivorManager survivorManager;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private LeakEventManager leakEventManager;
     [SerializeField] private GameObject evacuationZonePrefab;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField, Min(0)] private int enemyCount = 1;
@@ -45,11 +46,35 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         if (generator == null) generator = GetComponent<DungeonGenerator>();
         if (survivorManager == null) survivorManager = GetComponent<SurvivorManager>();
         if (gameManager == null) gameManager = GetComponent<GameManager>();
+        if (leakEventManager == null) leakEventManager = GetComponent<LeakEventManager>();
     }
+    private bool ValidateSessionConfiguration()
+    {
+        List<string> errors = new List<string>();
+        if (generator == null) errors.Add("DungeonGenerator is missing.");
+        if (survivorManager == null) errors.Add("SurvivorManager is missing.");
+
+        if (spawnGameplayContent)
+        {
+            if (gameManager == null) errors.Add("GameManager is missing.");
+            if (evacuationZonePrefab == null) errors.Add("Evacuation zone prefab is missing.");
+            if (leakEventManager == null) errors.Add("LeakEventManager is missing.");
+            if (enemyCount > 0 && enemyPrefab == null) errors.Add("Enemy prefab is missing.");
+        }
+
+        if (errors.Count == 0) return true;
+
+        Debug.LogError(
+            $"Network dungeon session configuration is invalid: {string.Join(" ", errors)}",
+            this);
+        return false;
+    }
+
 
     public override void OnStartServer()
     {
         ResolveReferences();
+        if (!ValidateSessionConfiguration()) return;
         if (!TryGenerateServerLayout()) return;
 
         RegisterPlayerSpawnPoints(generator.LastResult);
@@ -71,6 +96,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
 
     public override void OnStopServer()
     {
+        leakEventManager?.StopSession();
         if (clientTimeoutCoroutine != null)
             StopCoroutine(clientTimeoutCoroutine);
 
@@ -315,6 +341,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         survivorManager.SpawnSurvivorsAtPositions(positions);
         SpawnEnemies(result);
         gameManager.StartMatch(survivorCount);
+        leakEventManager?.BeginSession(result);
     }
 
     [Server]

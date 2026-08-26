@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
 
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
+    [SerializeField] private GameObject startingRepairToolPrefab;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
     private int selectedSlot;
 
@@ -39,6 +40,7 @@ public class Player : NetworkBehaviour
     public int MaxHealth => maxHealth;
     public int SelectedSlot => selectedSlot;
     public InventorySlot[] InventoryItems => inventory;
+    public GameObject StartingRepairToolPrefab => startingRepairToolPrefab;
 
     private bool HasStateAuthority => NetworkServer.active || !NetworkClient.active;
 
@@ -49,11 +51,18 @@ public class Player : NetworkBehaviour
         for (int i = 0; i < inventory.Length; i++)
             inventory[i] = new InventorySlot { slotIndex = i };
     }
+    private void Start()
+    {
+        if (!NetworkClient.active && !NetworkServer.active)
+            GiveStartingRepairTool(networked: false);
+    }
+
 
     public override void OnStartServer()
     {
         base.OnStartServer();
         EnsureNetworkSlots();
+        GiveStartingRepairTool(networked: true);
     }
 
     public override void OnStartClient()
@@ -73,6 +82,40 @@ public class Player : NetworkBehaviour
         }
 
         base.OnStopClient();
+    }
+
+    private void GiveStartingRepairTool(bool networked)
+    {
+        if (startingRepairToolPrefab == null)
+        {
+            Debug.LogError("Player has no starting repair tool prefab.", this);
+            return;
+        }
+
+        GameObject toolObject = Instantiate(
+            startingRepairToolPrefab,
+            transform.position,
+            transform.rotation);
+        RepairToolItem tool = toolObject.GetComponent<RepairToolItem>();
+        if (tool == null)
+        {
+            Debug.LogError("Starting repair tool prefab needs RepairToolItem.", toolObject);
+            Destroy(toolObject);
+            return;
+        }
+
+        if (networked) NetworkServer.Spawn(toolObject);
+
+        if (!PickupItem(tool))
+        {
+            if (networked)
+                NetworkServer.Destroy(toolObject);
+            else
+                Destroy(toolObject);
+            return;
+        }
+
+        SelectSlot(0);
     }
 
     private void LateUpdate()

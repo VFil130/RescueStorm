@@ -8,5 +8,6 @@ public interface IControllable
     void SetSprint(bool isSprinting);
     void ToggleCrouch();
     void Interact();
+    void SetPrimaryAction(bool held);
     void SelectSlot(int index);
 }

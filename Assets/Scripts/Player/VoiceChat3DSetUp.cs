@@ -13,9 +13,10 @@ public class VoiceChat3DSetUp : MonoBehaviour
 
     private IEnumerator Start()
     {
-        if (!NetworkClient.active) yield break;
+        while (!NetworkClient.active)
+            yield return null;
 
-        // Start order is not guaranteed between this component and UniVoice setup.
+        // The persistent menu setup may start before Mirror and UniVoice are ready.
         while (!UniVoiceMirrorSetupSample.HasSetUp || UniVoiceMirrorSetupSample.ClientSession?.Client == null)
         {
             yield return null;

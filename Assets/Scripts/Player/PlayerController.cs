@@ -67,10 +67,12 @@ public class PlayerController : NetworkBehaviour, IControllable
     private readonly List<Camera> suppressedSceneCameras = new List<Camera>();
     private CharacterController characterController;
     private Interactor interactor;
+    private LeakRepairController leakRepairController;
     private PlayerInputHandler inputHandler;
     private Vector3 moveDirection;
     private Vector2 currentInput;
     private float rotationX = 0;
+    private Vector3 previousPosition;
 
     [SyncVar] private bool isSprinting;
     private bool jumpRequested;
@@ -83,6 +85,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
+        leakRepairController = GetComponent<LeakRepairController>();
         interactor = GetComponent<Interactor>();
         inputHandler = GetComponent<PlayerInputHandler>();
         defaultYPos = playerCamera.transform.localPosition.y;
@@ -100,14 +103,18 @@ public class PlayerController : NetworkBehaviour, IControllable
 
     private void Update()
     {
-        if (!HasLocalControl) return;
+        if (!HasLocalControl)
+        {
+            UpdateAnimations();
+            return;
+        }
 
         if (jumpRequested)
         {
             moveDirection.y = jumpForce;
             jumpRequested = false;
         }
-        UpdateAnimations();
+
         if (canUseHeadbob)
             HandleHeadbob();
 
@@ -115,6 +122,7 @@ public class PlayerController : NetworkBehaviour, IControllable
             HandleFootsteps();
         HandleMovementInput();
         ApplyFinalMovements();
+        UpdateAnimations();
     }
 
     public override void OnStartClient()
@@ -171,10 +179,11 @@ public class PlayerController : NetworkBehaviour, IControllable
 
     public void Look(Vector2 input)
     {
-        rotationX -= input.y * lookSpeedY;
+        float sensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+        rotationX -= input.y * lookSpeedY * sensitivity;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-        transform.rotation *= Quaternion.Euler(0, input.x * lookSpeedX, 0);
+        transform.rotation *= Quaternion.Euler(0, input.x * lookSpeedX * sensitivity, 0);
     }
 
     public void Jump()
@@ -188,7 +197,20 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         interactor.DoInteract();
     }
+    public void SetPrimaryAction(bool held)
+    {
+        leakRepairController?.SetPrimaryAction(held);
+    }
+
     public void SetSprint(bool sprint)
+    {
+        isSprinting = sprint;
+        if (!IsStandalone && isLocalPlayer)
+            CmdSetSprint(sprint);
+    }
+
+    [Command]
+    private void CmdSetSprint(bool sprint)
     {
         isSprinting = sprint;
     }
@@ -196,6 +218,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     public void ToggleCrouch()
     {
         if (!duringCrouchAnimation && characterController.isGrounded)
+        if (!canCrouch) return;
         {
             StartCoroutine(CrouchStand());
         }
@@ -289,10 +312,13 @@ public class PlayerController : NetworkBehaviour, IControllable
     }
     private void UpdateAnimations()
     {
-        if (animator == null || !HasLocalControl) return;
+        if (animator == null) return;
 
-        bool isMoving = currentInput.magnitude > 0.1f;
+        bool isMoving = HasLocalControl
+            ? currentInput.magnitude > 0.1f
+            : (transform.position - previousPosition).sqrMagnitude > 0.0001f;
         bool isGrounded = characterController.isGrounded;
+        previousPosition = transform.position;
 
         animator.SetBool("IsMoving", isMoving);
         animator.SetBool("IsGrounded", isGrounded);
@@ -324,6 +350,15 @@ public class PlayerController : NetworkBehaviour, IControllable
         characterController.center = targetCenter;
 
         isCrouching = !isCrouching;
+        if (!IsStandalone && isLocalPlayer)
+            CmdSetCrouching(isCrouching);
+
         duringCrouchAnimation = false;
+    }
+
+    [Command]
+    private void CmdSetCrouching(bool crouching)
+    {
+        isCrouching = crouching;
     }
 }

@@ -5,9 +5,16 @@ public class AudioManager
     private AudioSource musicSource;
     private AudioSource sfxSource;
     private float masterVolume = 1f;
+    private float musicVolume = 1f;
+    private float sfxVolume = 1f;
+    private float currentMusicVolume = 1f;
 
     public AudioManager()
     {
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 0.8f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.8f);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 0.8f);
+
         GameObject audioRoot = new GameObject("AudioManager");
         Object.DontDestroyOnLoad(audioRoot);
 
@@ -30,7 +37,7 @@ public class AudioManager
         if (clips != null && clips.Length > 0)
         {
             AudioClip clip = clips[Random.Range(0, clips.Length)];
-            float finalVolume = volume * masterVolume;
+            float finalVolume = volume * masterVolume * sfxVolume;
             AudioSource.PlayClipAtPoint(clip, position, finalVolume);
         }
     }
@@ -41,7 +48,7 @@ public class AudioManager
         if (clips != null && clips.Length > 0)
         {
             AudioClip clip = clips[Random.Range(0, clips.Length)];
-            sfxSource.volume = volume * masterVolume;
+            sfxSource.volume = volume * masterVolume * sfxVolume;
             sfxSource.PlayOneShot(clip);
         }
     }
@@ -52,7 +59,8 @@ public class AudioManager
         if (clips != null && clips.Length > 0)
         {
             musicSource.clip = clips[0];
-            musicSource.volume = volume * masterVolume;
+            currentMusicVolume = volume;
+            RefreshMusicVolume();
             musicSource.Play();
         }
     }
@@ -65,6 +73,22 @@ public class AudioManager
     public void SetMasterVolume(float volume)
     {
         masterVolume = Mathf.Clamp01(volume);
-        musicSource.volume = musicSource.volume / (masterVolume + 0.001f) * masterVolume;
+        RefreshMusicVolume();
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        RefreshMusicVolume();
+    }
+
+    public void SetSfxVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+    }
+
+    private void RefreshMusicVolume()
+    {
+        musicSource.volume = currentMusicVolume * masterVolume * musicVolume;
     }
 }

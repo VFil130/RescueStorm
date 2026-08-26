@@ -816,6 +816,10 @@ MonoBehaviour:
   - {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
   - {fileID: 3051223387696177614, guid: c233351b6a4614042bcb351f60a8c32a, type: 3}
   - {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
+  - {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
+  - {fileID: 7450964642424829462, guid: 00f4dda588f36f045b7f92f203024504, type: 3}
+  - {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+  - {fileID: 692555095294960364, guid: ba2184e11f62a1048ba0064de3c49ebf, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -4701,6 +4705,7 @@ GameObject:
   - component: {fileID: 1141529817}
   - component: {fileID: 1141529816}
   - component: {fileID: 1141529821}
+  - component: {fileID: 1141529822}
   m_Layer: 0
   m_Name: DG
   m_TagString: Untagged
@@ -4725,9 +4730,10 @@ MonoBehaviour:
   syncInterval: 0
   generator: {fileID: 1141529819}
   survivorManager: {fileID: 1141529818}
-  gameManager: {fileID: 0}
-  evacuationZonePrefab: {fileID: 0}
-  enemyPrefab: {fileID: 0}
+  gameManager: {fileID: 1141529821}
+  leakEventManager: {fileID: 1141529822}
+  evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+  enemyPrefab: {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
   enemyCount: 1
   spawnGameplayContent: 1
   clientGenerationTimeout: 20
@@ -4842,6 +4848,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   matchDuration: 300
+  leakTimeDrainPerLeak: 0.5
+  maximumTimeDrainMultiplier: 2.5
+--- !u!114 &1141529822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1141529815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3038eafa509434429d3596f85cabf6c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LeakEventManager
+  gameManager: {fileID: 1141529821}
+  leakPrefab: {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
+  minimumInterval: 90
+  maximumInterval: 180
+  maximumActiveLeaks: 3
 --- !u!1 &1245435265
 GameObject:
   m_ObjectHideFlags: 0
@@ -7730,6 +7755,10 @@ PrefabInstance:
     - target: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
       propertyPath: m_Name
       value: Evac
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8227734161248638694, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
       propertyPath: sceneId

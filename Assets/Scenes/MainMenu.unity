@@ -465,6 +465,7 @@ MonoBehaviour:
   musicVolumeSlider: {fileID: 857829278}
   sfxVolumeSlider: {fileID: 892625429}
   mouseSensitivitySlider: {fileID: 1430140272}
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   forwardKeyButton: {fileID: 23617661}
   backwardKeyButton: {fileID: 1256119294}
   leftKeyButton: {fileID: 720647664}
@@ -4987,8 +4988,8 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: 
-  onlineScene: Assets/Scenes/DGTESTER.unity
+  offlineScene: Assets/Scenes/MainMenu.unity
+  onlineScene: Assets/Scenes/SampleScene.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 618993085}
   networkAddress: localhost
@@ -5005,6 +5006,8 @@ MonoBehaviour:
   - {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
   - {fileID: 692555095294960364, guid: ba2184e11f62a1048ba0064de3c49ebf, type: 3}
   - {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+  - {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
+  - {fileID: 7450964642424829462, guid: 00f4dda588f36f045b7f92f203024504, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -10539,7 +10542,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -444, y: 0}
+  m_AnchoredPosition: {x: -443.99997, y: 0}
   m_SizeDelta: {x: -1000, y: -200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1188843112

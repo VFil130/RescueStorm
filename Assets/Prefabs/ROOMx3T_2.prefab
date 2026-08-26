@@ -144,9 +144,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 0
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!1 &7076172694372683012 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3606193974558837768, guid: f437ad9ab89ffe948a1f53accf9b0704, type: 3}

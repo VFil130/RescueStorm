@@ -6,6 +6,8 @@ public class GameManager : NetworkBehaviour
 {
     [Header("Game Settings")]
     [SerializeField] private float matchDuration = 300f;
+    [SerializeField, Min(0f)] private float leakTimeDrainPerLeak = 0.5f;
+    [SerializeField, Min(1f)] private float maximumTimeDrainMultiplier = 2.5f;
 
     [SyncVar(hook = nameof(OnTimeLeftChanged))]
     private float timeLeft;
@@ -15,6 +17,8 @@ public class GameManager : NetworkBehaviour
     private int totalSurvivors;
     [SyncVar] private bool isGameActive;
     [SyncVar] private bool isGameOver;
+    [SyncVar(hook = nameof(OnActiveLeakCountChanged))]
+    private int activeLeakCount;
 
     private float matchTimer;
 
@@ -24,6 +28,8 @@ public class GameManager : NetworkBehaviour
     public event System.Action<float> OnTimeUpdated;
     public event System.Action<int, int> OnSurvivorsUpdated;
     public event System.Action<bool> OnGameEnded;
+    public event System.Action<int> OnActiveLeaksUpdated;
+    public event System.Action OnLeakSpawned;
 
     private bool HasStateAuthority =>
         isServer || (!NetworkServer.active && !NetworkClient.active);
@@ -41,20 +47,28 @@ public class GameManager : NetworkBehaviour
         timeLeft = matchDuration;
         survivorsSaved = 0;
         totalSurvivors = survivorCount;
+        activeLeakCount = 0;
         isGameActive = true;
         isGameOver = false;
         if (NetworkServer.active)
             RpcOnMatchStarted(survivorCount);
         else
+        {
             OnSurvivorsUpdated?.Invoke(0, survivorCount);
+            OnTimeUpdated?.Invoke(timeLeft);
+            OnActiveLeaksUpdated?.Invoke(0);
+        }
     }
 
     private void Update()
     {
         if (!HasStateAuthority || !isGameActive || isGameOver) return;
 
-        matchTimer -= Time.deltaTime;
+        matchTimer -= Time.deltaTime * GetTimeDrainMultiplier();
         timeLeft = Mathf.Max(0f, matchTimer);
+        if (!NetworkServer.active)
+            OnTimeUpdated?.Invoke(timeLeft);
+
         if (matchTimer <= 0f) EndMatch(false);
     }
 
@@ -74,10 +88,30 @@ public class GameManager : NetworkBehaviour
 
         isGameActive = false;
         isGameOver = true;
+        SetActiveLeakCount(0);
         if (NetworkServer.active)
             RpcOnMatchEnded(victory);
         else
             OnGameEnded?.Invoke(victory);
+    }
+
+    public void SetActiveLeakCount(int count)
+    {
+        if (!HasStateAuthority) return;
+
+        activeLeakCount = Mathf.Max(0, count);
+        if (!NetworkServer.active)
+            OnActiveLeaksUpdated?.Invoke(activeLeakCount);
+    }
+
+    public void NotifyLeakSpawned()
+    {
+        if (!HasStateAuthority) return;
+
+        if (NetworkServer.active)
+            RpcOnLeakSpawned();
+        else
+            OnLeakSpawned?.Invoke();
     }
 
     [ClientRpc]
@@ -108,6 +142,12 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void RpcOnLeakSpawned()
+    {
+        OnLeakSpawned?.Invoke();
+    }
+
     private void OnTimeLeftChanged(float _, float newValue)
     {
         OnTimeUpdated?.Invoke(newValue);
@@ -123,9 +163,29 @@ public class GameManager : NetworkBehaviour
         OnSurvivorsUpdated?.Invoke(survivorsSaved, newValue);
     }
 
+    private void OnActiveLeakCountChanged(int _, int newValue)
+    {
+        OnActiveLeaksUpdated?.Invoke(newValue);
+    }
+
+    public static float CalculateTimeDrainMultiplier(
+        int leakCount,
+        float drainPerLeak = 0.5f,
+        float maximumMultiplier = 2.5f)
+    {
+        return Mathf.Min(
+            Mathf.Max(1f, maximumMultiplier),
+            1f + Mathf.Max(0, leakCount) * Mathf.Max(0f, drainPerLeak));
+    }
+
     public float GetTimeLeft() => timeLeft;
     public int GetSurvivorsSaved() => survivorsSaved;
     public int GetTotalSurvivors() => totalSurvivors;
     public bool IsGameActive() => isGameActive;
     public bool IsGameOver() => isGameOver;
+    public int GetActiveLeakCount() => activeLeakCount;
+    public float GetTimeDrainMultiplier() => CalculateTimeDrainMultiplier(
+        activeLeakCount,
+        leakTimeDrainPerLeak,
+        maximumTimeDrainMultiplier);
 }

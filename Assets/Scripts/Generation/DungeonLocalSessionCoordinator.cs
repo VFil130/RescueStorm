@@ -13,6 +13,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
     [SerializeField] private DungeonGenerator generator;
     [SerializeField] private SurvivorManager survivorManager;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private LeakEventManager leakEventManager;
     [SerializeField] private GameObject localPlayerPrefab;
     [SerializeField] private GameObject evacuationZonePrefab;
     [SerializeField] private bool spawnGameplayContent = true;
@@ -73,6 +74,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
         if (survivorManager == null) survivorManager = GetComponent<SurvivorManager>();
         if (gameManager == null) gameManager = GetComponent<GameManager>();
 
+        if (leakEventManager == null) leakEventManager = GetComponent<LeakEventManager>();
         // The inactive NetworkManager is used only as a prefab reference in local mode.
         // It is never started and no networking code runs.
         if (localPlayerPrefab == null)
@@ -159,6 +161,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
 
         survivorManager.SpawnSurvivorsLocallyAtPositions(positions);
         gameManager?.StartMatch(survivorCount);
+        leakEventManager?.BeginSession(result);
     }
 
     private void SpawnEvacuationZone(DungeonGenerationResult result)

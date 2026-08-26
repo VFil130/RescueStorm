@@ -24,6 +24,8 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     private GameManager gameManager;
     private GameObject lastInteractor;
     private GameObject indicatorInstance;
+    private bool questInitialized;
+    private bool ownsQuestRuntime;
 
     public bool IsHeavy => isHeavy;
     public string Name => survivorName;
@@ -35,6 +37,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     private void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
+        EnsureQuestInitialized();
         if (quest != null) SpawnIndicator();
     }
 
@@ -124,9 +127,12 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
 
     public void SetQuest(QuestSO newQuest)
     {
-        quest = newQuest;
+        ReleaseOwnedQuest();
+        quest = newQuest != null ? Instantiate(newQuest) : null;
+        ownsQuestRuntime = quest != null;
+        questInitialized = false;
         questId = newQuest != null ? newQuest.questId : string.Empty;
-        quest?.Initialize(this);
+        EnsureQuestInitialized();
         SpawnIndicator();
     }
 
@@ -171,13 +177,38 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
             renderer.material.color = color;
         }
     }
-    public void SetIndicator(GameObject gm)
+
+    public void SetIndicator(GameObject indicator)
     {
-        itemPrefab = gm;
+        itemPrefab = indicator;
     }
+
     private void OnDestroy()
     {
         if (indicatorInstance != null) Destroy(indicatorInstance);
+        ReleaseOwnedQuest();
+    }
+
+    private void EnsureQuestInitialized()
+    {
+        if (questInitialized || quest == null || !HasStateAuthority) return;
+
+        quest.Initialize(this);
+        questInitialized = true;
+    }
+
+    private void ReleaseOwnedQuest()
+    {
+        if (!ownsQuestRuntime || quest == null) return;
+
+        if (Application.isPlaying)
+            Destroy(quest);
+        else
+            DestroyImmediate(quest);
+
+        quest = null;
+        ownsQuestRuntime = false;
+        questInitialized = false;
     }
 
     private void OnQuestCompletedChanged(bool _, bool completed)

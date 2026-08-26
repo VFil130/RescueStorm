@@ -124,6 +124,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Slot5",
+                    "type": "Button",
+                    "id": "da2c11d8-9c6e-42f0-ae65-56334143f0dc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Talk",
                     "type": "Button",
                     "id": "160bba3d-64ce-4eb6-8d54-60099e017ce8",
@@ -560,6 +569,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Slot4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e2c0d142-7f19-47f9-b2c0-e1b8bc8bcaa5",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slot5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

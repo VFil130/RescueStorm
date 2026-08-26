@@ -371,6 +371,10 @@ public sealed class RoomDataEditor : Editor
             serializedObject.FindProperty("enemySpawnPoints"),
             new GUIContent("Enemy Spawns", "Possible enemy starting positions in this room."),
             includeChildren: true);
+        EditorGUILayout.PropertyField(
+            serializedObject.FindProperty("leakSpawnPoints"),
+            new GUIContent("Leak Spawns", "Pipe markers eligible for timed leak events."),
+            includeChildren: true);
 
         EditorGUILayout.Space();
         showAdvancedSettings = EditorGUILayout.Foldout(
@@ -407,6 +411,14 @@ public sealed class RoomDataEditor : Editor
             EditorUtility.SetDirty(room);
             serializedObject.Update();
         }
+        if (GUILayout.Button("Refresh Leak Spawns"))
+        {
+            Undo.RecordObject(room, "Refresh leak spawn points");
+            room.RefreshLeakSpawnPoints();
+            EditorUtility.SetDirty(room);
+            serializedObject.Update();
+        }
+
 
         IReadOnlyList<DoorPoint> sockets = room.GetDoorPoints();
         if (sockets.Count == 0)
@@ -491,6 +503,7 @@ public static class DungeonGeneratorBatchValidation
 
     public static void Run()
     {
+        RescueStormProjectValidator.Validate();
         EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Single);
         DungeonGenerator generator = UnityEngine.Object.FindFirstObjectByType<DungeonGenerator>();
         if (generator == null)
@@ -535,6 +548,7 @@ public static class DungeonGeneratorBatchValidation
 
         ValidateCombinedMandatoryAndEvacuationRoles();
         ValidateDeterministicLayout(generator);
+        ValidateGeneratedLeakPoints(generator);
         ValidateQuestRoomAndSurvivor(generator);
 
         generator.Seed = originalSeed;
@@ -572,6 +586,39 @@ public static class DungeonGeneratorBatchValidation
 
         if (!string.Equals(firstSignature, secondSignature, StringComparison.Ordinal))
             throw new InvalidOperationException("The same synchronized seed produced different layouts.");
+    }
+
+    private static void ValidateGeneratedLeakPoints(DungeonGenerator generator)
+    {
+        generator.TargetRoomCount = 20;
+        int[] seeds = { 909, 1010, 1111 };
+
+        foreach (int seed in seeds)
+        {
+            if (!generator.GenerateDungeon(seed, buildNavigation: false))
+                throw new InvalidOperationException(
+                    $"Could not generate leak marker validation layout for seed {seed}.");
+
+            List<LeakSpawnPoint> points = generator.LastResult.Modules
+                .Where(module => module != null && module.ModuleKind == RoomModuleKind.Corridor)
+                .SelectMany(module => module.GetLeakSpawnPoints())
+                .Where(point => point != null)
+                .ToList();
+            if (points.Count == 0) continue;
+
+            if (points.Any(point =>
+                    point.GetComponentInParent<RoomData>()?.ModuleKind !=
+                    RoomModuleKind.Corridor))
+            {
+                throw new InvalidOperationException(
+                    "A generated leak spawn point is not owned by a corridor.");
+            }
+
+            return;
+        }
+
+        throw new InvalidOperationException(
+            "Generated layouts did not preserve any configured corridor leak points.");
     }
 
     private static void ValidateQuestRoomAndSurvivor(DungeonGenerator generator)

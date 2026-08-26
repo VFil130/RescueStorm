@@ -6,6 +6,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System;
+using Zenject;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class SettingsManager : MonoBehaviour
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
     public Slider mouseSensitivitySlider;
+    [SerializeField] private InputActionAsset inputActions;
+
+    [InjectOptional] private AudioManager audioManager;
 
     // WASD
     public Button forwardKeyButton;
@@ -211,6 +215,7 @@ public class SettingsManager : MonoBehaviour
                             return;
                     }
 
+                    ApplyInputBinding(waitingForAction, newKey);
                     isWaitingForKey = false;
                     waitingForAction = "";
                     SaveAllSettings();
@@ -290,6 +295,7 @@ public class SettingsManager : MonoBehaviour
 
         // Разрешение
         int resIndex = PlayerPrefs.GetInt("ResolutionIndex", resolutionDropdown.value);
+        resIndex = Mathf.Clamp(resIndex, 0, Mathf.Max(0, resolutions.Length - 1));
         resolutionDropdown.value = resIndex;
         ApplyResolution(resIndex);
 
@@ -302,6 +308,7 @@ public class SettingsManager : MonoBehaviour
         masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.8f);
         musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.8f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 0.8f);
+        ApplyAudioSettings();
  
 
         // Чувствительность мыши
@@ -322,6 +329,7 @@ public class SettingsManager : MonoBehaviour
         key3 = LoadKey("Key3", KeyCode.Alpha3);
         key4 = LoadKey("Key4", KeyCode.Alpha4);
         key5 = LoadKey("Key5", KeyCode.Alpha5);
+        ApplyAllInputBindings();
 
         // SSAO состояние (загружаем после того, как ssaoToggle и ssaoFeature готовы)
         int ssaoState = PlayerPrefs.GetInt("SSAOEnabled", 1);
@@ -468,6 +476,140 @@ public class SettingsManager : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value.ToString());
     }
+    private void ApplyAudioSettings()
+    {
+        if (audioManager == null) return;
+
+        audioManager.SetMasterVolume(masterVolumeSlider.value);
+        audioManager.SetMusicVolume(musicVolumeSlider.value);
+        audioManager.SetSfxVolume(sfxVolumeSlider.value);
+    }
+
+    private void ApplyAllInputBindings()
+    {
+        ApplyInputBinding("forward", forwardKey);
+        ApplyInputBinding("backward", backwardKey);
+        ApplyInputBinding("left", leftKey);
+        ApplyInputBinding("right", rightKey);
+        ApplyInputBinding("e", eKey);
+        ApplyInputBinding("space", spaceKey);
+        ApplyInputBinding("leftctrl", leftCtrlKey);
+        ApplyInputBinding("leftshift", leftShiftKey);
+        ApplyInputBinding("key1", key1);
+        ApplyInputBinding("key2", key2);
+        ApplyInputBinding("key3", key3);
+        ApplyInputBinding("key4", key4);
+        ApplyInputBinding("key5", key5);
+    }
+
+    private void ApplyInputBinding(string setting, KeyCode key)
+    {
+        if (inputActions == null) return;
+
+        string controlPath = ToKeyboardControlPath(key);
+        if (string.IsNullOrEmpty(controlPath)) return;
+
+        switch (setting)
+        {
+            case "forward":
+                ApplyMoveBinding("up", "<Keyboard>/w", controlPath);
+                break;
+            case "backward":
+                ApplyMoveBinding("down", "<Keyboard>/s", controlPath);
+                break;
+            case "left":
+                ApplyMoveBinding("left", "<Keyboard>/a", controlPath);
+                break;
+            case "right":
+                ApplyMoveBinding("right", "<Keyboard>/d", controlPath);
+                break;
+            case "e":
+                ApplyActionBinding("Interact", controlPath);
+                break;
+            case "space":
+                ApplyActionBinding("Jump", controlPath);
+                break;
+            case "leftctrl":
+                ApplyActionBinding("Crouch", controlPath);
+                break;
+            case "leftshift":
+                ApplyActionBinding("Sprint", controlPath);
+                break;
+            case "key1":
+                ApplyActionBinding("Slot1", controlPath);
+                break;
+            case "key2":
+                ApplyActionBinding("Slot2", controlPath);
+                break;
+            case "key3":
+                ApplyActionBinding("Slot3", controlPath);
+                break;
+            case "key4":
+                ApplyActionBinding("Slot4", controlPath);
+                break;
+            case "key5":
+                ApplyActionBinding("Slot5", controlPath);
+                break;
+        }
+    }
+
+    private void ApplyMoveBinding(string partName, string defaultPath, string controlPath)
+    {
+        InputAction move = inputActions.FindAction("Player/Move");
+        if (move == null) return;
+
+        for (int i = 0; i < move.bindings.Count; i++)
+        {
+            InputBinding binding = move.bindings[i];
+            if (binding.isPartOfComposite &&
+                string.Equals(binding.name, partName, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(binding.path, defaultPath, StringComparison.OrdinalIgnoreCase))
+            {
+                move.ApplyBindingOverride(i, controlPath);
+                return;
+            }
+        }
+    }
+
+    private void ApplyActionBinding(string actionName, string controlPath)
+    {
+        InputAction action = inputActions.FindAction($"Player/{actionName}");
+        if (action == null) return;
+
+        for (int i = 0; i < action.bindings.Count; i++)
+        {
+            if (action.bindings[i].path.StartsWith("<Keyboard>", StringComparison.OrdinalIgnoreCase))
+            {
+                action.ApplyBindingOverride(i, controlPath);
+                return;
+            }
+        }
+    }
+
+    private static string ToKeyboardControlPath(KeyCode key)
+    {
+        if (key >= KeyCode.A && key <= KeyCode.Z)
+            return $"<Keyboard>/{key.ToString().ToLowerInvariant()}";
+        if (key >= KeyCode.Alpha0 && key <= KeyCode.Alpha9)
+            return $"<Keyboard>/{key - KeyCode.Alpha0}";
+
+        return key switch
+        {
+            KeyCode.Space => "<Keyboard>/space",
+            KeyCode.LeftControl => "<Keyboard>/leftCtrl",
+            KeyCode.RightControl => "<Keyboard>/rightCtrl",
+            KeyCode.LeftShift => "<Keyboard>/leftShift",
+            KeyCode.RightShift => "<Keyboard>/rightShift",
+            KeyCode.LeftAlt => "<Keyboard>/leftAlt",
+            KeyCode.RightAlt => "<Keyboard>/rightAlt",
+            KeyCode.UpArrow => "<Keyboard>/upArrow",
+            KeyCode.DownArrow => "<Keyboard>/downArrow",
+            KeyCode.LeftArrow => "<Keyboard>/leftArrow",
+            KeyCode.RightArrow => "<Keyboard>/rightArrow",
+            _ => null
+        };
+    }
+
 
     void ApplyResolution(int index)
     {
@@ -491,9 +633,9 @@ public class SettingsManager : MonoBehaviour
     void OnResolutionChanged(int index) { if (!isLoading) { ApplyResolution(index); SaveAllSettings(); } }
     void OnChromaticToggleChanged(bool isOn) { if (!isLoading) { ApplyPostProcessing(); SaveAllSettings(); } }
     void OnBloomToggleChanged(bool isOn) { if (!isLoading) { ApplyPostProcessing(); SaveAllSettings(); } }
-    void OnMasterVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
-    void OnMusicVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
-    void OnSFXVolumeChanged(float val) { if (!isLoading) SaveAllSettings(); }
+    void OnMasterVolumeChanged(float val) { if (!isLoading) { ApplyAudioSettings(); SaveAllSettings(); } }
+    void OnMusicVolumeChanged(float val) { if (!isLoading) { ApplyAudioSettings(); SaveAllSettings(); } }
+    void OnSFXVolumeChanged(float val) { if (!isLoading) { ApplyAudioSettings(); SaveAllSettings(); } }
     void OnMouseSensitivityChanged(float val) { if (!isLoading) SaveAllSettings(); }
 
     // ---- Переназначение клавиш ----
@@ -566,6 +708,7 @@ public class SettingsManager : MonoBehaviour
         key4 = KeyCode.Alpha4;
         key5 = KeyCode.Alpha5;
 
+        ApplyAllInputBindings();
         UpdateAllKeyTexts();
         SaveAllSettings();
         Debug.Log("Все клавиши сброшены до значений по умолчанию");

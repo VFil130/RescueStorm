@@ -1044,9 +1044,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &26788028
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6805,9 +6807,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &136784474
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9591,9 +9595,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &180846531
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9897,9 +9903,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &193151641
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -25121,9 +25129,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &447259638
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -26071,9 +26081,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &461595411
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28392,9 +28404,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &489985396
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -37548,9 +37562,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &647914160
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -38034,9 +38050,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &654881556
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -40586,6 +40604,8 @@ MonoBehaviour:
   - {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
   - {fileID: 692555095294960364, guid: ba2184e11f62a1048ba0064de3c49ebf, type: 3}
   - {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
+  - {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
+  - {fileID: 7450964642424829462, guid: 00f4dda588f36f045b7f92f203024504, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -40630,8 +40650,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LobbyTelepaty
   lobbyListContainer: {fileID: 460202453}
   lobbyItemPrefab: {fileID: 2445008880875366522, guid: 219cb6fa594d062499bdd2be0b3caa37, type: 3}
-  lobbyPanel: {fileID: 1895800081}
-  mainMenuPanel: {fileID: 452289115}
+  searchField: {fileID: 0}
+  createPasswordInput: {fileID: 0}
+  joinPasswordInput: {fileID: 0}
 --- !u!1 &693740411
 GameObject:
   m_ObjectHideFlags: 0
@@ -41599,9 +41620,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &708135999
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -45003,9 +45026,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &774135652
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -45307,9 +45332,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &779190414
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -51433,6 +51460,7 @@ GameObject:
   - component: {fileID: 895398796}
   - component: {fileID: 895398797}
   - component: {fileID: 895398798}
+  - component: {fileID: 895398799}
   m_Layer: 0
   m_Name: DG
   m_TagString: Untagged
@@ -51473,10 +51501,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   survivorPrefab: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
+  survivorsCount: 5
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
   questItemPrefabs: []
-  survivorsCount: 5
 --- !u!114 &895398793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51550,6 +51578,7 @@ MonoBehaviour:
   generator: {fileID: 895398793}
   survivorManager: {fileID: 895398792}
   gameManager: {fileID: 895398798}
+  leakEventManager: {fileID: 895398799}
   localPlayerPrefab: {fileID: 545389564784142826, guid: 9ceba6db7ff24954e9bb3ff6c1c94562, type: 3}
   evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
   spawnGameplayContent: 1
@@ -51571,6 +51600,7 @@ MonoBehaviour:
   generator: {fileID: 895398793}
   survivorManager: {fileID: 895398792}
   gameManager: {fileID: 895398798}
+  leakEventManager: {fileID: 895398799}
   evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
   enemyPrefab: {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
   enemyCount: 1
@@ -51592,6 +51622,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   matchDuration: 300
+  leakTimeDrainPerLeak: 0.5
+  maximumTimeDrainMultiplier: 2.5
+--- !u!114 &895398799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895398790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3038eafa509434429d3596f85cabf6c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LeakEventManager
+  gameManager: {fileID: 895398798}
+  leakPrefab: {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
+  minimumInterval: 90
+  maximumInterval: 180
+  maximumActiveLeaks: 3
 --- !u!1 &895719084
 GameObject:
   m_ObjectHideFlags: 0
@@ -51943,9 +51992,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &899588032
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -54906,9 +54957,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &953067082
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -85679,9 +85732,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &1539578280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -88233,9 +88288,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &1591065602
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -108708,9 +108765,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &1929180376
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -109302,9 +109361,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &1935272040
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -115293,9 +115354,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &2024534476
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -119833,9 +119896,11 @@ MonoBehaviour:
   occupancyVolume: {fileID: 0}
   canBeEvacuationRoom: 1
   survivorSpawnPoint: {fileID: 0}
+  miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
   enemySpawnPoints: []
+  leakSpawnPoints: []
 --- !u!23 &2087645439
 MeshRenderer:
   m_ObjectHideFlags: 0

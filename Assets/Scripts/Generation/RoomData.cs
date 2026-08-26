@@ -22,6 +22,7 @@ public class RoomData : MonoBehaviour
     public List<Transform> itemSpawnPoints = new List<Transform>();
     [SerializeField] private List<Transform> playerSpawnPoints = new List<Transform>();
     [SerializeField] private List<Transform> enemySpawnPoints = new List<Transform>();
+    [SerializeField] private List<LeakSpawnPoint> leakSpawnPoints = new List<LeakSpawnPoint>();
 
     public float SelectionWeight => selectionWeight;
     public RoomModuleKind ModuleKind => moduleKind;
@@ -29,6 +30,7 @@ public class RoomData : MonoBehaviour
     public RoomRuntimeRole RuntimeRole { get; internal set; }
     public IReadOnlyList<Transform> PlayerSpawnPoints => playerSpawnPoints;
     public IReadOnlyList<Transform> EnemySpawnPoints => enemySpawnPoints;
+    public IReadOnlyList<LeakSpawnPoint> LeakSpawnPoints => GetLeakSpawnPoints();
 
     public IReadOnlyList<DoorPoint> GetDoorPoints()
     {
@@ -36,6 +38,14 @@ public class RoomData : MonoBehaviour
         if (doors.Count == 0) RefreshDoorPoints();
 
         return doors;
+    }
+
+    public IReadOnlyList<LeakSpawnPoint> GetLeakSpawnPoints()
+    {
+        leakSpawnPoints.RemoveAll(point => point == null);
+        if (leakSpawnPoints.Count == 0) RefreshLeakSpawnPoints();
+
+        return leakSpawnPoints;
     }
 
     public Bounds GetWorldBounds()
@@ -64,6 +74,12 @@ public class RoomData : MonoBehaviour
     {
         doors.Clear();
         doors.AddRange(GetComponentsInChildren<DoorPoint>(true));
+    }
+
+    public void RefreshLeakSpawnPoints()
+    {
+        leakSpawnPoints.Clear();
+        leakSpawnPoints.AddRange(GetComponentsInChildren<LeakSpawnPoint>(true));
     }
 
     internal void ResetRuntimeState()
