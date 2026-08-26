@@ -157,8 +157,15 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
             return;
         }
 
+        SpawnMonsterIntel();
         survivorManager.SpawnSurvivorsLocallyAtPositions(positions);
         gameManager?.StartMatch(survivorCount);
+    }
+
+    private void SpawnMonsterIntel()
+    {
+        GameObject intel = new GameObject("MonsterIntel");
+        intel.AddComponent<MonsterIntel>();
     }
 
     private void SpawnEvacuationZone(DungeonGenerationResult result)

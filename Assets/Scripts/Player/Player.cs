@@ -16,6 +16,10 @@ public class Player : NetworkBehaviour
     [SyncVar][SerializeField] private int health = 5;
     [SyncVar][SerializeField] private int maxHealth = 100;
 
+    [Header("Movement")]
+    [SerializeField] private float baseMoveSpeed = 5f;
+    [SyncVar] private float speedMultiplier = 1f;
+
     [Header("Inventory")]
     [SerializeField] private int lightSlotsCount = 4;
     [SyncVar(hook = nameof(OnSelectedSlotChanged))]
@@ -95,6 +99,27 @@ public class Player : NetworkBehaviour
 
         health = Mathf.Min(maxHealth, health + amount);
         OnHealthChanged?.Invoke(health, maxHealth);
+    }
+
+    public float SpeedMultiplier => speedMultiplier;
+
+    public void ApplySlow(float multiplier, float duration)
+    {
+        if (!HasStateAuthority) return;
+        StartCoroutine(SlowCoroutine(multiplier, duration));
+    }
+
+    [Server]
+    private void SetSpeedMultiplier(float value)
+    {
+        speedMultiplier = value;
+    }
+
+    private IEnumerator SlowCoroutine(float multiplier, float duration)
+    {
+        SetSpeedMultiplier(multiplier);
+        yield return new WaitForSeconds(duration);
+        SetSpeedMultiplier(1f);
     }
 
     private void Die()
