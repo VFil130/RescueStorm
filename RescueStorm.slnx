@@ -7,12 +7,12 @@
   <Project Path="Mirror.Components.csproj" />
   <Project Path="Zenject-ReflectionBaking-Editor.csproj" />
   <Project Path="Mirror.Editor.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Zenject-UnitTests-Editor.csproj" />
   <Project Path="Zenject-Editor.csproj" />
   <Project Path="Mirror.Examples.csproj" />
   <Project Path="Zenject-IntegrationTests.csproj" />
   <Project Path="kcp2k.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Mirror.csproj" />
   <Project Path="SimpleWebTransport.csproj" />
   <Project Path="Mirror.Authenticators.csproj" />
@@ -22,6 +22,6 @@
   <Project Path="Zenject-TestFramework.csproj" />
   <Project Path="Telepathy.csproj" />
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />
-  <Project Path="Mirror.CompilerSymbols.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Mirror.CompilerSymbols.csproj" />
 </Solution>
