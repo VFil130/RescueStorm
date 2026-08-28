@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer1_BaseMap:
-        m_Texture: {fileID: 2800000, guid: ae315ffb9910b0644afc83f6a554c3aa, type: 3}
+        m_Texture: {fileID: 2800000, guid: c0845167352611f41a0f2a64fc2194ae, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer1_MaskMap:
@@ -81,7 +81,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer2_BaseMap:
-        m_Texture: {fileID: 2800000, guid: ae315ffb9910b0644afc83f6a554c3aa, type: 3}
+        m_Texture: {fileID: 2800000, guid: f2267813d7bb1a246a92a653e0c53f63, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer2_MaskMap:
@@ -89,7 +89,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Layer2_NormalMap:
-        m_Texture: {fileID: 2800000, guid: d7b9d744e1c5fc941b3ab489779e1871, type: 3}
+        m_Texture: {fileID: 2800000, guid: f3ebda8fbfa2e7f41b84e4feda658952, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -153,9 +153,9 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaInvert: 0
-    - _AlphaMultiplier: 1
+    - _AlphaMultiplier: 0.794
     - _AlphaNoiseMax: 1
-    - _AlphaNoiseMin: 0.319
+    - _AlphaNoiseMin: 0.404
     - _AlphaNoiseScale: 1.13
     - _AlphaToMask: 0
     - _Blend: 0
@@ -182,7 +182,7 @@ Material:
     - _InvertVisibility: 0
     - _JitterScale: -0.82
     - _Metallic: 0
-    - _MinAlpha: 0.05
+    - _MinAlpha: 0.0844
     - _ModInvert: 0
     - _ModNoiseMax: 1
     - _ModNoiseMin: 0
@@ -198,7 +198,7 @@ Material:
     - _NormalTiling: 1
     - _OcclusionStrength: 1
     - _OverrideMetallicSmoothness: 1
-    - _PBRNoiseContrast: 2.6
+    - _PBRNoiseContrast: 5
     - _PBRNoiseHardness: 0.839
     - _PBRNoiseScale: 0.2
     - _PBRNoiseThreshold: 0.138
@@ -207,7 +207,7 @@ Material:
     - _ReceiveShadows: 1
     - _RotationVariance: 1.4
     - _ScaleVariance: 0.02
-    - _Smoothness: 0.421
+    - _Smoothness: 0.434
     - _Smoothness1: 0.5
     - _Smoothness2: 0.5
     - _SmoothnessOverride: 1
