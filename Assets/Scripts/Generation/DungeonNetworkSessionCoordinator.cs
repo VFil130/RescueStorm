@@ -378,7 +378,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
             return;
         }
 
-        List<Vector3> spawnPoints = result.EnemySpawnPoints
+        List<Transform> spawnPoints = result.EnemySpawnPoints
             .Where(point => point != null)
             .ToList();
         if (spawnPoints.Count == 0)
