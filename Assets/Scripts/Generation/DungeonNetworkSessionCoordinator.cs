@@ -426,7 +426,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
 
         foreach (Transform point in selectedPoints)
         {
-            Vector3 position = point.position + Vector3.up;
+            Vector3 position = point.position;
             GameObject vent = Instantiate(ventPrefab, position, point.rotation);
             NetworkServer.Spawn(vent);
         }
@@ -437,7 +437,6 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     {
         GameObject intel = new GameObject("MonsterIntel");
         intel.AddComponent<MonsterIntel>();
-        NetworkServer.Spawn(intel);
     }
 
     [Server]

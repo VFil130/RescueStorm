@@ -318,12 +318,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2024430304339457242}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3786868939428363878}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7231076582455762041}
   m_SourcePrefab: {fileID: 100100000, guid: a45efa7047af3a649a385a73a2ead4b2, type: 3}
 --- !u!4 &476528010889313455 stripped
 Transform:
@@ -377,12 +371,27 @@ MonoBehaviour:
   fleeSpeed: 7
   sightRange: 15
   attackRange: 2
+  maxHealth: 100
+  fleeThreshold: 0.25
+  cautiousThreshold: 0.5
+  regenRate: 5
+  regenDelay: 5
   attackCooldown: 3
   damage: 1
   patrolWaitTime: 5
   patrolRadius: 15
+  trapPrefab: {fileID: 0}
+  maxTraps: 5
+  trapCooldown: 8
+  ambushWaitTime: 15
+  ambushSearchRange: 30
+  ventCooldown: 10
+  ventTeleportRange: 40
+  respawnDelay: 7
+  intelQueryInterval: 2
   animator: {fileID: 8094738673803503230}
   audioSource: {fileID: 7703017497110289450}
+  enableLogs: 0
   target: {fileID: 0}
 --- !u!114 &14552151204123329
 MonoBehaviour:
@@ -588,44 +597,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkAnimator
   syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  clientAuthority: 0
-  animator: {fileID: 8094738673803503230}
---- !u!65 &3786868939428363878
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8278454828837564536}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1.08}
-  m_Center: {x: 0, y: 0.6, z: 0.33}
---- !u!114 &7231076582455762041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8278454828837564536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkAnimator
-  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   clientAuthority: 0

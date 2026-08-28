@@ -4776,10 +4776,6 @@ MonoBehaviour:
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
   - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
-  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
-  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
-  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
-  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
   questItemPrefabs: []
 --- !u!114 &1141529819
 MonoBehaviour:
@@ -4799,6 +4795,8 @@ MonoBehaviour:
   - {fileID: 3906211145985178178, guid: e49465fcd17e87c43aac63e8b748ab4e, type: 3}
   - {fileID: 6064486416381042561, guid: 06e99bc8f844571449239484854ccd80, type: 3}
   - {fileID: 6699440977101323357, guid: 4c9d5b695347f6345906e177122158c5, type: 3}
+  - {fileID: 6046942506379599462, guid: 03f1f81c0fc623946bf9c6af896e44d7, type: 3}
+  - {fileID: 2330214382295008163, guid: 63a9f18937364a140a8ab113a9859937, type: 3}
   startRoomPrefab: {fileID: 6046942506379599462, guid: 49f41f4fbc6086a4a98426d52fc639bb, type: 3}
   questRoomPrefabs: []
   mandatoryRoomPrefabs: []
@@ -4832,7 +4830,7 @@ Transform:
   m_GameObject: {fileID: 1141529815}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.5, y: -1.8, z: -33.8}
+  m_LocalPosition: {x: 64.69, y: -1.8, z: -33.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4856,7 +4854,7 @@ MonoBehaviour:
   matchDuration: 300
   leakTimeDrainPerLeak: 0.5
   maximumTimeDrainMultiplier: 2.5
-  sessionCoordinator: {fileID: 0}
+  sessionCoordinator: {fileID: 1141529816}
   enemySpawnDelay: 120
   enemyMinPlayerDistance: 12
 --- !u!114 &1141529822
