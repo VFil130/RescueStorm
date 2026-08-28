@@ -69,7 +69,7 @@ internal sealed class DungeonLayout
             rooms.SelectMany(room => room.PlayerSpawnPoints)
                 .Where(point => point != null)
                 .ToList(),
-            rooms.SelectMany(room => room.EnemySpawnPoints)
+            rooms.SelectMany(room => room.VentSpawnPoints)
                 .Where(point => point != null)
                 .ToList());
     }

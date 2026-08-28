@@ -21,7 +21,7 @@ public class RoomData : MonoBehaviour
     public Transform miniGameSpawnPoint;
     public List<Transform> itemSpawnPoints = new List<Transform>();
     [SerializeField] private List<Transform> playerSpawnPoints = new List<Transform>();
-    [SerializeField] private List<Transform> enemySpawnPoints = new List<Transform>();
+    [SerializeField] private List<Transform> ventSpawnPoints = new List<Transform>();
     [SerializeField] private List<LeakSpawnPoint> leakSpawnPoints = new List<LeakSpawnPoint>();
 
     public float SelectionWeight => selectionWeight;
@@ -29,7 +29,7 @@ public class RoomData : MonoBehaviour
     public bool CanBeEvacuationRoom => canBeEvacuationRoom;
     public RoomRuntimeRole RuntimeRole { get; internal set; }
     public IReadOnlyList<Transform> PlayerSpawnPoints => playerSpawnPoints;
-    public IReadOnlyList<Transform> EnemySpawnPoints => enemySpawnPoints;
+    public IReadOnlyList<Transform> VentSpawnPoints => ventSpawnPoints;
     public IReadOnlyList<LeakSpawnPoint> LeakSpawnPoints => GetLeakSpawnPoints();
 
     public IReadOnlyList<DoorPoint> GetDoorPoints()

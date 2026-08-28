@@ -12,7 +12,7 @@ public sealed class DungeonGenerationResult
     public IReadOnlyList<Transform> SurvivorSpawnPoints { get; }
     public IReadOnlyList<Transform> ItemSpawnPoints { get; }
     public IReadOnlyList<Transform> PlayerSpawnPoints { get; }
-    public IReadOnlyList<Transform> EnemySpawnPoints { get; }
+    public IReadOnlyList<Transform> VentSpawnPoints { get; }
 
     public DungeonGenerationResult(
         int seed,
@@ -24,7 +24,7 @@ public sealed class DungeonGenerationResult
         IReadOnlyList<Transform> survivorSpawnPoints,
         IReadOnlyList<Transform> itemSpawnPoints,
         IReadOnlyList<Transform> playerSpawnPoints,
-        IReadOnlyList<Transform> enemySpawnPoints)
+        IReadOnlyList<Transform> ventSpawnPoints)
     {
         Seed = seed;
         LoopCount = loopCount;
@@ -35,6 +35,6 @@ public sealed class DungeonGenerationResult
         SurvivorSpawnPoints = survivorSpawnPoints;
         ItemSpawnPoints = itemSpawnPoints;
         PlayerSpawnPoints = playerSpawnPoints;
-        EnemySpawnPoints = enemySpawnPoints;
+        VentSpawnPoints = ventSpawnPoints;
     }
 }

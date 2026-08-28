@@ -9,6 +9,11 @@ public class GameManager : NetworkBehaviour
     [SerializeField, Min(0f)] private float leakTimeDrainPerLeak = 0.5f;
     [SerializeField, Min(1f)] private float maximumTimeDrainMultiplier = 2.5f;
 
+    [Header("Enemy Spawning")]
+    [SerializeField] private DungeonNetworkSessionCoordinator sessionCoordinator;
+    [SerializeField, Min(0f)] private float enemySpawnDelay = 120f;
+    [SerializeField, Min(1f)] private float enemyMinPlayerDistance = 12f;
+
     [SyncVar(hook = nameof(OnTimeLeftChanged))]
     private float timeLeft;
     [SyncVar(hook = nameof(OnSurvivorsSavedChanged))]
@@ -21,6 +26,8 @@ public class GameManager : NetworkBehaviour
     private int activeLeakCount;
 
     private float matchTimer;
+    private float enemySpawnTimer;
+    private bool enemySpawned;
 
     [Inject] private AudioManager audioManager;
     [Inject] private ParticleManager particleManager;
@@ -50,6 +57,8 @@ public class GameManager : NetworkBehaviour
         activeLeakCount = 0;
         isGameActive = true;
         isGameOver = false;
+        enemySpawnTimer = enemySpawnDelay;
+        enemySpawned = sessionCoordinator == null;
         if (NetworkServer.active)
             RpcOnMatchStarted(survivorCount);
         else
@@ -69,7 +78,33 @@ public class GameManager : NetworkBehaviour
         if (!NetworkServer.active)
             OnTimeUpdated?.Invoke(timeLeft);
 
+        TickEnemySpawn();
+
         if (matchTimer <= 0f) EndMatch(false);
+    }
+
+    private void TickEnemySpawn()
+    {
+        if (enemySpawned || !NetworkServer.active) return;
+
+        enemySpawnTimer -= Time.deltaTime;
+        if (enemySpawnTimer <= 0f)
+        {
+            enemySpawned = true;
+            SpawnEnemy();
+        }
+    }
+
+    private void SpawnEnemy()
+    {
+        if (!NetworkServer.active) return;
+        if (sessionCoordinator == null)
+        {
+            Debug.LogError("Session coordinator is not assigned; cannot spawn the enemy.", this);
+            return;
+        }
+
+        sessionCoordinator.SpawnEnemy(enemyMinPlayerDistance);
     }
 
     public void AddSavedSurvivor()

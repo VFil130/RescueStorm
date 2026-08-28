@@ -69,6 +69,47 @@ public class VentManager : MonoBehaviour
         return closest;
     }
 
+    public Vent GetVentFarFromPlayers(float minPlayerDistance)
+    {
+        if (vents.Count == 0) return null;
+
+        Player[] players = FindObjectsByType<Player>(FindObjectsSortMode.None);
+        List<Vent> safeVents = new List<Vent>();
+        Vent fallback = null;
+        float fallbackScore = float.MinValue;
+
+        foreach (Vent v in vents)
+        {
+            if (v == null) continue;
+
+            float closestPlayerDist = float.MaxValue;
+            foreach (Player player in players)
+            {
+                if (player.Health <= 0) continue;
+                float dist = Vector3.Distance(v.transform.position, player.transform.position);
+                if (dist < closestPlayerDist)
+                    closestPlayerDist = dist;
+            }
+
+            if (closestPlayerDist >= minPlayerDistance)
+            {
+                safeVents.Add(v);
+                continue;
+            }
+
+            if (closestPlayerDist > fallbackScore)
+            {
+                fallbackScore = closestPlayerDist;
+                fallback = v;
+            }
+        }
+
+        if (safeVents.Count > 0)
+            return safeVents[Random.Range(0, safeVents.Count)];
+
+        return fallback;
+    }
+
     public Vent[] GetAllVents()
     {
         return vents.ToArray();

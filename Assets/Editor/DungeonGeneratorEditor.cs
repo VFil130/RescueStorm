@@ -368,8 +368,8 @@ public sealed class RoomDataEditor : Editor
             new GUIContent("Player Spawns", "Possible player starting positions in this room."),
             includeChildren: true);
         EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("enemySpawnPoints"),
-            new GUIContent("Enemy Spawns", "Possible enemy starting positions in this room."),
+            serializedObject.FindProperty("ventSpawnPoints"),
+            new GUIContent("Vent Spawns", "Possible ventilation points the monster travels and spawns from."),
             includeChildren: true);
         EditorGUILayout.PropertyField(
             serializedObject.FindProperty("leakSpawnPoints"),

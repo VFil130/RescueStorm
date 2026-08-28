@@ -20,7 +20,6 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject ventPrefab;
     [SerializeField] private GameObject ventManagerPrefab;
-    [SerializeField, Min(0)] private int enemyCount = 1;
     [SerializeField, Min(0)] private int ventCount = 5;
     [SerializeField] private bool spawnGameplayContent = true;
     [SerializeField, Min(1f)] private float clientGenerationTimeout = 20f;
@@ -62,7 +61,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
             if (gameManager == null) errors.Add("GameManager is missing.");
             if (evacuationZonePrefab == null) errors.Add("Evacuation zone prefab is missing.");
             if (leakEventManager == null) errors.Add("LeakEventManager is missing.");
-            if (enemyCount > 0 && enemyPrefab == null) errors.Add("Enemy prefab is missing.");
+            if (ventPrefab == null) errors.Add("Vent prefab is missing.");
         }
 
         if (errors.Count == 0) return true;
@@ -346,7 +345,6 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         }
 
         survivorManager.SpawnSurvivorsAtPositions(positions);
-        SpawnEnemies(result);
         gameManager.StartMatch(survivorCount);
         leakEventManager?.BeginSession(result);
     }
@@ -369,41 +367,6 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     }
 
     [Server]
-    private void SpawnEnemies(DungeonGenerationResult result)
-    {
-        if (enemyCount <= 0) return;
-        if (enemyPrefab == null)
-        {
-            Debug.LogError("Enemy prefab is not assigned.", this);
-            return;
-        }
-
-        List<Transform> spawnPoints = result.EnemySpawnPoints
-            .Where(point => point != null)
-            .ToList();
-        if (spawnPoints.Count == 0)
-        {
-            spawnPoints = result.Rooms
-                .Where(room => room != null && room != result.StartRoom)
-                .Select(room => room.transform)
-                .ToList();
-        }
-
-        if (spawnPoints.Count == 0) return;
-
-        int count = Mathf.Min(enemyCount, spawnPoints.Count);
-        for (int i = 0; i < count; i++)
-        {
-            Transform spawnPoint = spawnPoints[i];
-            GameObject enemy = Instantiate(
-                enemyPrefab,
-                spawnPoint.position + Vector3.up,
-                spawnPoint.rotation);
-            NetworkServer.Spawn(enemy);
-        }
-    }
-
-    [Server]
     private void SpawnVentManager()
     {
         if (ventManagerPrefab == null) return;
@@ -412,25 +375,59 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     }
 
     [Server]
+    public void SpawnEnemy(float minPlayerDistance = 12f)
+    {
+        if (!NetworkServer.active) return;
+        if (enemyPrefab == null)
+        {
+            Debug.LogError("Enemy prefab is not assigned.", this);
+            return;
+        }
+
+        VentManager ventManager = VentManager.Instance;
+        Vent spawnVent = ventManager != null
+            ? ventManager.GetVentFarFromPlayers(minPlayerDistance)
+            : null;
+
+        Vector3 spawnPosition = spawnVent != null ? spawnVent.SpawnPosition : Vector3.zero;
+        Quaternion spawnRotation = spawnVent != null ? spawnVent.SpawnRotation : Quaternion.identity;
+
+        if (spawnVent == null)
+        {
+            Debug.LogWarning("No vents available; enemy will be spawned at the world origin.", this);
+        }
+
+        GameObject enemy = Instantiate(enemyPrefab, spawnPosition, spawnRotation);
+        NetworkServer.Spawn(enemy);
+    }
+
+    [Server]
     private void SpawnVents(DungeonGenerationResult result)
     {
         if (ventPrefab == null || ventCount <= 0) return;
 
-        List<RoomData> availableRooms = result.Rooms
-            .Where(room => room != null && room != result.StartRoom)
+        List<Transform> ventPoints = result.VentSpawnPoints
+            .Where(point => point != null)
             .ToList();
-
-        if (availableRooms.Count == 0) return;
-
-        List<RoomData> selectedRooms = availableRooms
-            .OrderBy(_ => UnityEngine.Random.value)
-            .Take(Mathf.Min(ventCount, availableRooms.Count))
-            .ToList();
-
-        foreach (RoomData room in selectedRooms)
+        if (ventPoints.Count == 0)
         {
-            Vector3 position = room.transform.position + Vector3.up;
-            GameObject vent = Instantiate(ventPrefab, position, room.transform.rotation);
+            ventPoints = result.Rooms
+                .Where(room => room != null && room != result.StartRoom)
+                .Select(room => room.transform)
+                .ToList();
+        }
+
+        if (ventPoints.Count == 0) return;
+
+        List<Transform> selectedPoints = ventPoints
+            .OrderBy(_ => UnityEngine.Random.value)
+            .Take(Mathf.Min(ventCount, ventPoints.Count))
+            .ToList();
+
+        foreach (Transform point in selectedPoints)
+        {
+            Vector3 position = point.position + Vector3.up;
+            GameObject vent = Instantiate(ventPrefab, position, point.rotation);
             NetworkServer.Spawn(vent);
         }
     }
