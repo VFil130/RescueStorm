@@ -18,7 +18,10 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     [SerializeField] private LeakEventManager leakEventManager;
     [SerializeField] private GameObject evacuationZonePrefab;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject ventPrefab;
+    [SerializeField] private GameObject ventManagerPrefab;
     [SerializeField, Min(0)] private int enemyCount = 1;
+    [SerializeField, Min(0)] private int ventCount = 5;
     [SerializeField] private bool spawnGameplayContent = true;
     [SerializeField, Min(1f)] private float clientGenerationTimeout = 20f;
 
@@ -323,6 +326,10 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         if (result == null) return;
 
         SpawnEvacuationZone(result);
+        SpawnVentManager();
+        SpawnVents(result);
+        SpawnMonsterIntel();
+
         if (survivorCount == 0)
         {
             Debug.LogError("No quests were selected, so no survivors can be spawned.", this);
@@ -371,7 +378,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
             return;
         }
 
-        List<Transform> spawnPoints = result.EnemySpawnPoints
+        List<Vector3> spawnPoints = result.EnemySpawnPoints
             .Where(point => point != null)
             .ToList();
         if (spawnPoints.Count == 0)
@@ -394,6 +401,46 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
                 spawnPoint.rotation);
             NetworkServer.Spawn(enemy);
         }
+    }
+
+    [Server]
+    private void SpawnVentManager()
+    {
+        if (ventManagerPrefab == null) return;
+        GameObject manager = Instantiate(ventManagerPrefab, Vector3.zero, Quaternion.identity);
+        NetworkServer.Spawn(manager);
+    }
+
+    [Server]
+    private void SpawnVents(DungeonGenerationResult result)
+    {
+        if (ventPrefab == null || ventCount <= 0) return;
+
+        List<RoomData> availableRooms = result.Rooms
+            .Where(room => room != null && room != result.StartRoom)
+            .ToList();
+
+        if (availableRooms.Count == 0) return;
+
+        List<RoomData> selectedRooms = availableRooms
+            .OrderBy(_ => UnityEngine.Random.value)
+            .Take(Mathf.Min(ventCount, availableRooms.Count))
+            .ToList();
+
+        foreach (RoomData room in selectedRooms)
+        {
+            Vector3 position = room.transform.position + Vector3.up;
+            GameObject vent = Instantiate(ventPrefab, position, room.transform.rotation);
+            NetworkServer.Spawn(vent);
+        }
+    }
+
+    [Server]
+    private void SpawnMonsterIntel()
+    {
+        GameObject intel = new GameObject("MonsterIntel");
+        intel.AddComponent<MonsterIntel>();
+        NetworkServer.Spawn(intel);
     }
 
     [Server]
