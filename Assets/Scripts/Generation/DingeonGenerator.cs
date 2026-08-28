@@ -237,7 +237,7 @@ public class DungeonGenerator : MonoBehaviour
         List<GameObject> mandatoryRooms = GetMandatoryRoomPrefabs();
 
         if (targetRoomCount < 2)
-            errors.Add("Target room count must be at least 2 so start and evacuation rooms can both exist.");
+            errors.Add("Target room count must be at least 2 rooms.");
         if (roomPrefabs == null || roomPrefabs.Length == 0)
             errors.Add("At least one regular room prefab is required.");
         if (allPrefabs.Count == 0)
@@ -246,7 +246,7 @@ public class DungeonGenerator : MonoBehaviour
                 prefab.GetComponent<RoomData>() is RoomData data &&
                 data.ModuleKind == RoomModuleKind.Room &&
                 data.CanBeEvacuationRoom))
-            errors.Add("At least one non-start room prefab must allow the evacuation role.");
+            errors.Add("At least one room prefab must allow the evacuation role.");
 
         int mandatoryCount = mandatoryRooms
             .Count(room => room != null &&

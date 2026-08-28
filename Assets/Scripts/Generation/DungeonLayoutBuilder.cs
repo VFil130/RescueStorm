@@ -85,7 +85,12 @@ internal sealed class DungeonLayoutBuilder
 
     private RoomData AssignEvacuationRoom()
     {
-        DungeonPlacedModule evacuation = modules
+        DungeonPlacedModule startRoom = modules.FirstOrDefault(module =>
+            module.Depth == 0 &&
+            module.Data.ModuleKind == RoomModuleKind.Room &&
+            module.Data.CanBeEvacuationRoom);
+
+        DungeonPlacedModule evacuation = startRoom ?? modules
             .Where(module => module.Depth > 0 &&
                              module.Data.ModuleKind == RoomModuleKind.Room &&
                              module.Data.CanBeEvacuationRoom)

@@ -42,10 +42,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a84aabb6b3341e2459155b311bbfb055, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeakSpawnPoint
   leakOffset: {x: 0, y: 0, z: 0}
   leakEulerAngles: {x: 0, y: 0, z: 0}
+--- !u!1 &7481977162658011601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8343541014347863807}
+  m_Layer: 0
+  m_Name: vent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8343541014347863807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7481977162658011601}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7957920059077760618}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7636573747737293185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146,6 +177,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: -121095085521309547, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 153136695086102255, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 154651852089976994, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -190,6 +229,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: 4564323540566494724, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4792238474129296016, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -198,6 +241,18 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: 5395901009479200129, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5817027465764649468, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6722284175220763984, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7199063832881497952, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -229,6 +284,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8343541014347863807}
     - targetCorrespondingSourceObject: {fileID: 2331942632672047103, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5200715840714935757}
@@ -317,6 +375,12 @@ MonoBehaviour:
   miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
-  enemySpawnPoints: []
+  ventSpawnPoints:
+  - {fileID: 8343541014347863807}
   leakSpawnPoints:
   - {fileID: 7439113965597896079}
+--- !u!4 &7957920059077760618 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5a71518150bd5c4b96d01cee75819e4, type: 3}
+  m_PrefabInstance: {fileID: 7636573747737293185}
+  m_PrefabAsset: {fileID: 0}

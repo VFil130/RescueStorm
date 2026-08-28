@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4328672645439803816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3335761221735409317}
+  m_Layer: 0
+  m_Name: vent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3335761221735409317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328672645439803816}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.121, y: 0, z: -0.014}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4431109907087778040}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8078751608906233472
 GameObject:
   m_ObjectHideFlags: 0
@@ -42,7 +73,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a84aabb6b3341e2459155b311bbfb055, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeakSpawnPoint
   leakOffset: {x: 0, y: 0, z: 0}
   leakEulerAngles: {x: 0, y: 0, z: 0}
@@ -150,6 +181,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: -6680165856409516978, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -6586961272388058281, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -226,6 +261,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: -3451541053376192286, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -3440937650505208560, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -306,6 +345,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: -221712645340260023, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -167448307392967787, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -326,6 +369,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: 1111701599542665152, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1718126631106291949, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -430,6 +477,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 8cd17d57dac64de498c98c91e50f5967, type: 2}
+    - target: {fileID: 7658373821038686426, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7830992601980005063, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -461,6 +512,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 3335761221735409317}
     - targetCorrespondingSourceObject: {fileID: 6550534484093990141, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4479571718534391444}
@@ -544,9 +598,15 @@ MonoBehaviour:
   miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
-  enemySpawnPoints: []
+  ventSpawnPoints:
+  - {fileID: 3335761221735409317}
   leakSpawnPoints:
   - {fileID: 2218076470801357091}
+--- !u!4 &4431109907087778040 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
+  m_PrefabInstance: {fileID: 4248248526071596819}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6925660940734919662 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6550534484093990141, guid: 99c5ff9ae2aa68e46b3a24b5f3d4b6c4, type: 3}
