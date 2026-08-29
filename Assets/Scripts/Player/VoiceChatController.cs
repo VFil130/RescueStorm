@@ -14,15 +14,17 @@ public class VoiceChatController : NetworkBehaviour
     [SyncVar(hook = nameof(OnPlayerIdChanged))]
     private int playerId = -1;
     public System.Action<int> OnPlayerIdUpdated;
-    private void Awake()
+    void Awake()
     {
         inputHandler = GetComponent<PlayerInputHandler>();
         inputHandler.OnTalkStarted.AddListener(StartTalking);
         inputHandler.OnTalkStopped.AddListener(StopTalking);
+        var clientSession = UniVoiceMirrorSetupSample.ClientSession;
+        clientSession.InputEnabled = false;
         isTalking = false;
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         if (inputHandler != null)
         {
@@ -31,7 +33,7 @@ public class VoiceChatController : NetworkBehaviour
         }
         OnPlayerIdUpdated = null;
     }
-    private void Update()
+    void Update()
     {
         if (audioSource != null)
         {
@@ -51,26 +53,10 @@ public class VoiceChatController : NetworkBehaviour
         }
     }
 
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-        StartCoroutine(DisableVoiceInputWhenReady());
-    }
-
-    private IEnumerator DisableVoiceInputWhenReady()
-    {
-        while (!IsVoiceSessionReady)
-        {
-            yield return null;
-        }
-
-        UniVoiceMirrorSetupSample.ClientSession.InputEnabled = false;
-        isTalking = false;
-    }
-
     private void AssignPlayerId()
     {
-        playerId = connectionToClient != null ? connectionToClient.connectionId : FindAvailableId();
+        int newId = FindAvailableId();
+        playerId = newId;
         Debug.Log($"Игроку {netId} назначен ID: {playerId}");
     }
 
@@ -78,7 +64,7 @@ public class VoiceChatController : NetworkBehaviour
     {
         HashSet<int> usedIds = new HashSet<int>();
 
-        foreach (VoiceChatController player in FindObjectsByType<VoiceChatController>(FindObjectsSortMode.None))
+        foreach (var player in FindObjectsOfType<VoiceChatController>())
         {
             if (player != this && player.playerId >= 0)
             {
@@ -118,28 +104,32 @@ public class VoiceChatController : NetworkBehaviour
     }
     private void StartTalking()
     {
-        SetTalking(true);
+        if (!UniVoiceMirrorSetupSample.HasSetUp)
+            return;
+
+        var clientSession = UniVoiceMirrorSetupSample.ClientSession;
+        if (clientSession != null && !isTalking)
+        {
+            clientSession.InputEnabled = true;
+            isTalking = true;
+        }
     }
 
     private void StopTalking()
     {
-        SetTalking(false);
-    }
+        if (!UniVoiceMirrorSetupSample.HasSetUp)
+            return;
 
-    private void SetTalking(bool talking)
-    {
-        if (!IsVoiceSessionReady || isTalking == talking) return;
-
-        ClientSession<int> session = UniVoiceMirrorSetupSample.ClientSession;
-        session.InputEnabled = talking;
-        isTalking = talking;
+        var clientSession = UniVoiceMirrorSetupSample.ClientSession;
+        if (clientSession != null && isTalking)
+        {
+            clientSession.InputEnabled = false;
+            isTalking = false;
+        }
     }
 
     public bool IsTalking()
     {
         return isTalking;
     }
-
-    private static bool IsVoiceSessionReady =>
-        UniVoiceMirrorSetupSample.HasSetUp && UniVoiceMirrorSetupSample.ClientSession != null;
 }

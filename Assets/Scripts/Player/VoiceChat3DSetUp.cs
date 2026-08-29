@@ -8,92 +8,70 @@ using UnityEngine;
 
 public class VoiceChat3DSetUp : MonoBehaviour
 {
-    private readonly HashSet<int> configuredPeers = new HashSet<int>();
-    private IAudioClient<int> subscribedClient;
+    private Dictionary<int, bool> assignedPeers = new Dictionary<int, bool>();
 
-    private IEnumerator Start()
+    void Start()
     {
-        while (!NetworkClient.active)
-            yield return null;
+        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
+        client.OnPeerJoined += SetUpPeer;
+    }
 
-        // The persistent menu setup may start before Mirror and UniVoice are ready.
-        while (!UniVoiceMirrorSetupSample.HasSetUp || UniVoiceMirrorSetupSample.ClientSession?.Client == null)
+    void OnDestroy()
+    {
+        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
+        if (client != null)
+            client.OnPeerJoined -= Setup3DForPeer;
+    }
+
+    private void SetUpPeer(int peerId)
+    {
+        Invoke(nameof(GetAllPeers), 1f);
+    }
+
+    private void GetAllPeers()
+    {
+        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
+        foreach (var peerId in client.PeerIDs)
         {
-            yield return null;
-        }
-
-        subscribedClient = UniVoiceMirrorSetupSample.ClientSession.Client;
-        subscribedClient.OnPeerJoined += OnPeerJoined;
-        ConfigurePeerAudioSources();
-        SchedulePeerScan();
-    }
-
-    private void OnDestroy()
-    {
-        CancelInvoke();
-        if (subscribedClient != null)
-        {
-            subscribedClient.OnPeerJoined -= OnPeerJoined;
-            subscribedClient = null;
-        }
-    }
-
-    private void OnPeerJoined(int peerId)
-    {
-        SchedulePeerScan();
-    }
-
-    private void SchedulePeerScan()
-    {
-        Invoke(nameof(ConfigurePeerAudioSources), 1f);
-    }
-
-    private void ConfigurePeerAudioSources()
-    {
-        ClientSession<int> session = UniVoiceMirrorSetupSample.ClientSession;
-        IAudioClient<int> client = session?.Client;
-        if (client == null) return;
-
-        foreach (int peerId in client.PeerIDs)
-        {
-            if (configuredPeers.Contains(peerId)) continue;
-            ConfigurePeerAudio(peerId);
+            if (!assignedPeers.ContainsKey(peerId))
+            {
+                Setup3DForPeer(peerId);
+            }
         }
     }
 
-    private void ConfigurePeerAudio(int peerId)
+    private void Setup3DForPeer(int peerId)
     {
-        ClientSession<int> session = UniVoiceMirrorSetupSample.ClientSession;
-        if (session == null || session.Client == null) return;
-        if (peerId == session.Client.ID) return;
+        var localNetId = NetworkClient.connection.identity.netId;
+        if (peerId == (int)localNetId) return;
 
-        if (!session.PeerOutputs.TryGetValue(peerId, out IAudioOutput peerOutput)) return;
-        StreamedAudioSourceOutput output = peerOutput as StreamedAudioSourceOutput;
+        var output = UniVoiceMirrorSetupSample.ClientSession.PeerOutputs[peerId] as StreamedAudioSourceOutput;
         if (output == null) return;
 
-        AudioSource audioSource = output.Stream.UnityAudioSource;
+        var audioSource = output.Stream.UnityAudioSource;
         audioSource.spatialBlend = 1f;
         audioSource.maxDistance = 20f;
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
 
-        VoiceChatController[] controllers = FindObjectsByType<VoiceChatController>(FindObjectsSortMode.None);
+        var controllers = FindObjectsOfType<VoiceChatController>();
 
-        foreach (VoiceChatController controller in controllers)
+        foreach (var controller in controllers)
         {
             if (IsLocalPlayer(controller.gameObject) || controller.audioSource != null) continue;
             if (controller.GetPlayerId() == peerId)
             {
                 controller.SetAudioSource(audioSource);
-                configuredPeers.Add(peerId);
+                assignedPeers[peerId] = true;
                 Debug.Log($"Назначен AudioSource для {controller.name} (peerId: {peerId})");
                 break;
             }
         }
     }
 
-    private static bool IsLocalPlayer(GameObject player)
+    private bool IsLocalPlayer(GameObject player)
     {
-        NetworkIdentity networkIdentity = player.GetComponent<NetworkIdentity>();
-        return networkIdentity != null && networkIdentity.isLocalPlayer;
+        var networkIdentity = player.GetComponent<NetworkIdentity>();
+        if (networkIdentity == null) return false;
+        return networkIdentity.isLocalPlayer;
     }
 }
