@@ -4776,6 +4776,9 @@ MonoBehaviour:
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
   - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
+  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
+  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
+  - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
   questItemPrefabs: []
 --- !u!114 &1141529819
 MonoBehaviour:
