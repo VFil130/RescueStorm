@@ -59,7 +59,6 @@ public class SurvivorManager : NetworkBehaviour
         List<GameObject> roomPrefabs = assignedQuests
             .Select(quest => quest.RequiredRoomPrefab)
             .Where(prefab => prefab != null)
-            .Distinct()
             .ToList();
 
         IEnumerable<string> legacyRoomNames = assignedQuests

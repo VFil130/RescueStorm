@@ -180,9 +180,7 @@ public class DungeonGenerator : MonoBehaviour
             .GroupBy(prefab => NormalizePrefabName(prefab.name), StringComparer.OrdinalIgnoreCase)
             .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
 
-        foreach (string roomName in roomNames
-                     .Where(name => !string.IsNullOrWhiteSpace(name))
-                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (string roomName in roomNames.Where(name => !string.IsNullOrWhiteSpace(name)))
         {
             string normalizedName = NormalizePrefabName(roomName);
             if (prefabsByName.TryGetValue(normalizedName, out GameObject prefab))
@@ -190,6 +188,10 @@ public class DungeonGenerator : MonoBehaviour
             else
                 missingRoomNames.Add(roomName);
         }
+
+        missingRoomNames = missingRoomNames
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
         return resolved;
     }
