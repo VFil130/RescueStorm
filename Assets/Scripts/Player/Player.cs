@@ -401,20 +401,26 @@ public class Player : NetworkBehaviour
             currentDisplayedItem.transform.SetPositionAndRotation(target.position, target.rotation);
     }
 
-    private static void SetHeldItemVisuals(GameObject item, bool visible)
+    private void SetHeldItemVisuals(GameObject item, bool visible)
     {
         SetCollidersEnabled(item, false);
         SetRenderersEnabled(item, visible);
-        SetItemLayer(item, true);
+        if (isLocalPlayer)
+        {
+            SetItemLayer(item, true);
+        }
     }
 
-    private static void SetWorldItemVisuals(GameObject item)
+    private void SetWorldItemVisuals(GameObject item)
     {
         if (item == null) return;
 
         SetCollidersEnabled(item, true);
         SetRenderersEnabled(item, true);
-        SetItemLayer(item, false);
+        if (isLocalPlayer)
+        {
+            SetItemLayer(item, true);
+        }
     }
 
     private static void SetCollidersEnabled(GameObject item, bool enabled)
