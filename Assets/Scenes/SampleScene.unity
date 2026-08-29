@@ -4731,7 +4731,7 @@ MonoBehaviour:
   generator: {fileID: 1141529819}
   survivorManager: {fileID: 1141529818}
   gameManager: {fileID: 1141529821}
-  leakEventManager: {fileID: 1141529822}
+  leakEventManager: {fileID: 0}
   evacuationZonePrefab: {fileID: 4457939921683489587, guid: 9708db0e7d00f6f468681be63423f646, type: 3}
   enemyPrefab: {fileID: 8278454828837564536, guid: 46c958e7618fd3d4ea94eed0b7dd3b4e, type: 3}
   ventPrefab: {fileID: 7875388512811536427, guid: a8f8f61ca04597148a88e6c5aabed3da, type: 3}
