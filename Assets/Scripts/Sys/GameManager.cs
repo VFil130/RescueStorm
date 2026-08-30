@@ -168,11 +168,13 @@ public class GameManager : NetworkBehaviour
         OnGameEnded?.Invoke(victory);
         if (victory)
         {
+            Debug.Log("Win");
             audioManager?.PlayMusic("Victory");
             particleManager?.PlayParticle("VictoryParticle", Vector3.zero);
         }
         else
         {
+            Debug.Log("LOSE");
             audioManager?.PlaySFX("Defeat", Vector3.zero);
         }
     }

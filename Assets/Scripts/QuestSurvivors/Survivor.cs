@@ -224,6 +224,7 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     private void ApplyQuestId(string id)
     {
         if (string.IsNullOrWhiteSpace(id)) return;
+        if (ownsQuestRuntime && quest != null) return;
 
         SurvivorManager manager = FindFirstObjectByType<SurvivorManager>();
         QuestSO resolvedQuest = manager != null ? manager.ResolveQuestById(id) : null;
@@ -234,6 +235,8 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         }
 
         quest = resolvedQuest;
+        questInitialized = false;
+        EnsureQuestInitialized();
         SpawnIndicator();
     }
 
