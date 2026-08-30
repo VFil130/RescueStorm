@@ -1033,6 +1033,7 @@ GameObject:
   - component: {fileID: 110795809369690781}
   - component: {fileID: 2211166595118532610}
   - component: {fileID: 7004755943419425098}
+  - component: {fileID: 6487781580982582132}
   m_Layer: 0
   m_Name: JOINT.015
   m_TagString: Untagged
@@ -1134,6 +1135,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8571494638603610969, guid: 5b4a0eeafd3606d4cafc82bd70eb81aa, type: 3}
+--- !u!114 &6487781580982582132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2988870764869764028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef953c93f94ea8344a2c48b30ca5804d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorPoint
+  direction: {x: 1, y: 0}
+  useTransformForward: 0
+  isOccupied: 0
 --- !u!1 &3174971388527822238
 GameObject:
   m_ObjectHideFlags: 0
@@ -1360,6 +1376,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3580058529086509294, guid: 5b4a0eeafd3606d4cafc82bd70eb81aa, type: 3}
+--- !u!1 &3588725188178642331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120001541421279329}
+  m_Layer: 0
+  m_Name: AidSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2120001541421279329
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3588725188178642331}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.402, y: 1.218, z: 2.041}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2727723549294953848}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4331312330656450673
 GameObject:
   m_ObjectHideFlags: 0
@@ -2648,6 +2695,7 @@ GameObject:
   - component: {fileID: 2613613016561178740}
   - component: {fileID: 2003597558427511065}
   - component: {fileID: 8483312229584520663}
+  - component: {fileID: 7639905423950774978}
   m_Layer: 0
   m_Name: ROOMKEY_Find
   m_TagString: Untagged
@@ -2669,6 +2717,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1266185839455401925}
+  - {fileID: 2120001541421279329}
+  - {fileID: 5192028537027678645}
   - {fileID: 783510135280410384}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2751,6 +2801,32 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3580592563267447354, guid: 5b4a0eeafd3606d4cafc82bd70eb81aa, type: 3}
+--- !u!114 &7639905423950774978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7236758999661736341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46b3156c738096245ae3ec4840e2e868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomData
+  size: {x: 1, y: 1}
+  doors:
+  - {fileID: 6487781580982582132}
+  moduleKind: 0
+  selectionWeight: 1
+  occupancyVolume: {fileID: 0}
+  canBeEvacuationRoom: 1
+  survivorSpawnPoint: {fileID: 5192028537027678645}
+  miniGameSpawnPoint: {fileID: 0}
+  itemSpawnPoints:
+  - {fileID: 2120001541421279329}
+  playerSpawnPoints: []
+  ventSpawnPoints: []
+  leakSpawnPoints: []
 --- !u!1 &7306153596306404081
 GameObject:
   m_ObjectHideFlags: 0
@@ -3430,6 +3506,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1678156846149436060, guid: 5b4a0eeafd3606d4cafc82bd70eb81aa, type: 3}
+--- !u!1 &8380824628189190957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5192028537027678645}
+  m_Layer: 0
+  m_Name: Survivor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5192028537027678645
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380824628189190957}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.91, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2727723549294953848}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8657655068622680015
 GameObject:
   m_ObjectHideFlags: 0
