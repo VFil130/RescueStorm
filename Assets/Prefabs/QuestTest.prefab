@@ -5167,7 +5167,8 @@ MonoBehaviour:
   miniGameSpawnPoint: {fileID: 5308363207129919610}
   itemSpawnPoints: []
   playerSpawnPoints: []
-  enemySpawnPoints: []
+  ventSpawnPoints: []
+  leakSpawnPoints: []
 --- !u!1 &6069276491962770859
 GameObject:
   m_ObjectHideFlags: 0

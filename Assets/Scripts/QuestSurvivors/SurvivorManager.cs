@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SurvivorManager : NetworkBehaviour
 {
-    private const float SurvivorSpawnHeight = 2f;
+    [SerializeField]private const float SurvivorSpawnHeight = 2f;
     private const float QuestItemSpawnHeight = 1.5f;
 
     [Header("Survivor spawning")]
