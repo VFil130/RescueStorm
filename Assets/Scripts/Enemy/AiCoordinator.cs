@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterIntel : MonoBehaviour
+public class AiCoordinator : MonoBehaviour
 {
-    public static MonsterIntel Instance { get; private set; }
+    public static AiCoordinator Instance { get; private set; }
 
     [Header("Settings")]
-    [SerializeField] private float updateInterval = 10f;
+    [SerializeField] private float updateInterval = 60f;
     [SerializeField] private float isolationBonusRange = 5f;
 
     private float updateTimer;

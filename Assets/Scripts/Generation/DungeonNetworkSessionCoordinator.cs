@@ -327,7 +327,7 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
         SpawnEvacuationZone(result);
         SpawnVentManager();
         SpawnVents(result);
-        SpawnMonsterIntel();
+        SpawnAiCoordinator();
 
         if (survivorCount == 0)
         {
@@ -433,10 +433,10 @@ public sealed class DungeonNetworkSessionCoordinator : NetworkBehaviour
     }
 
     [Server]
-    private void SpawnMonsterIntel()
+    private void SpawnAiCoordinator()
     {
-        GameObject intel = new GameObject("MonsterIntel");
-        intel.AddComponent<MonsterIntel>();
+        GameObject intel = new GameObject("AiCoordinator");
+        intel.AddComponent<AiCoordinator>();
     }
 
     [Server]
