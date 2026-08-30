@@ -1,3 +1,4 @@
+using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.AI;
@@ -30,6 +31,10 @@ public class PredatorAI : NetworkBehaviour
     [Header("Vent")]
     [SerializeField] private float ventCooldown = 12f;
     [SerializeField] private float ventUseRange = 30f;
+    [SerializeField] private float ventWalkTimeout = 10f;
+    [SerializeField] private float teleportDelay = 1f;
+    [SerializeField] private string enterVentAnimation = "VentEnter";
+    [SerializeField] private string exitVentAnimation = "VentExit";
 
     [Header("Trap")]
     [SerializeField] private GameObject trapPrefab;
@@ -52,6 +57,11 @@ public class PredatorAI : NetworkBehaviour
     private float ventTimer;
     private float trapTimer;
     private float stuckTimer;
+    private Vent enterVent;
+    private Vent exitVent;
+    private bool usingVent;
+    private bool ventTeleporting;
+    private float ventWalkTimer;
     private bool isFleeing;
     private BTNode behaviorTree;
 
@@ -83,6 +93,11 @@ public class PredatorAI : NetworkBehaviour
         attackTimer -= Time.deltaTime;
         trapTimer -= Time.deltaTime;
         UpdateAnimations();
+        if (usingVent)
+        {
+            UpdateVentTravel();
+            return;
+        }
         if (HandleVentAndHeal()) return;
         if (behaviorTree != null)
             behaviorTree.Execute();
@@ -160,13 +175,8 @@ public class PredatorAI : NetworkBehaviour
 
         if (ventTimer <= 0f && !hasHintPoint && FindClosestPlayer() == null)
         {
-            Vent vent = vm.GetRandomVent();
-            if (vent != null)
-            {
-                transform.position = vent.SpawnPosition;
-                transform.rotation = vent.SpawnRotation;
-            }
-            ventTimer = ventCooldown;
+            StartVentTravel(vm.GetRandomVent());
+            return false;
         }
 
         return false;
@@ -181,7 +191,7 @@ public class PredatorAI : NetworkBehaviour
         agent.SetDestination(vent.SpawnPosition);
     }
 
-    private void TryVentTeleportTowards(Vector3 destination)
+    private void TryVentTravelTowards(Vector3 destination)
     {
         VentManager vm = VentManager.Instance;
         if (vm == null || vm.VentCount == 0) return;
@@ -190,15 +200,71 @@ public class PredatorAI : NetworkBehaviour
         float currentDist = Vector3.Distance(transform.position, destination);
         if (currentDist < ventUseRange) return;
 
-        Vent vent = vm.GetClosestVent(destination);
-        if (vent == null) return;
+        Vent exit = vm.GetClosestVent(destination);
+        if (exit == null) return;
 
-        float newDist = Vector3.Distance(vent.SpawnPosition, destination);
+        float newDist = Vector3.Distance(exit.SpawnPosition, destination);
         if (newDist + 5f >= currentDist) return;
 
-        transform.position = vent.SpawnPosition;
-        transform.rotation = vent.SpawnRotation;
+        StartVentTravel(exit);
+    }
+
+    private void StartVentTravel(Vent exit)
+    {
+        VentManager vm = VentManager.Instance;
+        if (vm == null || exit == null || usingVent) return;
+
+        Vent enter = vm.GetClosestVent(transform.position);
+        if (enter == null) return;
+
+        enterVent = enter;
+        exitVent = exit;
+        usingVent = true;
+        ventWalkTimer = 0f;
+        agent.speed = walkSpeed;
+        agent.SetDestination(enter.SpawnPosition);
+    }
+
+    private void UpdateVentTravel()
+    {
+        if (ventTeleporting) return;
+
+        ventWalkTimer += Time.deltaTime;
+        if (ventWalkTimer >= ventWalkTimeout)
+        {
+            usingVent = false;
+            ventTeleporting = false;
+            ventTimer = ventCooldown;
+            agent.isStopped = false;
+            SetNewPatrolTarget();
+            return;
+        }
+
+        if (Vector3.Distance(transform.position, enterVent.SpawnPosition) > 1.5f)
+            return;
+
+        ventTeleporting = true;
+        StartCoroutine(EnterAndTeleport());
+    }
+
+    private IEnumerator EnterAndTeleport()
+    {
+        agent.isStopped = true;
+        agent.ResetPath();
+        PlayAnimation(enterVentAnimation);
+        yield return new WaitForSeconds(teleportDelay);
+
+        transform.position = exitVent.SpawnPosition;
+        transform.rotation = exitVent.SpawnRotation;
+        PlayAnimation(exitVentAnimation);
+        yield return new WaitForSeconds(teleportDelay);
+
+        usingVent = false;
+        ventTeleporting = false;
         ventTimer = ventCooldown;
+        agent.isStopped = false;
+        agent.speed = walkSpeed;
+        SetNewPatrolTarget();
     }
 
     private void TryPlaceTrap()
@@ -279,7 +345,7 @@ public class PredatorAI : NetworkBehaviour
         if (hasHintPoint &&
             Vector3.Distance(transform.position, hintPoint) > 1f)
         {
-            TryVentTeleportTowards(hintPoint);
+            TryVentTravelTowards(hintPoint);
             agent.SetDestination(hintPoint);
             return BTNode.Status.Running;
         }
@@ -325,7 +391,7 @@ public class PredatorAI : NetworkBehaviour
         Player player = target.GetComponent<Player>();
         if (player != null)
         {
-            PlayAttackAnimation();
+            PlayAnimation("NeckBite");
             player.TakeDamage(damage);
         }
     }
@@ -387,12 +453,12 @@ public class PredatorAI : NetworkBehaviour
         animator.SetBool("IsIdle", !isMoving);
     }
 
-    private void PlayAttackAnimation()
+    private void PlayAnimation(string stateName)
     {
         if (animator == null) return;
         animator.SetBool("IsRun", false);
         animator.SetBool("IsIdle", false);
-        animator.Play("NeckBite", 0, 0f);
+        animator.Play(stateName, 0, 0f);
     }
     #endregion
     void OnDrawGizmosSelected()
