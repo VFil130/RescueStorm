@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FetchItemQuestSO
   questId: 1
   questName: T1
-  requiredRoomPrefab: {fileID: 2330214382295008163, guid: 63a9f18937364a140a8ab113a9859937, type: 3}
+  requiredRoomPrefab: {fileID: 7236758999661736341, guid: 005edea4bff9bb84e8975aa5002403c5, type: 3}
   itemPrefab: {fileID: 3051223387696177614, guid: c233351b6a4614042bcb351f60a8c32a, type: 3}
   questIndicatorPrefab: {fileID: 2404826704320307475, guid: f1d46785643617d42870ad0eb5296ae3, type: 3}
   requiredRoom: QuestRoom_DeliverT1

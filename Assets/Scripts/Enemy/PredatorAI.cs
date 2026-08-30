@@ -51,9 +51,6 @@ public class PredatorAI : NetworkBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
 
-    [Header("Debug")]
-    [SerializeField] private bool enableLogs = false;
-
     private NavMeshAgent agent;
     [SerializeField] private Transform target;
     private Vector3 patrolTarget;
@@ -87,7 +84,6 @@ public class PredatorAI : NetworkBehaviour
         agent.enabled = true;
         agent.speed = walkSpeed;
         currentHealth = maxHealth;
-        BTNode.DebugLog = enableLogs;
         SetNewPatrolTarget();
         BuildBehaviorTree();
     }

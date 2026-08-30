@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class BTSequence : BTNode
 {
@@ -16,8 +15,6 @@ public class BTSequence : BTNode
         for (int i = 0; i < children.Count; i++)
         {
             Status status = children[i].Execute();
-            if (DebugLog)
-                Debug.Log($"[BT] Sequence child {i} ({children[i].nodeName ?? children[i].GetType().Name}) -> {status}");
             if (status == Status.Running)
                 return Status.Running;
             if (status == Status.Failure)

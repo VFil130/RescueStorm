@@ -4861,7 +4861,7 @@ MonoBehaviour:
   leakTimeDrainPerLeak: 0.5
   maximumTimeDrainMultiplier: 2.5
   sessionCoordinator: {fileID: 1141529816}
-  enemySpawnDelay: 120
+  enemySpawnDelay: 1
   enemyMinPlayerDistance: 12
 --- !u!114 &1141529822
 MonoBehaviour:

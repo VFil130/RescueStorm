@@ -1,9 +1,6 @@
-using UnityEngine;
-
 public abstract class BTNode
 {
     public enum Status { Success, Failure, Running }
-    public static bool DebugLog;
     public abstract Status Execute();
 
     public string nodeName;
