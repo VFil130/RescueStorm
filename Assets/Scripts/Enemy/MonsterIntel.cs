@@ -6,7 +6,7 @@ public class MonsterIntel : MonoBehaviour
     public static MonsterIntel Instance { get; private set; }
 
     [Header("Settings")]
-    [SerializeField] private float updateInterval = 0.5f;
+    [SerializeField] private float updateInterval = 10f;
     [SerializeField] private float isolationBonusRange = 5f;
 
     private float updateTimer;

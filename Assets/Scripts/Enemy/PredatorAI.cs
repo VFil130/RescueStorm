@@ -175,59 +175,17 @@ public class PredatorAI : NetworkBehaviour
 
     private void BuildBehaviorTree()
     {
-        var fleeSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(IsHealthLow) { nodeName = "IsHealthLow" },
-            new BTAction(() => FleeToVentUpdate()) { nodeName = "FleeToVent" }
-        }) { nodeName = "FleeSequence" };
-
-        var ventTeleportSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(CanTeleportThroughtVent) { nodeName = "CanVentTeleport" },
-            new BTAction(() => VentTeleportUpdate()) { nodeName = "VentTeleport" }
-        }) { nodeName = "VentTeleportSequence" };
-
-        var ambushSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(HasAmbushPoint) { nodeName = "HasAmbushPoint" },
-            new BTAction(() => AmbushUpdate()) { nodeName = "AmbushUpdate" }
-        }) { nodeName = "AmbushSequence" };
-
-        var trapSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(CanPlaceTrap) { nodeName = "CanPlaceTrap" },
-            new BTAction(() => PlaceTrapUpdate()) { nodeName = "PlaceTrap" }
-        }) { nodeName = "TrapSequence" };
-
-        var attackSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(IsTargetInAttackRange) { nodeName = "IsTargetInAttackRange" },
-            new BTAction(() => AttackUpdate()) { nodeName = "AttackUpdate" }
-        }) { nodeName = "AttackSequence" };
-
-        var intelHuntSequence = new BTSequence(new List<BTNode>
-        {
-            new BTCondition(HasIntelTarget) { nodeName = "HasIntelTarget" },
-            new BTAction(() => IntelHuntUpdate()) { nodeName = "IntelHuntUpdate" }
-        }) { nodeName = "IntelHuntSequence" };
-
-        var huntSequence = new BTSequence(new List<BTNode>
+        var chaseSequence = new BTSequence(new List<BTNode>
         {
             new BTCondition(() => { target = FindClosestPlayer(); return IsTargetInSight(); }) { nodeName = "FindTarget" },
             new BTAction(() => HuntUpdate()) { nodeName = "HuntUpdate" }
-        }) { nodeName = "HuntSequence" };
+        }) { nodeName = "ChaseSequence" };
 
         var patrolAction = new BTAction(() => PatrolUpdate()) { nodeName = "PatrolUpdate" };
 
         behaviorTree = new BTSelector(new List<BTNode>
         {
-            fleeSequence,
-            ventTeleportSequence,
-            ambushSequence,
-            trapSequence,
-            attackSequence,
-            intelHuntSequence,
-            huntSequence,
+            chaseSequence,
             patrolAction
         }) { nodeName = "Root" };
     }
@@ -350,6 +308,13 @@ public class PredatorAI : NetworkBehaviour
 
     private BTNode.Status AmbushUpdate()
     {
+        if (FindClosestPlayer() != null)
+        {
+            agent.isStopped = false;
+            hasAmbushPosition = false;
+            return BTNode.Status.Failure;
+        }
+
         if (ambushTimer <= 0f)
         {
             hasAmbushPosition = false;
