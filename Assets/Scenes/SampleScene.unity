@@ -4772,6 +4772,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  survivorSpawnHeight: 0
   survivorPrefab: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
   survivorsCount: 5
   availableQuests:
@@ -7489,7 +7490,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 131f4d34aa49f2844b6c021cc1589204, type: 2}
   m_BuildHeightMesh: 0

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SurvivorManager : NetworkBehaviour
 {
-    [SerializeField]private const float SurvivorSpawnHeight = 2f;
+    [SerializeField] private float survivorSpawnHeight = 2f;
     private const float QuestItemSpawnHeight = 1.5f;
 
     [Header("Survivor spawning")]
@@ -236,7 +236,7 @@ public class SurvivorManager : NetworkBehaviour
             if (questMiniGamePoints.TryGetValue(quest, out Transform miniGamePoint))
                 quest.SetMiniGameSpawnPoint(miniGamePoint);
 
-            Vector3 survivorPosition = positions[i] + Vector3.up * SurvivorSpawnHeight;
+            Vector3 survivorPosition = positions[i] + Vector3.up * survivorSpawnHeight;
             GameObject survivorObject = Instantiate(survivorPrefab, survivorPosition, Quaternion.identity);
 
             Survivor survivor = survivorObject.GetComponent<Survivor>();
