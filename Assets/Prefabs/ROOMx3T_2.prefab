@@ -6607,6 +6607,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1219375938482382040}
   - {fileID: 5212857590038268867}
   - {fileID: 5355234774875941635}
   - {fileID: 6723430852724770144}
@@ -6704,7 +6705,8 @@ MonoBehaviour:
   miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
-  ventSpawnPoints: []
+  ventSpawnPoints:
+  - {fileID: 1219375938482382040}
   leakSpawnPoints: []
 --- !u!1 &5745487527751230120
 GameObject:
@@ -9621,6 +9623,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8390225884546128818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1219375938482382040}
+  m_Layer: 0
+  m_Name: vent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1219375938482382040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8390225884546128818}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.00000062783295, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4783320118598414975}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8560875972478363469
 GameObject:
   m_ObjectHideFlags: 0

@@ -4499,6 +4499,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6308826621996035192}
   - {fileID: 3489259998447559420}
   - {fileID: 1606647112788945729}
   - {fileID: 9165173338910753732}
@@ -4598,7 +4599,8 @@ MonoBehaviour:
   miniGameSpawnPoint: {fileID: 0}
   itemSpawnPoints: []
   playerSpawnPoints: []
-  ventSpawnPoints: []
+  ventSpawnPoints:
+  - {fileID: 6308826621996035192}
   leakSpawnPoints: []
 --- !u!1 &5732961549264653360
 GameObject:
@@ -6788,6 +6790,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.268302, y: 2.7321692, z: 0.6654682}
   m_Center: {x: -1.8497827, y: 1.3426261, z: -0.5334439}
+--- !u!1 &8085233801728223642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6308826621996035192}
+  m_Layer: 0
+  m_Name: vent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6308826621996035192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8085233801728223642}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3, y: -0.0000009417494, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6561696633720461034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8119605041146157680
 GameObject:
   m_ObjectHideFlags: 0
