@@ -1845,7 +1845,7 @@ GameObject:
   - component: {fileID: 1127488229140976041}
   - component: {fileID: 5138376642039602906}
   - component: {fileID: 3935379173717870217}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.263
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3082,7 +3082,7 @@ GameObject:
   - component: {fileID: 3481786548704249129}
   - component: {fileID: 203910668046441299}
   - component: {fileID: 4112663080801563237}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.261
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3194,7 +3194,7 @@ GameObject:
   - component: {fileID: 6974732927695397460}
   - component: {fileID: 290771026140849958}
   - component: {fileID: 9049768713849083213}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.262
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5642,7 +5642,7 @@ GameObject:
   - component: {fileID: 4691182074057076830}
   - component: {fileID: 8148144634595858790}
   - component: {fileID: 285893866802044448}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.254
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5755,7 +5755,7 @@ GameObject:
   - component: {fileID: 5863890462270594336}
   - component: {fileID: 8218563308732669143}
   - component: {fileID: 5609894874767944737}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.264
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6227,7 +6227,7 @@ GameObject:
   - component: {fileID: 1789839366898586792}
   - component: {fileID: 8637723887219019225}
   - component: {fileID: 5764745414245113116}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.255
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6391,6 +6391,7 @@ GameObject:
   - component: {fileID: 1414429694340362022}
   - component: {fileID: 8832139803633255560}
   - component: {fileID: 5304885273353644486}
+  - component: {fileID: 8031360370050497455}
   m_Layer: 0
   m_Name: Main.019
   m_TagString: Untagged
@@ -6554,6 +6555,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8031360370050497455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5544646350741743510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &5549511583693033359
 GameObject:
   m_ObjectHideFlags: 0
@@ -8100,7 +8121,7 @@ GameObject:
   - component: {fileID: 4366219849350618463}
   - component: {fileID: 6149108091232523961}
   - component: {fileID: 1309120284376412669}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube.253
   m_TagString: Untagged
   m_Icon: {fileID: 0}

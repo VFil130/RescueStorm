@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 869849727696549298}
   - component: {fileID: 8767119372724098085}
   - component: {fileID: 4799469906547977323}
-  m_Layer: 0
+  - component: {fileID: 902033018513970455}
+  m_Layer: 7
   m_Name: teleskop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,6 +114,26 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7998251854403371387, guid: 62058924c189bf74bb59ae846a7ad6b7, type: 3}
+--- !u!114 &902033018513970455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225330985857837271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &297956470920411040
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,6 +685,7 @@ GameObject:
   - component: {fileID: 5146313502594021028}
   - component: {fileID: 1422831804219276668}
   - component: {fileID: 6192380333707366805}
+  - component: {fileID: 3553190493352572223}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -815,6 +837,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3553190493352572223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195815199602959435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &1279772603096686932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1319,7 @@ GameObject:
   - component: {fileID: 4554061271403020163}
   - component: {fileID: 7170870086236230954}
   - component: {fileID: 1426707115186158613}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: shkafchik.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1389,7 +1431,7 @@ GameObject:
   - component: {fileID: 4808279019487531625}
   - component: {fileID: 2150263237975961528}
   - component: {fileID: 2493597964314060642}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: korobki pol.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1683,7 +1725,7 @@ GameObject:
   - component: {fileID: 7151783515806573551}
   - component: {fileID: 3761121294120890578}
   - component: {fileID: 2070403149044359741}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ognetusitel.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1939,7 +1981,7 @@ GameObject:
   - component: {fileID: 887740699719639530}
   - component: {fileID: 7576390623712464123}
   - component: {fileID: 1243929441772666656}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2288,7 +2330,7 @@ GameObject:
   - component: {fileID: 3059202691864130145}
   - component: {fileID: 4798314227826149821}
   - component: {fileID: 8193885374677882893}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: shkaf1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2422,7 +2464,7 @@ GameObject:
   - component: {fileID: 7552308118240356414}
   - component: {fileID: 4653729683049227417}
   - component: {fileID: 6488652244735651962}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: kreslo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2556,7 +2598,7 @@ GameObject:
   - component: {fileID: 6511413189778029034}
   - component: {fileID: 5594931687512689992}
   - component: {fileID: 722175274857844584}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: divan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3204,7 +3246,7 @@ GameObject:
   - component: {fileID: 3654072712045200168}
   - component: {fileID: 9010822682084658725}
   - component: {fileID: 4706510546479815988}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: mini stol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3317,7 +3359,7 @@ GameObject:
   - component: {fileID: 6834646827053872500}
   - component: {fileID: 7470434663092267819}
   - component: {fileID: 8846369949962656454}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3429,7 +3471,7 @@ GameObject:
   - component: {fileID: 7823456368030506103}
   - component: {fileID: 3327716230151101243}
   - component: {fileID: 866431652087329245}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: divan.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4481,7 +4523,7 @@ GameObject:
   - component: {fileID: 5179138140231632584}
   - component: {fileID: 4882979353387779789}
   - component: {fileID: 5967790266014395311}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: gorshok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4954,7 +4996,7 @@ GameObject:
   - component: {fileID: 4173110946860380068}
   - component: {fileID: 1558067505219287556}
   - component: {fileID: 1276696376255246229}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stol.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5913,7 +5955,7 @@ GameObject:
   - component: {fileID: 394573810557544919}
   - component: {fileID: 6326243547772862935}
   - component: {fileID: 36022169923454354}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6026,7 +6068,7 @@ GameObject:
   - component: {fileID: 9152300281918526487}
   - component: {fileID: 3498567710827975652}
   - component: {fileID: 448890203840862435}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: shkafchik
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6733,7 +6775,7 @@ GameObject:
   - component: {fileID: 4550017043502028335}
   - component: {fileID: 8761341209825281451}
   - component: {fileID: 307545353553428520}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp upravleniya
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6957,7 +6999,7 @@ GameObject:
   - component: {fileID: 1862225561033441206}
   - component: {fileID: 9103627757870485703}
   - component: {fileID: 6466821845879827864}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: stulya
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7123,7 +7165,7 @@ GameObject:
   - component: {fileID: 5223305855673406599}
   - component: {fileID: 7022396356636169898}
   - component: {fileID: 3970432197637176696}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: korobki pol.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7235,7 +7277,7 @@ GameObject:
   - component: {fileID: 3587184674889972516}
   - component: {fileID: 7148355280419336661}
   - component: {fileID: 8725030823903875233}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: korobki pol.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7347,7 +7389,7 @@ GameObject:
   - component: {fileID: 4061383979209556114}
   - component: {fileID: 7456490930208746460}
   - component: {fileID: 957878291084350921}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: korobki pol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7459,7 +7501,7 @@ GameObject:
   - component: {fileID: 3386655737213318466}
   - component: {fileID: 6029047896838548847}
   - component: {fileID: 2215665483727788352}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ognetusitel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8038,7 +8080,7 @@ GameObject:
   - component: {fileID: 7744521864183554528}
   - component: {fileID: 3176206836291292421}
   - component: {fileID: 1180151363365990886}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}

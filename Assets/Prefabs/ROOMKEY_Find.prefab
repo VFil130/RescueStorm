@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4444602527596722597}
   - component: {fileID: 2047631672245600628}
   - component: {fileID: 1778823252307622349}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: shkafchik.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,9 @@ GameObject:
   - component: {fileID: 2976136216706271363}
   - component: {fileID: 6507892233829520840}
   - component: {fileID: 7097814055490349892}
-  m_Layer: 0
+  - component: {fileID: 4445223158587095128}
+  - component: {fileID: 6752525142121796457}
+  m_Layer: 7
   m_Name: kreslo.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,6 +372,48 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4445223158587095128
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461194631614484197}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6279907, y: 0.5453246, z: 0.72714925}
+  m_Center: {x: 2.456892, y: 0.2692938, z: 3.4118724}
+--- !u!65 &6752525142121796457
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461194631614484197}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.26411653, y: 0.74743414, z: 0.4684844}
+  m_Center: {x: 2.768683, y: 0.90647554, z: 3.6524894}
 --- !u!1 &612711775414516577
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,7 +426,7 @@ GameObject:
   - component: {fileID: 5266433407339878391}
   - component: {fileID: 8941363977351578473}
   - component: {fileID: 4681578831456805899}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1211,7 +1255,7 @@ GameObject:
   - component: {fileID: 1216718857551189741}
   - component: {fileID: 5834516138779250959}
   - component: {fileID: 5376104574562344386}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: room.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1805,7 +1849,7 @@ GameObject:
   - component: {fileID: 4372576773647639560}
   - component: {fileID: 8882025461941384361}
   - component: {fileID: 4060884763812781197}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1919,7 +1963,7 @@ GameObject:
   - component: {fileID: 7261730160583863066}
   - component: {fileID: 6248191211062849438}
   - component: {fileID: 7544687407884021990}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp block.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2324,6 +2368,7 @@ GameObject:
   - component: {fileID: 783510135280410384}
   - component: {fileID: 7161686556164680602}
   - component: {fileID: 8284802839274864409}
+  - component: {fileID: 4342659007279384610}
   m_Layer: 0
   m_Name: Main.001
   m_TagString: Untagged
@@ -2432,6 +2477,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4342659007279384610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6702669205918046950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &6710693166884776379
 GameObject:
   m_ObjectHideFlags: 0
@@ -2890,7 +2955,7 @@ GameObject:
   - component: {fileID: 4533679615582550875}
   - component: {fileID: 5564186781594794185}
   - component: {fileID: 8094189356898876883}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: room.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3002,7 +3067,7 @@ GameObject:
   - component: {fileID: 881923366151972947}
   - component: {fileID: 4524220981178599407}
   - component: {fileID: 240344341975631266}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: comp.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3206,7 +3271,7 @@ GameObject:
   - component: {fileID: 2867221452165170045}
   - component: {fileID: 9204634951019119758}
   - component: {fileID: 1209838723321346687}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3440,7 +3505,7 @@ GameObject:
   - component: {fileID: 575087851341486087}
   - component: {fileID: 1517253708340164784}
   - component: {fileID: 8672851442785545310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: room.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}

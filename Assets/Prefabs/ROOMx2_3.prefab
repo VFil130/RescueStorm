@@ -1853,7 +1853,7 @@ GameObject:
   - component: {fileID: 3212961297580419692}
   - component: {fileID: 4658771938817034390}
   - component: {fileID: 2958230987858046388}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2055,6 +2055,7 @@ GameObject:
   - component: {fileID: 3354816530475442830}
   - component: {fileID: 5341607457277775458}
   - component: {fileID: 3987304693867989128}
+  - component: {fileID: 8106904185375720161}
   m_Layer: 0
   m_Name: Main.014
   m_TagString: Untagged
@@ -2167,6 +2168,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8106904185375720161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4533619681502954917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &4569618207803842183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2179,7 +2200,7 @@ GameObject:
   - component: {fileID: 6785320890100075010}
   - component: {fileID: 5803321979633314903}
   - component: {fileID: 4747615661755705053}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2435,7 +2456,7 @@ GameObject:
   - component: {fileID: 6055022114644358852}
   - component: {fileID: 403566509169148803}
   - component: {fileID: 5133807844111471189}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3014,7 +3035,7 @@ GameObject:
   - component: {fileID: 5356224826181873272}
   - component: {fileID: 5343762063212352210}
   - component: {fileID: 4784718112537391093}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3179,7 +3200,7 @@ GameObject:
   - component: {fileID: 7760690402112360061}
   - component: {fileID: 8779004430093741944}
   - component: {fileID: 5334489577503836032}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: divan.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3525,7 +3546,7 @@ GameObject:
   - component: {fileID: 5664012646548143352}
   - component: {fileID: 3585163083181085122}
   - component: {fileID: 5111479347724378493}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3728,7 +3749,7 @@ GameObject:
   - component: {fileID: 1745793299117398041}
   - component: {fileID: 5896625412626466548}
   - component: {fileID: 166532269706652962}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4022,7 +4043,7 @@ GameObject:
   - component: {fileID: 4891417894057629202}
   - component: {fileID: 8566919116553438112}
   - component: {fileID: 8967859283253052057}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4461,7 +4482,7 @@ GameObject:
   - component: {fileID: 6371435241733367244}
   - component: {fileID: 3559095737317395100}
   - component: {fileID: 2122646456305159448}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: truba.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4574,7 +4595,7 @@ GameObject:
   - component: {fileID: 6576008922747732459}
   - component: {fileID: 4568393020786053421}
   - component: {fileID: 2336221076894666355}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: divan.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4921,7 +4942,7 @@ GameObject:
   - component: {fileID: 6334837472398822711}
   - component: {fileID: 8317726122414482576}
   - component: {fileID: 217590809265114411}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: truba.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5178,7 +5199,7 @@ GameObject:
   - component: {fileID: 8965850451521585816}
   - component: {fileID: 7702305488405963459}
   - component: {fileID: 3889828191482506052}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: truba.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5290,7 +5311,7 @@ GameObject:
   - component: {fileID: 5497380536663929336}
   - component: {fileID: 8335841886795360668}
   - component: {fileID: 4704544423570964673}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.010
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5492,7 +5513,7 @@ GameObject:
   - component: {fileID: 862139606937188443}
   - component: {fileID: 8188934453576639378}
   - component: {fileID: 8590356344158451811}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: terminal.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4024627537877980039}
   - component: {fileID: 1672803450451633703}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2905137916043032518}
   - component: {fileID: 4691583214697701508}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,8 @@ GameObject:
   - component: {fileID: 2101051471715036939}
   - component: {fileID: 2764817249493957719}
   - component: {fileID: 453092845298561641}
-  m_Layer: 0
+  - component: {fileID: 4200035350861431249}
+  m_Layer: 7
   m_Name: skameyki.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,6 +455,26 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2057095277894897019, guid: dc66fc20d8df4574dbf7fe17869ebca8, type: 3}
+--- !u!114 &4200035350861431249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965005321475454534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &985469205554045600
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +487,8 @@ GameObject:
   - component: {fileID: 2140877090230725354}
   - component: {fileID: 7627133449358389128}
   - component: {fileID: 6724432178315406125}
-  m_Layer: 0
+  - component: {fileID: 4433407078315246589}
+  m_Layer: 7
   m_Name: skameyki.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,6 +589,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.5384753, y: 2.7962563, z: 0.5731015}
   m_Center: {x: 3.2297487, y: 1.3981282, z: -4.727989}
+--- !u!114 &4433407078315246589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985469205554045600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &1025062208874899880
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,7 +843,8 @@ GameObject:
   - component: {fileID: 4210323152983165144}
   - component: {fileID: 3207286831152185269}
   - component: {fileID: 1364109497270508182}
-  m_Layer: 0
+  - component: {fileID: 5457764585753409919}
+  m_Layer: 7
   m_Name: skameyki
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -902,6 +945,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.1779261, y: 0.85971314, z: 3.2100892}
   m_Center: {x: 4.410023, y: 0.42985657, z: 3.3804157}
+--- !u!114 &5457764585753409919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597903753561710668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &1619865918835606539
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +977,8 @@ GameObject:
   - component: {fileID: 8484298988139482970}
   - component: {fileID: 8014084599775631867}
   - component: {fileID: 4604244324475590377}
-  m_Layer: 0
+  - component: {fileID: 1486782936127276401}
+  m_Layer: 7
   m_Name: skameyki.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1014,6 +1078,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5461884, y: 2.514631, z: 0.58274555}
   m_Center: {x: 2.2336059, y: 1.257315, z: 4.6940875}
+--- !u!114 &1486782936127276401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619865918835606539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &2222138063056312869
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,7 +1201,8 @@ GameObject:
   - component: {fileID: 8870273514984783049}
   - component: {fileID: 4952800517548155895}
   - component: {fileID: 7849369618284696390}
-  m_Layer: 0
+  - component: {fileID: 969185991312795298}
+  m_Layer: 7
   m_Name: skameyki.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1217,6 +1302,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.62204313, y: 0.65857613, z: 1.1526382}
   m_Center: {x: 4.6879654, y: 1.206456, z: 3.4159431}
+--- !u!114 &969185991312795298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338107551673304058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &2383078633671383182
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,7 +1332,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3477164383089507735}
   - component: {fileID: 6141728193765504321}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1280,7 +1385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 490278009722979770}
   - component: {fileID: 30180534205673431}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1335,7 +1440,8 @@ GameObject:
   - component: {fileID: 1807331922389908086}
   - component: {fileID: 4423736439627261974}
   - component: {fileID: 5943072468204264546}
-  m_Layer: 0
+  - component: {fileID: 8631751079755962597}
+  m_Layer: 7
   m_Name: skameyki.011
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1435,6 +1541,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.55864906, y: 0.511854, z: 0.63903236}
   m_Center: {x: 4.667074, y: 0.25592735, z: -1.5881147}
+--- !u!114 &8631751079755962597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2614030263128960463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &2720238887109989632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,7 +1890,8 @@ GameObject:
   - component: {fileID: 8625754210961993856}
   - component: {fileID: 3721932770778208885}
   - component: {fileID: 3459411805924904194}
-  m_Layer: 0
+  - component: {fileID: 6026097219445067420}
+  m_Layer: 7
   m_Name: kreslo.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1886,6 +2013,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.115707874, y: 0.6961925, z: 0.4726305}
   m_Center: {x: 2.5626314, y: 0.93209636, z: 2.5981889}
+--- !u!114 &6026097219445067420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3012941975964273973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &3273443568786952930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1896,7 +2043,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1568168482454643871}
   - component: {fileID: 7051689427996884663}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1951,7 +2098,8 @@ GameObject:
   - component: {fileID: 4663058719895709633}
   - component: {fileID: 7472009353799343109}
   - component: {fileID: 6933005975246530126}
-  m_Layer: 0
+  - component: {fileID: 858579621815988856}
+  m_Layer: 7
   m_Name: skameyki.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2051,6 +2199,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.7971084, y: 0.8684869, z: 0.58274555}
   m_Center: {x: 3.4141202, y: 0.43424284, z: 4.6940875}
+--- !u!114 &858579621815988856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382323890196844403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &3691090364238100387
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,7 +2229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3155770195180189387}
   - component: {fileID: 4369236069345474390}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2113,6 +2281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 931750637074428816}
+  - component: {fileID: 5010261174851360022}
   m_Layer: 0
   m_Name: WallsColliders
   m_TagString: Untagged
@@ -2152,6 +2321,26 @@ Transform:
   - {fileID: 1511373337139108195}
   m_Father: {fileID: 3310642636886380199}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5010261174851360022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3882702908552444673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &3925273421580076212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2162,7 +2351,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4035113475840042473}
   - component: {fileID: 3974613199241522768}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2494,7 +2683,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5090251889250445475}
   - component: {fileID: 8170574282160611897}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2917,7 +3106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2359462671424780336}
   - component: {fileID: 6680814674486349245}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3154,7 +3343,8 @@ GameObject:
   - component: {fileID: 8636402449366020154}
   - component: {fileID: 7879762677367089906}
   - component: {fileID: 6710252693379277565}
-  m_Layer: 0
+  - component: {fileID: 9076129811202318395}
+  m_Layer: 7
   m_Name: skameyki.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3254,6 +3444,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5063939, y: 0.48986363, z: 0.88138497}
   m_Center: {x: 4.7457876, y: 1.9196967, z: 2.345226}
+--- !u!114 &9076129811202318395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5746785945851284616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &5792818909346353558
 GameObject:
   m_ObjectHideFlags: 0
@@ -3264,7 +3474,7 @@ GameObject:
   m_Component:
   - component: {fileID: 838123641147122557}
   - component: {fileID: 2678286119444383707}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3497,7 +3707,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6540769150776871100}
   - component: {fileID: 2490456232479412246}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3550,7 +3760,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6723714631641249840}
   - component: {fileID: 1590529962849821273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3918,7 +4128,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5649563889464044550}
   - component: {fileID: 2081681948056325366}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3971,7 +4181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1511373337139108195}
   - component: {fileID: 4764936164087351929}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4024,7 +4234,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3441582923027962370}
   - component: {fileID: 4756801843798969147}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4317,7 +4527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 923776873447725823}
   - component: {fileID: 1054145927720309571}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4370,7 +4580,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1756110651563274030}
   - component: {fileID: 4488477467242814319}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WallsColliders (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
