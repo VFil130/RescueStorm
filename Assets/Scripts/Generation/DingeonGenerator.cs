@@ -206,6 +206,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         CancelPendingNavMeshValidation();
         LastResult = null;
+        navigationBuilder?.RemoveDoorLinks();
         navigationBuilder = null;
         currentLayout = null;
         layoutBuilder = null;
@@ -349,6 +350,12 @@ public class DungeonGenerator : MonoBehaviour
         navigationBuilder?.DrawGizmos(showNavMeshBreakMarkers, NavMeshBreakMarkerSize);
     }
 
+    private void OnDestroy()
+    {
+        CancelPendingNavMeshValidation();
+        navigationBuilder?.RemoveDoorLinks();
+    }
+
     private void CancelPendingNavMeshValidation()
     {
         if (navMeshValidationCoroutine == null) return;
@@ -384,6 +391,7 @@ public class DungeonGenerator : MonoBehaviour
 
     private void DiscardCurrentLayout()
     {
+        navigationBuilder?.RemoveDoorLinks();
         navigationBuilder = null;
         currentLayout = null;
         layoutBuilder = null;

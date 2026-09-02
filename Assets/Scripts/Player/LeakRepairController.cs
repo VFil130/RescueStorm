@@ -126,7 +126,10 @@ public sealed class LeakRepairController : NetworkBehaviour
         primaryActionHeld = false;
         if (IsStandalone && currentTarget != null)
             currentTarget.EndRepair(player);
-        else if (NetworkClient.active && isLocalPlayer && currentTarget != null)
+        else if (NetworkClient.active &&
+                 NetworkClient.isConnected &&
+                 isLocalPlayer &&
+                 currentTarget != null)
             CmdStopRepair(currentTarget.netIdentity);
 
         currentTarget = null;

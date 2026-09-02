@@ -217,11 +217,10 @@ public class PlayerController : NetworkBehaviour, IControllable
 
     public void ToggleCrouch()
     {
-        if (!duringCrouchAnimation && characterController.isGrounded)
-        if (!canCrouch) return;
-        {
-            StartCoroutine(CrouchStand());
-        }
+        if (!canCrouch || duringCrouchAnimation || !characterController.isGrounded)
+            return;
+
+        StartCoroutine(CrouchStand());
     }
     private void HandleMovementInput()
     {

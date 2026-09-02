@@ -94,6 +94,7 @@ public sealed class DungeonLocalSessionCoordinator : MonoBehaviour
         }
 
         Debug.Log("Starting local dungeon session.", this);
+        gameManager?.EnableLocalSession();
 
         if (survivorManager == null)
         {

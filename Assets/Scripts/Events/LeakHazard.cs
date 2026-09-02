@@ -21,6 +21,7 @@ public sealed class LeakHazard : NetworkBehaviour
 
     private readonly HashSet<Player> repairers = new HashSet<Player>();
     private LeakEventManager eventManager;
+    private bool localSession;
 
     public event Action<float> ProgressChanged;
     public float RepairProgress => repairProgress;
@@ -28,12 +29,13 @@ public sealed class LeakHazard : NetworkBehaviour
     public float RepairDuration => repairDuration;
 
     private bool HasStateAuthority =>
-        isServer || (!NetworkServer.active && !NetworkClient.active);
+        LeakEventManager.CanMutateSessionState(isServer, localSession);
 
     public void Initialize(LeakEventManager manager)
     {
-        if (!HasStateAuthority) return;
+        if (NetworkClient.active && !NetworkServer.active) return;
 
+        localSession = !NetworkServer.active;
         eventManager = manager;
         repairProgress = 0f;
         repaired = false;

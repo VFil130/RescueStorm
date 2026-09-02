@@ -15,14 +15,6 @@ public static class RescueStormProjectValidator
     private const string PlayerPrefabPath = "Assets/TESTS/Player.prefab";
     private const string InputActionsPath = "Assets/InputSystem_Actions.inputactions";
 
-    private static readonly string[] CorridorPrefabPaths =
-    {
-        "Assets/Prefabs/ROOMx2_1.prefab",
-        "Assets/Prefabs/ROOMx2L_1.prefab",
-        "Assets/Prefabs/ROOMx3T_1.prefab",
-        "Assets/Prefabs/ROOMx3T_2.prefab"
-    };
-
     [MenuItem("Tools/Rescue Storm/Validate Project Configuration")]
     public static void Validate()
     {
@@ -41,12 +33,10 @@ public static class RescueStormProjectValidator
             .Select(scene => scene.path)
             .ToArray();
 
-        if (enabledScenes.Length < 2 ||
-            !string.Equals(enabledScenes[0], MainMenuScenePath, StringComparison.Ordinal) ||
-            !enabledScenes.Contains(GameplayScenePath, StringComparer.Ordinal))
+        if (!enabledScenes.Contains(GameplayScenePath, StringComparer.Ordinal))
         {
             throw new InvalidOperationException(
-                $"Build scenes must start with '{MainMenuScenePath}' and include '{GameplayScenePath}'.");
+                $"Build scenes must include enabled gameplay scene '{GameplayScenePath}'.");
         }
     }
 
@@ -84,19 +74,6 @@ public static class RescueStormProjectValidator
                 "Player prefab must contain LeakRepairController and reference the repair tool.");
         }
 
-        int markerCount = 0;
-        foreach (string path in CorridorPrefabPaths)
-        {
-            GameObject corridor = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            RoomData room = corridor != null ? corridor.GetComponent<RoomData>() : null;
-            if (room == null || room.ModuleKind != RoomModuleKind.Corridor)
-                throw new InvalidOperationException($"'{path}' is not a configured corridor prefab.");
-
-            markerCount += room.GetLeakSpawnPoints().Count;
-        }
-
-        if (markerCount == 0)
-            throw new InvalidOperationException("No corridor leak spawn points are configured.");
     }
 
     private static void ValidateMainMenu()
@@ -107,11 +84,11 @@ public static class RescueStormProjectValidator
         if (networkManager == null)
             throw new InvalidOperationException("MainMenu has no NetworkManager.");
 
-        if (!string.Equals(networkManager.offlineScene, MainMenuScenePath, StringComparison.Ordinal) ||
+        if (!string.IsNullOrWhiteSpace(networkManager.offlineScene) ||
             !string.Equals(networkManager.onlineScene, GameplayScenePath, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                "MainMenu NetworkManager must route offline to MainMenu and online to SampleScene.");
+                "MainMenu NetworkManager must keep offlineScene empty and route online to SampleScene.");
         }
 
         RequireSpawnPrefab(networkManager, EvacuationPrefabPath);
@@ -141,6 +118,14 @@ public static class RescueStormProjectValidator
     private static void ValidateGameplayScene()
     {
         EditorSceneManager.OpenScene(GameplayScenePath, OpenSceneMode.Single);
+        DungeonGenerator generator =
+            UnityEngine.Object.FindFirstObjectByType<DungeonGenerator>(
+                FindObjectsInactive.Include);
+        if (generator == null)
+            throw new InvalidOperationException("SampleScene has no DungeonGenerator.");
+
+        ValidateConfiguredLeakSources(generator);
+
         DungeonNetworkSessionCoordinator coordinator =
             UnityEngine.Object.FindFirstObjectByType<DungeonNetworkSessionCoordinator>(
                 FindObjectsInactive.Include);
@@ -177,6 +162,38 @@ public static class RescueStormProjectValidator
         }
     }
 
+    private static void ValidateConfiguredLeakSources(DungeonGenerator generator)
+    {
+        SerializedProperty roomPrefabs =
+            new SerializedObject(generator).FindProperty("roomPrefabs");
+        if (roomPrefabs == null || !roomPrefabs.isArray)
+            throw new InvalidOperationException("DungeonGenerator has no configured room pool.");
+
+        int corridorCount = 0;
+        int spawnSourceCount = 0;
+        for (int i = 0; i < roomPrefabs.arraySize; i++)
+        {
+            GameObject prefab = roomPrefabs.GetArrayElementAtIndex(i).objectReferenceValue
+                as GameObject;
+            RoomData room = prefab != null ? prefab.GetComponent<RoomData>() : null;
+            if (room == null || room.ModuleKind != RoomModuleKind.Corridor) continue;
+
+            corridorCount++;
+            int dedicatedPointCount = room.GetLeakSpawnPoints().Count;
+            spawnSourceCount += dedicatedPointCount > 0
+                ? dedicatedPointCount
+                : room.VentSpawnPoints.Count(point => point != null);
+        }
+
+        if (corridorCount == 0)
+            throw new InvalidOperationException("The configured room pool has no corridor prefabs.");
+        if (spawnSourceCount == 0)
+        {
+            throw new InvalidOperationException(
+                "Configured corridor prefabs need a leak point or vent spawn point.");
+        }
+    }
+
     private static void ValidateLeakMath()
     {
         float[] expectedMultipliers = { 1f, 1.5f, 2f, 2.5f };
@@ -208,6 +225,18 @@ public static class RescueStormProjectValidator
             if (interval < 90f || interval > 180f)
                 throw new InvalidOperationException(
                     $"Leak interval {interval} is outside 90-180 seconds.");
+        }
+        if (LeakEventManager.CanMutateSessionState(
+                serverActive: false,
+                localSession: false))
+        {
+            throw new InvalidOperationException(
+                "A disconnected remote client must not receive leak-session authority.");
+        }
+        if (!LeakEventManager.CanMutateSessionState(true, false) ||
+            !LeakEventManager.CanMutateSessionState(false, true))
+        {
+            throw new InvalidOperationException("Server and explicit local sessions need authority.");
         }
     }
 

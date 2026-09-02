@@ -28,6 +28,7 @@ public class GameManager : NetworkBehaviour
     private float matchTimer;
     private float enemySpawnTimer;
     private bool enemySpawned;
+    private bool localSession;
 
     [Inject] private AudioManager audioManager;
     [Inject] private ParticleManager particleManager;
@@ -39,7 +40,13 @@ public class GameManager : NetworkBehaviour
     public event System.Action OnLeakSpawned;
 
     private bool HasStateAuthority =>
-        isServer || (!NetworkServer.active && !NetworkClient.active);
+        LeakEventManager.CanMutateSessionState(isServer, localSession);
+
+    public void EnableLocalSession()
+    {
+        if (!NetworkServer.active && !NetworkClient.active)
+            localSession = true;
+    }
 
     public void StartMatch(int survivorCount)
     {

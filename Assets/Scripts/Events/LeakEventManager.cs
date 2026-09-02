@@ -22,9 +22,10 @@ public sealed class LeakEventManager : MonoBehaviour
     private Coroutine scheduleCoroutine;
     private System.Random random;
     private bool sessionRunning;
+    private bool localSession;
 
     private bool HasStateAuthority =>
-        NetworkServer.active || !NetworkClient.active;
+        CanMutateSessionState(NetworkServer.active, localSession);
 
     public GameObject LeakPrefab => leakPrefab;
     public int ActiveLeakCount => activeLeaks.Count;
@@ -37,12 +38,14 @@ public sealed class LeakEventManager : MonoBehaviour
 
     public void BeginSession(DungeonGenerationResult result)
     {
-        if (!HasStateAuthority || result == null) return;
+        if (NetworkClient.active && !NetworkServer.active) return;
+        if (result == null) return;
 
-        StopSession();
+        localSession = !NetworkServer.active;
+        ClearSessionState();
         allSpawnPoints.AddRange(result.Modules
             .Where(module => module != null && module.ModuleKind == RoomModuleKind.Corridor)
-            .SelectMany(module => module.GetLeakSpawnPoints())
+            .SelectMany(ResolveSpawnPoints)
             .Where(point => point != null)
             .Distinct());
 
@@ -64,7 +67,32 @@ public sealed class LeakEventManager : MonoBehaviour
         scheduleCoroutine = StartCoroutine(RunSchedule());
     }
 
+    private static IEnumerable<LeakSpawnPoint> ResolveSpawnPoints(RoomData module)
+    {
+        IReadOnlyList<LeakSpawnPoint> configuredPoints = module.GetLeakSpawnPoints();
+        if (configuredPoints.Count > 0)
+            return configuredPoints;
+
+        // Room prefabs maintained by the generation team already expose vent markers.
+        // Treat those markers as the corridor leak locations when dedicated leak
+        // markers have not been authored, so replacing the room pool cannot silently
+        // disable the event system.
+        return module.VentSpawnPoints
+            .Where(point => point != null)
+            .Select(point => point.GetComponent<LeakSpawnPoint>() ??
+                             point.gameObject.AddComponent<LeakSpawnPoint>())
+            .ToArray();
+    }
+
     public void StopSession()
+    {
+        if (!HasStateAuthority) return;
+
+        ClearSessionState();
+        localSession = false;
+    }
+
+    private void ClearSessionState()
     {
         sessionRunning = false;
         if (scheduleCoroutine != null)
@@ -239,6 +267,11 @@ public sealed class LeakEventManager : MonoBehaviour
         float min = Mathf.Max(1f, Mathf.Min(minimum, maximum));
         float max = Mathf.Max(min, Mathf.Max(minimum, maximum));
         return min + (float)source.NextDouble() * (max - min);
+    }
+
+    public static bool CanMutateSessionState(bool serverActive, bool localSession)
+    {
+        return serverActive || localSession;
     }
 
     private void OnDestroy()

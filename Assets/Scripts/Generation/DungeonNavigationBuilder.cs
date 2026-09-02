@@ -31,10 +31,12 @@ internal sealed class DungeonNavigationBuilder
     private readonly DungeonLayout layout;
     private readonly DungeonNavigationSettings settings;
     private readonly List<NavMeshBreakMarker> breakMarkers = new List<NavMeshBreakMarker>();
+    private readonly List<NavMeshLinkInstance> doorLinks =
+        new List<NavMeshLinkInstance>();
 
     public NavMeshSurface Surface { get; private set; }
     public int BridgeCount { get; private set; }
-    public int LinkCount { get; private set; }
+    public int LinkCount => doorLinks.Count;
 
     public DungeonNavigationBuilder(
         DungeonGenerator owner,
@@ -53,7 +55,7 @@ internal sealed class DungeonNavigationBuilder
     public bool TryBuild()
     {
         BridgeCount = 0;
-        LinkCount = 0;
+        RemoveDoorLinks();
         EnsureSurface();
         if (Surface == null)
         {
@@ -73,8 +75,8 @@ internal sealed class DungeonNavigationBuilder
         Surface.overrideTileSize = true;
         Surface.tileSize = settings.TileSize;
         Surface.BuildNavMesh();
+        CreateDoorNavMeshLinks();
 
-        LinkCount = CreateDoorNavMeshLinks();
         return true;
     }
 
@@ -86,8 +88,8 @@ internal sealed class DungeonNavigationBuilder
         {
             Debug.LogError(
                 $"NavMesh is disconnected in {unreachableModules.Count} generated modules " +
-                $"after baking {BridgeCount} doorway bridges and creating " +
-                $"{LinkCount} doorway links: {string.Join(", ", unreachableModules)}" +
+                $"after baking {BridgeCount} doorway bridges and registering " +
+                $"{LinkCount} runtime connections: {string.Join(", ", unreachableModules)}" +
                 $". Scene view markers: {breakMarkers.Count} broken doorway connections " +
                 "(red = no complete path, magenta = no NavMesh sample).",
                 owner);
@@ -96,7 +98,8 @@ internal sealed class DungeonNavigationBuilder
 
         Debug.Log(
             $"NavMesh connectivity verified for {layout.Modules.Count} modules using " +
-            $"{BridgeCount} baked doorway bridges and {LinkCount} doorway links.",
+            $"{BridgeCount} baked doorway bridges and {LinkCount} runtime connections " +
+            "without generated transition GameObjects.",
             owner);
     }
 
@@ -150,42 +153,50 @@ internal sealed class DungeonNavigationBuilder
         }
     }
 
-    private int CreateDoorNavMeshLinks()
+    private void CreateDoorNavMeshLinks()
     {
-        int linkCount = 0;
         foreach (DungeonDoorwayConnection connection in layout.EnumerateDoorways())
         {
             if (!TrySampleInsideDoor(connection.First, out Vector3 start) ||
                 !TrySampleInsideDoor(connection.Second, out Vector3 end))
             {
                 Debug.LogWarning(
-                    $"Could not anchor a NavMesh link at connected door '{connection.First.name}'.",
+                    "Could not anchor a runtime NavMesh connection at door '" +
+                    connection.First.name + "'.",
                     connection.First);
                 continue;
             }
 
-            GameObject linkObject = new GameObject($"__DoorNavLink_{linkCount:00}");
-            linkObject.SetActive(false);
-            linkObject.transform.SetParent(generatedRoot, false);
-            linkObject.transform.SetPositionAndRotation((start + end) * 0.5f, Quaternion.identity);
+            NavMeshLinkData linkData = new NavMeshLinkData
+            {
+                startPosition = start,
+                endPosition = end,
+                width = settings.DoorLinkWidth,
+                costModifier = -1f,
+                bidirectional = true,
+                area = 0,
+                agentTypeID = Surface.agentTypeID
+            };
 
-            NavMeshLink link = linkObject.AddComponent<NavMeshLink>();
-            link.agentTypeID = Surface.agentTypeID;
-            link.startPoint = linkObject.transform.InverseTransformPoint(start);
-            link.endPoint = linkObject.transform.InverseTransformPoint(end);
-            link.width = settings.DoorLinkWidth;
-            link.area = 0;
-            link.costModifier = -1f;
-            link.bidirectional = true;
-            link.autoUpdate = false;
-            linkObject.SetActive(true);
-            // Unity 6 does not always register a runtime link from its defaults.
-            link.activated = true;
-            link.UpdateLink();
-            linkCount++;
+            NavMeshLinkInstance link = NavMesh.AddLink(linkData);
+            if (NavMesh.IsLinkValid(link))
+                doorLinks.Add(link);
+            else
+                Debug.LogWarning(
+                    "Could not register a runtime NavMesh connection at door '" +
+                    connection.First.name + "'.",
+                    connection.First);
+        }
+    }
+
+    public void RemoveDoorLinks()
+    {
+        foreach (NavMeshLinkInstance link in doorLinks)
+        {
+            if (NavMesh.IsLinkValid(link)) NavMesh.RemoveLink(link);
         }
 
-        return linkCount;
+        doorLinks.Clear();
     }
 
     private int CreateDoorwayNavigationGeometry()

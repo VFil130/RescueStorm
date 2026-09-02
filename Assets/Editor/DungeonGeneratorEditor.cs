@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Unity.AI.Navigation;
+using UnityEngine.AI;
 
 [CustomEditor(typeof(DungeonGenerator))]
 public sealed class DungeonGeneratorEditor : Editor
@@ -499,7 +501,7 @@ public sealed class QuestEditor : Editor
 
 public static class DungeonGeneratorBatchValidation
 {
-    private const string TestScenePath = "Assets/Scenes/DGTESTER.unity";
+    private const string TestScenePath = "Assets/Scenes/SampleScene.unity";
 
     public static void Run()
     {
@@ -549,6 +551,7 @@ public static class DungeonGeneratorBatchValidation
         ValidateCombinedMandatoryAndEvacuationRoles();
         ValidateDeterministicLayout(generator);
         ValidateGeneratedLeakPoints(generator);
+        ValidateNavigationWithoutDoorLinks(generator);
         ValidateQuestRoomAndSurvivor(generator);
 
         generator.Seed = originalSeed;
@@ -559,9 +562,15 @@ public static class DungeonGeneratorBatchValidation
 
     private static void ValidateSessionCoordinator(DungeonGenerator generator)
     {
-        DungeonLocalSessionCoordinator localCoordinator = generator.GetComponent<DungeonLocalSessionCoordinator>();
-        if (localCoordinator == null || !localCoordinator.enabled)
-            throw new InvalidOperationException("DGTESTER requires an enabled local dungeon coordinator.");
+        bool hasLocalCoordinator =
+            generator.GetComponent<DungeonLocalSessionCoordinator>() is { enabled: true };
+        bool hasNetworkCoordinator =
+            generator.GetComponent<DungeonNetworkSessionCoordinator>() != null;
+        if (!hasLocalCoordinator && !hasNetworkCoordinator)
+        {
+            throw new InvalidOperationException(
+                "The dungeon test scene requires a local or network session coordinator.");
+        }
     }
 
     private static void ValidateCombinedMandatoryAndEvacuationRoles()
@@ -599,9 +608,9 @@ public static class DungeonGeneratorBatchValidation
                 throw new InvalidOperationException(
                     $"Could not generate leak marker validation layout for seed {seed}.");
 
-            List<LeakSpawnPoint> points = generator.LastResult.Modules
+            List<Transform> points = generator.LastResult.Modules
                 .Where(module => module != null && module.ModuleKind == RoomModuleKind.Corridor)
-                .SelectMany(module => module.GetLeakSpawnPoints())
+                .SelectMany(GetLeakSourceTransforms)
                 .Where(point => point != null)
                 .ToList();
             if (points.Count == 0) continue;
@@ -618,7 +627,121 @@ public static class DungeonGeneratorBatchValidation
         }
 
         throw new InvalidOperationException(
-            "Generated layouts did not preserve any configured corridor leak points.");
+            "Generated layouts did not preserve any corridor leak or vent points.");
+    }
+
+    private static IEnumerable<Transform> GetLeakSourceTransforms(RoomData module)
+    {
+        IReadOnlyList<LeakSpawnPoint> dedicatedPoints = module.GetLeakSpawnPoints();
+        return dedicatedPoints.Count > 0
+            ? dedicatedPoints.Where(point => point != null).Select(point => point.transform)
+            : module.VentSpawnPoints.Where(point => point != null);
+    }
+
+    private static void ValidateNavigationWithoutDoorLinks(DungeonGenerator generator)
+    {
+        NavMeshSurface surface = generator.GetComponent<NavMeshSurface>();
+        bool addedSurface = surface == null;
+        if (addedSurface) surface = generator.gameObject.AddComponent<NavMeshSurface>();
+
+        SerializedObject serializedGenerator = new SerializedObject(generator);
+        SerializedProperty surfaceProperty =
+            serializedGenerator.FindProperty("navMeshSurface");
+        surfaceProperty.objectReferenceValue = surface;
+        serializedGenerator.ApplyModifiedPropertiesWithoutUndo();
+
+        try
+        {
+            generator.TargetRoomCount = 10;
+            const int navigationSeed = 909;
+            if (!generator.GenerateDungeon(navigationSeed, buildNavigation: true))
+                throw new InvalidOperationException(
+                    "Could not generate the navigation validation layout.");
+
+            Transform generatedRoot =
+                generator.transform.Find(DungeonGenerator.GeneratedRootName);
+            if (generatedRoot == null)
+                throw new InvalidOperationException("Generated navigation root is missing.");
+
+            NavMeshLink[] links =
+                generatedRoot.GetComponentsInChildren<NavMeshLink>(true);
+            if (links.Length > 0)
+                throw new InvalidOperationException(
+                    $"Generated dungeon still contains {links.Length} NavMeshLink transitions.");
+
+            DungeonGenerationResult result = generator.LastResult;
+            if (!TrySampleModule(result.StartRoom, out Vector3 start))
+                throw new InvalidOperationException(
+                    "Could not sample NavMesh in the generated start room.");
+
+            foreach (RoomData module in result.Modules)
+            {
+                if (!TrySampleModule(module, out Vector3 target))
+                    throw new InvalidOperationException(
+                        $"Generated module '{module.name}' has no NavMesh sample.");
+
+                NavMeshPath path = new NavMeshPath();
+                if (!NavMesh.CalculatePath(start, target, NavMesh.AllAreas, path) ||
+                    path.status != NavMeshPathStatus.PathComplete)
+                {
+                    throw new InvalidOperationException(
+                        $"AI has no complete NavMesh path to generated module '{module.name}' without door links.");
+                }
+            }
+        }
+        finally
+        {
+            generator.ClearDungeon();
+            surface.RemoveData();
+            if (addedSurface) UnityEngine.Object.DestroyImmediate(surface);
+
+            serializedGenerator = new SerializedObject(generator);
+            surfaceProperty = serializedGenerator.FindProperty("navMeshSurface");
+            surfaceProperty.objectReferenceValue = null;
+            serializedGenerator.ApplyModifiedPropertiesWithoutUndo();
+        }
+    }
+
+    private static bool TrySampleModule(RoomData module, out Vector3 position)
+    {
+        if (module != null)
+        {
+            foreach (DoorPoint socket in module.GetDoorPoints())
+            {
+                if (socket == null || !socket.IsConnected) continue;
+
+                Vector3 probe = socket.transform.position -
+                                socket.GetWorldDirection(module.transform) * 0.65f;
+                probe.y = module.GetWorldBounds().min.y + 0.1f;
+                if (NavMesh.SamplePosition(
+                        probe,
+                        out NavMeshHit doorHit,
+                        1.5f,
+                        NavMesh.AllAreas))
+                {
+                    position = doorHit.position;
+                    return true;
+                }
+            }
+
+            Bounds bounds = module.GetWorldBounds();
+            Vector3 center = new Vector3(
+                bounds.center.x,
+                bounds.min.y + 0.1f,
+                bounds.center.z);
+            if (NavMesh.SamplePosition(
+                    center,
+                    out NavMeshHit centerHit,
+                    2f,
+                    NavMesh.AllAreas))
+            {
+                position = centerHit.position;
+                return true;
+            }
+        }
+
+        position = default;
+        return false;
     }
 
     private static void ValidateQuestRoomAndSurvivor(DungeonGenerator generator)
@@ -644,13 +767,19 @@ public static class DungeonGeneratorBatchValidation
         if (!generator.GenerateDungeon(questSeed, buildNavigation: false))
             throw new InvalidOperationException("Could not generate the survivor quest test layout.");
 
-        QuestSO quest = quests[0];
-        string requiredRoomName = quest.RequiredRoomName;
-        RoomData questRoom = generator.LastResult.Rooms.FirstOrDefault(room =>
-            string.Equals(room.name, requiredRoomName, StringComparison.OrdinalIgnoreCase) &&
-            (room.RuntimeRole & RoomRuntimeRole.Mandatory) != 0);
-        if (questRoom == null)
-            throw new InvalidOperationException($"Quest room '{requiredRoomName}' was not generated as mandatory.");
+        foreach (QuestSO quest in quests.Where(quest =>
+                     !string.IsNullOrWhiteSpace(quest.RequiredRoomName)))
+        {
+            string requiredRoomName = quest.RequiredRoomName;
+            RoomData questRoom = generator.LastResult.Rooms.FirstOrDefault(room =>
+                string.Equals(room.name, requiredRoomName, StringComparison.OrdinalIgnoreCase) &&
+                (room.RuntimeRole & RoomRuntimeRole.Mandatory) != 0);
+            if (questRoom == null)
+            {
+                throw new InvalidOperationException(
+                    $"Quest room '{requiredRoomName}' was not generated as mandatory.");
+            }
+        }
 
         List<Vector3> positions = survivorManager.ResolveSurvivorPositions(generator.LastResult);
         if (positions.Count != quests.Count)
@@ -669,15 +798,29 @@ public static class DungeonGeneratorBatchValidation
         if (spawnedSurvivors.Count != quests.Count)
             throw new InvalidOperationException("The configured survivor prefab was not spawned for every quest.");
 
-        Vector3 expectedPosition = positions[0] + Vector3.up * 2f;
+        float spawnHeight = new SerializedObject(survivorManager)
+            .FindProperty("survivorSpawnHeight").floatValue;
+        Vector3 expectedPosition = positions[0] + Vector3.up * spawnHeight;
         if (Vector3.Distance(spawnedSurvivors[0].transform.position, expectedPosition) > 0.01f)
             throw new InvalidOperationException("The survivor was not placed at its quest-room spawn point.");
 
         List<ItemObject> spawnedItems = Resources.FindObjectsOfTypeAll<ItemObject>()
             .Where(item => item != null && !EditorUtility.IsPersistent(item) && !existingItems.Contains(item))
             .ToList();
-        if (!spawnedItems.Any(item => string.Equals(item.Name, quest.RequiredItemName, StringComparison.OrdinalIgnoreCase)))
-            throw new InvalidOperationException($"Quest item '{quest.RequiredItemName}' was not spawned.");
+        foreach (string requiredItemName in quests
+                     .Select(quest => quest.RequiredItemName)
+                     .Where(name => !string.IsNullOrWhiteSpace(name))
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (!spawnedItems.Any(item => string.Equals(
+                    item.Name,
+                    requiredItemName,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException(
+                    $"Quest item '{requiredItemName}' was not spawned.");
+            }
+        }
 
         foreach (Survivor survivor in spawnedSurvivors)
             UnityEngine.Object.DestroyImmediate(survivor.gameObject);
