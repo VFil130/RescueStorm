@@ -309,6 +309,14 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         GetComponent<Player>().SelectSlot(slot);
     }
+
+    public void ToggleFlashlight()
+    {
+        if (!HasLocalControl) return;
+
+        Flashlight flashlight = GetComponentInChildren<Flashlight>();
+        if (flashlight != null) flashlight.Toggle();
+    }
     private void UpdateAnimations()
     {
         if (animator == null) return;

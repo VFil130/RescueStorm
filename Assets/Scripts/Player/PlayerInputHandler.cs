@@ -69,6 +69,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerActions.FindAction("Slot5").performed += OnSlot5;
         playerActions.FindAction("Talk").performed += OnTalk;
         playerActions.FindAction("Talk").canceled += OnTalkCanceled;
+        playerActions.FindAction("Flashlight").performed += OnFlashlight;
     }
 
     private void UnsubscribeFromActions()
@@ -90,6 +91,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerActions.FindAction("Slot5").performed -= OnSlot5;
         playerActions.FindAction("Talk").performed -= OnTalk;
         playerActions.FindAction("Talk").canceled -= OnTalkCanceled;
+        playerActions.FindAction("Flashlight").performed -= OnFlashlight;
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -175,5 +177,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnTalkCanceled(InputAction.CallbackContext _)
     {
         OnTalkStopped?.Invoke();
+    }
+
+    private void OnFlashlight(InputAction.CallbackContext _)
+    {
+        controlledPlayer?.ToggleFlashlight();
     }
 }

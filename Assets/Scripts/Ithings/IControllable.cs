@@ -10,4 +10,5 @@ public interface IControllable
     void Interact();
     void SetPrimaryAction(bool held);
     void SelectSlot(int index);
+    void ToggleFlashlight();
 }
