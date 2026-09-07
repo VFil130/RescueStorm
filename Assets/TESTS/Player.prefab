@@ -196,6 +196,7 @@ MonoBehaviour:
   metalClips: []
   grassClips: []
   animator: {fileID: 8002693430709690869}
+  firstPersonModel: {fileID: 2960913730586743468}
 --- !u!114 &4293365656788038370
 MonoBehaviour:
   m_ObjectHideFlags: 0

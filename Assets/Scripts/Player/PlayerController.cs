@@ -59,6 +59,7 @@ public class PlayerController : NetworkBehaviour, IControllable
     [SerializeField] private AudioClip[] grassClips = default;
     [Header("Animation")]
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject firstPersonModel;
 
     private float footstepTimer = 0;
     private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : IsSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
@@ -139,6 +140,28 @@ public class PlayerController : NetworkBehaviour, IControllable
         base.OnStartLocalPlayer();
         inputHandler.EnableInput();
         EnablePlayerCamera();
+        AssignFirstPersonLayer();
+    }
+
+    private void AssignFirstPersonLayer()
+    {
+        if (firstPersonModel == null) return;
+
+        int meLayer = LayerMask.NameToLayer("Me");
+        if (meLayer < 0)
+        {
+            Debug.LogWarning("Layer 'Me' does not exist. Add it in Project Settings > Tags and Layers.", this);
+            return;
+        }
+
+        SetLayerRecursively(firstPersonModel, meLayer);
+    }
+
+    private void SetLayerRecursively(GameObject root, int layer)
+    {
+        root.layer = layer;
+        foreach (Transform child in root.transform)
+            SetLayerRecursively(child.gameObject, layer);
     }
 
     private void EnablePlayerCamera()
