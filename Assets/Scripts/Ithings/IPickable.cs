@@ -8,4 +8,6 @@ public interface IPickupable
     void Pickup(GameObject picker);
     void Drop(Vector3 position);
     void Use(GameObject user);
+    void UseHeld(GameObject user);
+    void ReleaseHeld(GameObject user);
 }

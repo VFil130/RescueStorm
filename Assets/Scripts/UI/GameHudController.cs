@@ -11,7 +11,6 @@ public sealed class GameHudController : MonoBehaviour
     private const float AlertDuration = 3f;
 
     private GameManager gameManager;
-    private LeakRepairController repairController;
     private TextMeshProUGUI timerText;
     private TextMeshProUGUI leakCountText;
     private TextMeshProUGUI alertText;
@@ -36,7 +35,6 @@ public sealed class GameHudController : MonoBehaviour
     private void Update()
     {
         if (gameManager == null) BindGameManager();
-        if (repairController == null) FindRepairController();
 
         float timeLeft = gameManager != null ? gameManager.GetTimeLeft() : 0f;
         int minutes = Mathf.FloorToInt(timeLeft / 60f);
@@ -48,9 +46,8 @@ public sealed class GameHudController : MonoBehaviour
             : 0;
         leakCountText.text = $"Утечки: {leakCount}";
 
-        LeakHazard target = repairController != null
-            ? repairController.CurrentTarget
-            : null;
+        RepairToolItem tool = RepairToolItem.Local;
+        LeakHazard target = tool != null ? tool.CurrentTarget : null;
         bool showRepair = target != null && !target.IsRepaired;
         repairSlider.gameObject.SetActive(showRepair);
         if (showRepair) repairSlider.value = target.RepairProgress;
@@ -67,16 +64,6 @@ public sealed class GameHudController : MonoBehaviour
         gameManager = found;
         if (gameManager != null)
             gameManager.OnLeakSpawned += ShowLeakAlert;
-    }
-
-    private void FindRepairController()
-    {
-        repairController = FindObjectsByType<LeakRepairController>(
-                FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None)
-            .FirstOrDefault(controller =>
-                controller.isLocalPlayer ||
-                (!Mirror.NetworkClient.active && !Mirror.NetworkServer.active));
     }
 
     private void ShowLeakAlert()

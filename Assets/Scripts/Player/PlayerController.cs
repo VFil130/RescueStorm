@@ -68,7 +68,6 @@ public class PlayerController : NetworkBehaviour, IControllable
     private readonly List<Camera> suppressedSceneCameras = new List<Camera>();
     private CharacterController characterController;
     private Interactor interactor;
-    private LeakRepairController leakRepairController;
     private PlayerInputHandler inputHandler;
     private Vector3 moveDirection;
     private Vector2 currentInput;
@@ -86,7 +85,6 @@ public class PlayerController : NetworkBehaviour, IControllable
     {
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
-        leakRepairController = GetComponent<LeakRepairController>();
         interactor = GetComponent<Interactor>();
         inputHandler = GetComponent<PlayerInputHandler>();
         defaultYPos = playerCamera.transform.localPosition.y;
@@ -222,7 +220,18 @@ public class PlayerController : NetworkBehaviour, IControllable
     }
     public void SetPrimaryAction(bool held)
     {
-        leakRepairController?.SetPrimaryAction(held);
+        Player player = GetComponent<Player>();
+        if (player == null) return;
+
+        if (held)
+        {
+            player.UseItem();
+            player.GetSelectedIPickable()?.UseHeld(gameObject);
+        }
+        else
+        {
+            player.GetSelectedIPickable()?.ReleaseHeld(gameObject);
+        }
     }
 
     public void SetSprint(bool sprint)

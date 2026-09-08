@@ -67,11 +67,10 @@ public static class RescueStormProjectValidator
 
         Player player = playerPrefab != null ? playerPrefab.GetComponent<Player>() : null;
         if (player == null ||
-            playerPrefab.GetComponent<LeakRepairController>() == null ||
             player.StartingRepairToolPrefab != repairToolPrefab)
         {
             throw new InvalidOperationException(
-                "Player prefab must contain LeakRepairController and reference the repair tool.");
+                "Player prefab must reference the repair tool.");
         }
 
     }

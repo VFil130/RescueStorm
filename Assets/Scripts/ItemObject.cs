@@ -35,4 +35,12 @@ public class ItemObject : NetworkBehaviour, IInteractable, IPickupable
     {
         Debug.Log("Using " + itemName);
     }
+
+    public virtual void UseHeld(GameObject user)
+    {
+    }
+
+    public virtual void ReleaseHeld(GameObject user)
+    {
+    }
 }

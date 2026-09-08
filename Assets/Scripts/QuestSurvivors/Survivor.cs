@@ -115,6 +115,14 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
     {
     }
 
+    public void UseHeld(GameObject _)
+    {
+    }
+
+    public void ReleaseHeld(GameObject _)
+    {
+    }
+
     public void Save()
     {
         if (!HasStateAuthority) return;

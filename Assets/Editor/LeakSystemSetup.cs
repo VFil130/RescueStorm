@@ -239,9 +239,6 @@ public static class LeakSystemSetup
             if (player == null)
                 throw new InvalidOperationException("Player prefab has no Player component.");
 
-            if (root.GetComponent<LeakRepairController>() == null)
-                root.AddComponent<LeakRepairController>();
-
             SerializedObject serializedPlayer = new SerializedObject(player);
             serializedPlayer.FindProperty("startingRepairToolPrefab").objectReferenceValue =
                 repairToolPrefab;
