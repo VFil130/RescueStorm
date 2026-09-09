@@ -1,3 +1,5 @@
+using Adrenak.UniMic;
+using Adrenak.UniVoice;
 using Adrenak.UniVoice.Outputs;
 using Adrenak.UniVoice.Samples;
 using Mirror;
@@ -10,25 +12,45 @@ public class VoiceChat3DSetUp : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(SetupWhenReady());
+    }
+
+    private bool subscribed;
+
+    private System.Collections.IEnumerator SetupWhenReady()
+    {
+        while (UniVoiceMirrorSetupSample.ClientSession == null)
+            yield return null;
+
+        UniVoiceMirrorSetupSample.ClientSession.OutputFactory =
+            new SafeStreamedAudioSourceOutput.Factory();
+
         var client = UniVoiceMirrorSetupSample.ClientSession.Client;
-        client.OnPeerJoined += SetUpPeer;
+        if (client != null && !subscribed)
+        {
+            client.OnPeerJoined += SetUpPeer;
+            subscribed = true;
+        }
     }
 
     void OnDestroy()
     {
-        var client = UniVoiceMirrorSetupSample.ClientSession.Client;
-        if (client != null)
-            client.OnPeerJoined -= Setup3DForPeer;
+        var session = UniVoiceMirrorSetupSample.ClientSession;
+        if (session == null || session.Client == null) return;
+        session.Client.OnPeerJoined -= SetUpPeer;
     }
 
     private void SetUpPeer(int peerId)
     {
+        if (!gameObject.activeInHierarchy) return;
         Invoke(nameof(GetAllPeers), 1f);
     }
 
     private void GetAllPeers()
     {
         var client = UniVoiceMirrorSetupSample.ClientSession.Client;
+        if (client == null) return;
+
         foreach (var peerId in client.PeerIDs)
         {
             if (!assignedPeers.ContainsKey(peerId))
@@ -40,20 +62,28 @@ public class VoiceChat3DSetUp : MonoBehaviour
 
     private void Setup3DForPeer(int peerId)
     {
+        var session = UniVoiceMirrorSetupSample.ClientSession;
+        if (session == null || session.Client == null) return;
+
         var localNetId = NetworkClient.connection.identity.netId;
         if (peerId == (int)localNetId) return;
 
-        var output = UniVoiceMirrorSetupSample.ClientSession.PeerOutputs[peerId] as StreamedAudioSourceOutput;
-        if (output == null) return;
+        if (session.PeerOutputs == null ||
+            !session.PeerOutputs.TryGetValue(peerId, out var outValue))
+        {
+            return;
+        }
 
-        var audioSource = output.Stream.UnityAudioSource;
+        StreamedAudioSource stream = GetStream(outValue);
+        if (stream == null) return;
+        if (stream.UnityAudioSource == null) return;
+
+        var audioSource = stream.UnityAudioSource;
         audioSource.spatialBlend = 1f;
         audioSource.maxDistance = 20f;
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
 
-        var controllers = FindObjectsOfType<VoiceChatController>();
-
-        foreach (var controller in controllers)
+        foreach (var controller in FindObjectsOfType<VoiceChatController>())
         {
             if (IsLocalPlayer(controller.gameObject) || controller.audioSource != null) continue;
             if (controller.GetPlayerId() == peerId)
@@ -64,6 +94,15 @@ public class VoiceChat3DSetUp : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private static StreamedAudioSource GetStream(IAudioOutput output)
+    {
+        if (output is SafeStreamedAudioSourceOutput safe)
+            return safe.Stream;
+        if (output is StreamedAudioSourceOutput legacy)
+            return legacy.Stream;
+        return null;
     }
 
     private bool IsLocalPlayer(GameObject player)
