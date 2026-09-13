@@ -5,13 +5,12 @@ Shader "Tutorial/VolumetricLightShafts"
         _MaxDistance("Max distance", float) = 100
         _StepSize("Step size", Range(0.05, 5)) = 0.5
         _DensityMultiplier("Density multiplier", Range(0, 10)) = 1
-
-        [KeywordEnum(Spatial, Temporal, Off)] _JitterMode("Jitter mode", Float) = 0
         _JitterAmount("Jitter amount", Range(0, 2)) = 1
 
         _NoiseTiling("Noise tiling", float) = 1
         _NoiseContrast("Noise contrast", Range(0.1, 5)) = 2
         _DensityThreshold("Density threshold", Range(0, 1)) = 0.3
+        _NoiseSpeed("Noise speed", Range(0, 0.1)) = 0.008
 
         [HDR]_LightContribution("Light contribution (HDR)", Color) = (1, 1, 1, 1)
         _LightScattering("Light scattering (g)", Range(0, 0.95)) = 0.5
@@ -21,24 +20,33 @@ Shader "Tutorial/VolumetricLightShafts"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
 
         Pass
         {
+            Name "VolumetricLightShafts"
+            ZWrite Off
+            ZTest Always
+            Cull Off
+            Blend Off
+
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment frag
 
-            #pragma shader_feature_local _JITTERMODE_SPATIAL _JITTERMODE_TEMPORAL _JITTERMODE_OFF
-
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
-            #pragma multi_compile_fragment _ _FORWARD_PLUS
+            #pragma multi_compile_fragment _ _CLUSTER_LIGHT_LOOP
+            #pragma multi_compile_fragment _ _LIGHT_LAYERS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+
+            #define MAX_STEPS 128
+            #define NO_DUST_LAYER_BIT 1u   // Бит 0 = первый Rendering Layer
 
             float  _MaxDistance;
             float  _StepSize;
@@ -47,12 +55,15 @@ Shader "Tutorial/VolumetricLightShafts"
             float  _NoiseTiling;
             float  _NoiseContrast;
             float  _DensityThreshold;
+            float  _NoiseSpeed;
             float4 _LightContribution;
             float  _LightScattering;
             float  _Intensity;
             float  _MaxScatter;
 
-            // ---------- Шум для плотности ----------
+            uint _AdditionalLightCount;
+
+            // ---------------- Процедурный шум ----------------
 
             float hash31(float3 p3)
             {
@@ -67,14 +78,14 @@ Shader "Tutorial/VolumetricLightShafts"
                 float3 f = frac(p);
                 f = f * f * (3.0 - 2.0 * f);
 
-                float n000 = hash31(i + float3(0, 0, 0));
-                float n100 = hash31(i + float3(1, 0, 0));
-                float n010 = hash31(i + float3(0, 1, 0));
-                float n110 = hash31(i + float3(1, 1, 0));
-                float n001 = hash31(i + float3(0, 0, 1));
-                float n101 = hash31(i + float3(1, 0, 1));
-                float n011 = hash31(i + float3(0, 1, 1));
-                float n111 = hash31(i + float3(1, 1, 1));
+                float n000 = hash31(i + float3(0,0,0));
+                float n100 = hash31(i + float3(1,0,0));
+                float n010 = hash31(i + float3(0,1,0));
+                float n110 = hash31(i + float3(1,1,0));
+                float n001 = hash31(i + float3(0,0,1));
+                float n101 = hash31(i + float3(1,0,1));
+                float n011 = hash31(i + float3(0,1,1));
+                float n111 = hash31(i + float3(1,1,1));
 
                 float nx00 = lerp(n000, n100, f.x);
                 float nx10 = lerp(n010, n110, f.x);
@@ -101,35 +112,25 @@ Shader "Tutorial/VolumetricLightShafts"
                 return v;
             }
 
-            // ---------- Джиттер ----------
-
-            float spatial_dither(float2 pixelCoords)
+            // Шумная плотность — «клочки пыли».
+            float get_dust_density_noisy(float3 worldPos)
             {
-                // Стабильный, детерминированный по пикселю. Не «шумит» при движении.
-                float n = hash31(float3(pixelCoords, 0.123));
-                return n;
+                float3 p = worldPos * 0.01 * _NoiseTiling;
+                p += float3(_Time.y * _NoiseSpeed, 0.0, _Time.y * _NoiseSpeed * 0.6);
+                float n = fbm3D(p);
+                n = saturate((n - 0.5) * _NoiseContrast + 0.5);
+                return saturate(n - _DensityThreshold) * _DensityMultiplier;
             }
 
-            float temporal_dither(float2 pixelCoords)
+            // Чистая плотность — ровный объёмный свет.
+            // Коэффициент 0.25 компенсирует среднее fBm (~0.2–0.25),
+            // чтобы визуальная плотность совпадала с шумным режимом.
+            float get_dust_density_clean()
             {
-                return InterleavedGradientNoise(
-                    pixelCoords,
-                    (int)(_Time.y / max(HALF_EPS, unity_DeltaTime.x))
-                );
+                return _DensityMultiplier * 0.25;
             }
 
-            float get_jitter(float2 pixelCoords)
-            {
-            #if defined(_JITTERMODE_OFF)
-                return 0.0;
-            #elif defined(_JITTERMODE_TEMPORAL)
-                return temporal_dither(pixelCoords) * _JitterAmount;
-            #else
-                return spatial_dither(pixelCoords) * _JitterAmount;
-            #endif
-            }
-
-            // ---------- Вспомогательное ----------
+            // ---------------- Фазовая функция ----------------
 
             float henyey_greenstein(float cosTheta, float g)
             {
@@ -138,89 +139,142 @@ Shader "Tutorial/VolumetricLightShafts"
                     (4.0 * PI * pow(max(1.0 + g2 - 2.0 * g * cosTheta, 1e-4), 1.5f));
             }
 
-            float get_dust_density(float3 worldPos)
-            {
-                float3 p = worldPos * 0.01 * _NoiseTiling;
-                float n = fbm3D(p);
-                n = saturate((n - 0.5) * _NoiseContrast + 0.5);
-                return saturate(n - _DensityThreshold) * _DensityMultiplier;
-            }
+            // ---------------- Фрагмент ----------------
 
             half4 frag(Varyings IN) : SV_Target
             {
-                float4 col   = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, IN.texcoord);
-                float  depth = SampleSceneDepth(IN.texcoord);
-                float3 worldPos = ComputeWorldSpacePosition(IN.texcoord, depth, UNITY_MATRIX_I_VP);
+                float2 uvSS = IN.texcoord;
+                float3 col  = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uvSS).rgb;
 
-                float3 entryPoint = _WorldSpaceCameraPos;
-                float3 viewDir    = worldPos - _WorldSpaceCameraPos;
-                float  viewLength = length(viewDir);
-                float3 rayDir     = viewDir / max(viewLength, 1e-5);
+                float rawDepth = SampleSceneDepth(uvSS);
+                float4 positionCS = ComputeClipSpacePosition(uvSS, rawDepth);
+                float4 positionVS = mul(UNITY_MATRIX_I_P, positionCS);
+                positionVS.xyz /= positionVS.w;
 
-                float2 pixelCoords = IN.texcoord * _BlitTexture_TexelSize.zw;
-                float  distLimit   = min(viewLength, _MaxDistance);
+                float3 rayOriginVS;
+                float3 dirToSurfaceVS;
+                float  distanceToSurfaceWS;
 
-                float distTravelled = get_jitter(pixelCoords) * _StepSize;
-
-                float3 scatter = 0;
-
-            #ifdef _ADDITIONAL_LIGHTS
-                InputData inputData = (InputData)0;
-                inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(IN.positionCS);
-                inputData.positionCS = IN.positionCS;
-
-                uint lightsCount = GetAdditionalLightsCount();
-            #endif
-
-                while (distTravelled < distLimit)
+                if (unity_OrthoParams.w == 1.0)
                 {
-                    float3 rayPos = entryPoint + rayDir * distTravelled;
-                    float  dust   = get_dust_density(rayPos);
-
-                    if (dust > 0)
-                    {
-                        float stepAtten = dust * _StepSize;
-
-                    #ifdef _ADDITIONAL_LIGHTS
-                        inputData.positionWS = rayPos;
-                        inputData.normalWS   = -rayDir;
-
-                        LIGHT_LOOP_BEGIN(lightsCount)
-                            Light light = GetAdditionalLight(lightIndex, rayPos);
-
-                            float atten = light.distanceAttenuation * light.shadowAttenuation;
-                            if (atten > 0.0)
-                            {
-                                float cosTheta = dot(rayDir, light.direction);
-                                float phase    = henyey_greenstein(cosTheta, _LightScattering);
-
-                                float3 contrib = light.color
-                                               * _LightContribution.rgb
-                                               * phase
-                                               * atten
-                                               * stepAtten;
-
-                                // Clamp спасает от HDR-выбросов (зелёно-розовые пиксели
-                                // у основания луча — это именно они, до тональной компрессии).
-                                contrib = min(contrib, _MaxScatter);
-
-                                scatter += contrib;
-                            }
-                        LIGHT_LOOP_END
-                    #endif
-                    }
-
-                    distTravelled += _StepSize;
+                    rayOriginVS         = float3(positionVS.xy, 0.0);
+                    dirToSurfaceVS      = float3(0.0, 0.0, -1.0);
+                    distanceToSurfaceWS = abs(positionVS.z);
+                }
+                else
+                {
+                    rayOriginVS         = float3(0.0, 0.0, 0.0);
+                    dirToSurfaceVS      = normalize(positionVS.xyz);
+                    distanceToSurfaceWS = length(positionVS.xyz);
                 }
 
-                scatter *= _Intensity;
-                scatter = min(scatter, _MaxScatter * 4.0); // общий клэмп на выходе
+                float3 cameraPositionWS     = GetCameraPositionWS();
+                float3 rayOriginWS          = cameraPositionWS + mul((float3x3)UNITY_MATRIX_I_V, rayOriginVS);
+                float3 directionToSurfaceWS = mul((float3x3)UNITY_MATRIX_I_V, dirToSurfaceVS);
 
-                // Финальная защита от NaN/Inf в очень тёмных/пересвеченных пикселях
-                if (any(isnan(scatter)) || any(isinf(scatter)))
-                    scatter = 0;
+                float raymarchDistance = min(distanceToSurfaceWS, _MaxDistance);
 
-                return half4(col.rgb + scatter, col.a);
+                int steps = (int)clamp(ceil(raymarchDistance / max(_StepSize, 0.01)), 1, MAX_STEPS);
+                float stepWS = raymarchDistance / (float)steps;
+
+                float2 uvPP  = uvSS * _ScaledScreenParams.xy;
+                int    frame = (int)(_Time.y * 60.0) % 60;
+                float  ign   = InterleavedGradientNoise(uvPP, frame);
+                float  stepNoise = stepWS * ign * _JitterAmount;
+
+                float3 lighting = 0;
+                float  transmittance = 1;
+
+                InputData inputData = (InputData)0;
+                inputData.normalizedScreenSpaceUV = uvSS;
+                inputData.positionCS = IN.positionCS;
+                inputData.viewDirectionWS = -directionToSurfaceWS;
+
+                [loop]
+                for (int i = 0; i < steps; i++)
+                {
+                    float distWS = (float)i * stepWS + stepNoise;
+                    if (distWS > raymarchDistance) break;
+
+                    float3 posWS = rayOriginWS + directionToSurfaceWS * distWS;
+
+                    // Считаем обе плотности один раз на шаг.
+                    float dustNoisy = get_dust_density_noisy(posWS);
+                    float dustClean = get_dust_density_clean();
+
+                    // Обе нулевые — пропускаем (бывает только при DensityMultiplier = 0).
+                    if (dustNoisy < 0.001 && dustClean < 0.001) continue;
+
+                    // Transmittance — это физическое свойство среды, поэтому
+                    // используем «основную» плотность (шумную). Она модулирует,
+                    // сколько света от дальних шагов доходит до камеры.
+                    float densityPerStep    = dustNoisy * stepWS;
+                    float stepTransmittance = exp(-densityPerStep);
+
+                    float3 stepLighting = 0;
+
+                    inputData.positionWS = posWS;
+                    inputData.normalWS   = -directionToSurfaceWS;
+
+                    LIGHT_LOOP_BEGIN(_AdditionalLightCount)
+                        Light light = GetAdditionalPerObjectLight(lightIndex, posWS);
+                        light.shadowAttenuation = 1.0;
+
+                    #ifdef _ADDITIONAL_LIGHT_SHADOWS
+                        light.shadowAttenuation = AdditionalLightShadow(
+                            lightIndex,
+                            posWS,
+                            light.direction,
+                            half4(1, 1, 1, 1),
+                            _AdditionalLightsOcclusionProbes[lightIndex]
+                        );
+                    #endif
+
+                        if (light.distanceAttenuation < 0.001) continue;
+                        if (light.shadowAttenuation   < 0.001) continue;
+
+                        // Проверяем бит Rendering Layer.
+                        // Если установлен — эта лампа без шума (чистый конус).
+                        bool noDust = false;
+                    #if defined(_LIGHT_LAYERS)
+                        noDust = (light.layerMask & NO_DUST_LAYER_BIT) != 0u;
+                    #endif
+
+                        float dust = noDust ? dustClean : dustNoisy;
+
+                        float cosTheta = dot(directionToSurfaceWS, light.direction);
+                        float phase    = henyey_greenstein(cosTheta, _LightScattering);
+
+                        // Здесь вместо общего stepScattering используем
+                        // плотность конкретно этой лампы, умноженную на шаг.
+                        stepLighting += light.color
+                                      * _LightContribution.rgb
+                                      * phase
+                                      * light.distanceAttenuation
+                                      * light.shadowAttenuation
+                                      * dust
+                                      * stepWS;
+                    LIGHT_LOOP_END
+
+                    stepLighting = min(stepLighting, _MaxScatter);
+
+                    lighting     += stepLighting * transmittance;
+                    transmittance *= stepTransmittance;
+
+                    if (transmittance < 0.001)
+                    {
+                        transmittance = 0.0;
+                        break;
+                    }
+                }
+
+                lighting *= _Intensity;
+                lighting  = min(lighting, _MaxScatter * 4.0);
+
+                if (any(isnan(lighting)) || any(isinf(lighting)))
+                    lighting = 0;
+
+                return half4(col + lighting, 1);
             }
             ENDHLSL
         }
