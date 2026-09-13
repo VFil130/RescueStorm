@@ -136,9 +136,9 @@ Material:
     - _Anisotropy_Blend: 0.84
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _Blur_Texture_Blend: 0.715
-    - _Blur_Texture_Remap_Max: 0.888
-    - _Blur_Texture_Remap_Min: 0.476
+    - _Blur_Texture_Blend: 1
+    - _Blur_Texture_Remap_Max: 0.9
+    - _Blur_Texture_Remap_Min: 0.5
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -207,7 +207,7 @@ Material:
     - _Main_Light_Self_Shadow_Remap_Max: 0.8
     - _Main_Light_Self_Shadow_Remap_Min: 0.2
     - _Main_Light_Self_Shadow_Steps: 4
-    - _Max_Distance: 15
+    - _Max_Distance: 20
     - _Metallic: 0
     - _OUTPUT: 0
     - _OcclusionStrength: 1
@@ -231,7 +231,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Steps: 9
+    - _Steps: 14
     - _Surface: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
