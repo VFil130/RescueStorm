@@ -97,8 +97,6 @@ public class VoiceChatController : NetworkBehaviour
     public void SetAudioSource(AudioSource source)
     {
         audioSource = source;
-        audioSource.transform.SetParent(transform);
-        audioSource.transform.localPosition = Vector3.zero;
     }
     private void StartTalking()
     {
