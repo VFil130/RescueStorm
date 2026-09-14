@@ -29,63 +29,51 @@ public class StaticGrainFeature : ScriptableRendererFeature
         {
             material = mat;
             renderPassEvent = evt;
-            // Требуем буфер глубины (для World Space)
             ConfigureInput(ScriptableRenderPassInput.Depth);
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
-            if (material == null)
-                return;
+            if (material == null) return;
 
             UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
-            if (resourceData == null)
-                return;
+            if (resourceData == null) return;
 
-            TextureHandle inputHandle = resourceData.activeColorTexture;
+            TextureHandle source = resourceData.activeColorTexture;
+            if (!source.IsValid()) return;
 
-            var desc = renderGraph.GetTextureDesc(inputHandle);
+            var desc = renderGraph.GetTextureDesc(source);
             desc.name = "_TempGrainRT";
             desc.clearBuffer = false;
             desc.depthBufferBits = DepthBits.None;
 
             TextureHandle tempHandle = renderGraph.CreateTexture(desc);
 
-            // Проход 1: зерно
-            using (var builder = renderGraph.AddUnsafePass<PassData>("ApplyGrain", out var passData))
+            using (var builder = renderGraph.AddRasterRenderPass<PassData>("ApplyGrain", out var passData))
             {
                 passData.material = material;
-                passData.source = inputHandle;
-                passData.destination = tempHandle;
+                passData.source = source;
 
-                builder.UseTexture(inputHandle, AccessFlags.Read);
-                builder.UseTexture(tempHandle, AccessFlags.Write);
+                // Читаем source, пишем в temp. Явно объявлено — Render Graph знает о зависимостях.
+                builder.UseTexture(source, AccessFlags.Read);
+                builder.SetRenderAttachment(tempHandle, 0, AccessFlags.Write);
 
-                builder.SetRenderFunc((PassData data, UnsafeGraphContext context) =>
+                builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
                 {
-                    CommandBuffer cmd = CommandBufferHelpers.GetNativeCommandBuffer(context.cmd);
-                    cmd.SetRenderTarget(data.destination);
-                    cmd.SetGlobalTexture("_BlitTexture", data.source);
-                    cmd.DrawProcedural(Matrix4x4.identity, data.material, 0, MeshTopology.Triangles, 3, 1);
+                    Blitter.BlitTexture(
+                        ctx.cmd,
+                        data.source,
+                        new Vector4(1, 1, 0, 0),
+                        data.material,
+                        0
+                    );
                 });
             }
 
-            // Проход 2: копия обратно
-            using (var builder = renderGraph.AddUnsafePass<PassData>("CopyBack", out var passData))
-            {
-                passData.material = null;
-                passData.source = tempHandle;
-                passData.destination = inputHandle;
-
-                builder.UseTexture(tempHandle, AccessFlags.Read);
-                builder.UseTexture(inputHandle, AccessFlags.Write);
-
-                builder.SetRenderFunc((PassData data, UnsafeGraphContext context) =>
-                {
-                    CommandBuffer cmd = CommandBufferHelpers.GetNativeCommandBuffer(context.cmd);
-                    cmd.Blit(data.source, data.destination);
-                });
-            }
+            // Ключевой момент: не копируем обратно, а ПОДМЕНЯЕМ активный color texture.
+            // Render Graph переключит зависимости автоматически, и последующие пассы
+            // (в т.ч. overlay-камеры) будут читать уже наш результат.
+            resourceData.cameraColor = tempHandle;
         }
     }
 
@@ -93,6 +81,5 @@ public class StaticGrainFeature : ScriptableRendererFeature
     {
         internal Material material;
         internal TextureHandle source;
-        internal TextureHandle destination;
     }
 }

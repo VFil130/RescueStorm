@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d86bfc599a81242a6163eadf8b1b8c, type: 3}
   m_Name: StaticGrainFeature
   m_EditorClassIdentifier: Assembly-CSharp::StaticGrainFeature
-  m_Active: 1
+  m_Active: 0
   grainMaterial: {fileID: 2100000, guid: 7436563d67ca897459567c3b116fe544, type: 2}
   renderPassEvent: 500
 --- !u!114 &11400000
