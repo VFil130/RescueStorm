@@ -6183,6 +6183,118 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_fontSize
+      value: 66
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_margin.x
+      value: -182.748
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_margin.z
+      value: -219.31914
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 66
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 525355005117439720, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885384246050260183, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885384246050260183, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2216462980004443945, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2216462980004443945, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 77
+      objectReference: {fileID: 0}
+    - target: {fileID: 2529565265036020735, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570329294592648777, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3570329294592648777, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 3945539910133246485, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362536285945767730, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5182385690635084195, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5648386295844536135, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_text
+      value: Main menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846547211404610039, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521973975077211025, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4394f671c85b5094e91e9ed486eb0cee, type: 3}
+    - target: {fileID: 6521973975077211025, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7207709437296363218, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7987878624531073838, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -6261,6 +6373,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7987878624531073838, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8438421604095900059, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084551090371455575, guid: 7eb8f5e37fccf794598cc126bb77a05a, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
