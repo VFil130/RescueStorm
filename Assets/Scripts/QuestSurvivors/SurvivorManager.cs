@@ -233,8 +233,7 @@ public class SurvivorManager : NetworkBehaviour
         for (int i = 0; i < assignedQuests.Count && i < positions.Count; i++)
         {
             QuestSO quest = assignedQuests[i];
-            if (questMiniGamePoints.TryGetValue(quest, out Transform miniGamePoint))
-                quest.SetMiniGameSpawnPoint(miniGamePoint);
+            questMiniGamePoints.TryGetValue(quest, out Transform miniGamePoint);
 
             Vector3 survivorPosition = positions[i] + Vector3.up * survivorSpawnHeight;
             GameObject survivorObject = Instantiate(survivorPrefab, survivorPosition, Quaternion.identity);
@@ -242,7 +241,7 @@ public class SurvivorManager : NetworkBehaviour
             Survivor survivor = survivorObject.GetComponent<Survivor>();
             if (survivor != null)
             {
-                survivor.SetQuest(quest);
+                survivor.SetQuest(quest, miniGamePoint);
                 survivors.Add(survivor);
             }
 

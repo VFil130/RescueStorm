@@ -3565,6 +3565,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4578442804753469218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7802253805380610640}
+  m_Layer: 0
+  m_Name: MinigameSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7802253805380610640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578442804753469218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.06, y: 0, z: -2.43}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6561696633720461034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4606562133362244981
 GameObject:
   m_ObjectHideFlags: 0
@@ -4514,6 +4545,8 @@ Transform:
   - {fileID: 1519202758541041778}
   - {fileID: 6933957198703614105}
   - {fileID: 1631067171468028205}
+  - {fileID: 7802253805380610640}
+  - {fileID: 5269946220928111016}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6212218310117292186
@@ -4594,9 +4627,9 @@ MonoBehaviour:
   moduleKind: 0
   selectionWeight: 1
   occupancyVolume: {fileID: 0}
-  canBeEvacuationRoom: 1
-  survivorSpawnPoint: {fileID: 0}
-  miniGameSpawnPoint: {fileID: 0}
+  canBeEvacuationRoom: 0
+  survivorSpawnPoint: {fileID: 5269946220928111016}
+  miniGameSpawnPoint: {fileID: 7802253805380610640}
   itemSpawnPoints: []
   playerSpawnPoints: []
   ventSpawnPoints:
@@ -5931,6 +5964,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.200215, y: 2.7321692, z: 0.6654682}
   m_Center: {x: -1.8157394, y: 1.3426261, z: -0.5334439}
+--- !u!1 &7061403505579337123
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5269946220928111016}
+  m_Layer: 0
+  m_Name: SurvivorSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5269946220928111016
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7061403505579337123}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.207, y: -0, z: 0.002}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6561696633720461034}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7072086416773209959
 GameObject:
   m_ObjectHideFlags: 0

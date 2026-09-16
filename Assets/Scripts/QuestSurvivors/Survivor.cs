@@ -133,12 +133,13 @@ public class Survivor : NetworkBehaviour, IInteractable, IPickupable
         gameManager?.AddSavedSurvivor();
     }
 
-    public void SetQuest(QuestSO newQuest)
+    public void SetQuest(QuestSO newQuest, Transform miniGamePoint)
     {
         ReleaseOwnedQuest();
         quest = newQuest != null ? Instantiate(newQuest) : null;
         ownsQuestRuntime = quest != null;
         questInitialized = false;
+        if (miniGamePoint != null) quest?.SetMiniGameSpawnPoint(miniGamePoint);
         questId = newQuest != null ? newQuest.questId : string.Empty;
         EnsureQuestInitialized();
         SpawnIndicator();

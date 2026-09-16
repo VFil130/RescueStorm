@@ -2782,94 +2782,6 @@ MonoBehaviour:
   onRelease:
     m_PersistentCalls:
       m_Calls: []
---- !u!1001 &617155512
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1277552771819698775, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: quest
-      value: 
-      objectReference: {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
-    - target: {fileID: 1277552771819698775, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: itemPrefab
-      value: 
-      objectReference: {fileID: 2404826704320307475, guid: f1d46785643617d42870ad0eb5296ae3, type: 3}
-    - target: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_Name
-      value: Survivor (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 5572658589975681057, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5572658589975681057, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6300656662664720773, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: sceneId
-      value: 503164832
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -21.994963
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.7799995
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.4056454
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9035411707642175334, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
---- !u!114 &617155513 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1277552771819698775, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
-  m_PrefabInstance: {fileID: 617155512}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fea18ee34aa00847becd757386c2add, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Survivor
 --- !u!1 &630455748
 GameObject:
   m_ObjectHideFlags: 0
@@ -5797,7 +5709,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  targetSurvivor: {fileID: 617155513}
+  targetSurvivor: {fileID: 0}
   colorButtons:
   - {fileID: 1000658904}
   - {fileID: 1497299342}
@@ -6731,7 +6643,6 @@ SceneRoots:
   - {fileID: 484017628}
   - {fileID: 1007142210}
   - {fileID: 7698088294873790371}
-  - {fileID: 617155512}
   - {fileID: 232470347}
   - {fileID: 751057790}
   - {fileID: 1651227675}
