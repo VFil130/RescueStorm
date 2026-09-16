@@ -2990,6 +2990,52 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4810618390320573117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 959933124837018658}
+  - component: {fileID: 387455442544482239}
+  m_Layer: 0
+  m_Name: Leak
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &959933124837018658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4810618390320573117}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.441, y: 1.133, z: 1.805}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5809626626453402569}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &387455442544482239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4810618390320573117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a84aabb6b3341e2459155b311bbfb055, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakSpawnPoint
+  leakOffset: {x: 0, y: 0, z: 0}
+  leakEulerAngles: {x: -45, y: 180, z: 0}
 --- !u!1 &4831033795863274491
 GameObject:
   m_ObjectHideFlags: 0
@@ -5596,6 +5642,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 959933124837018658}
   - {fileID: 3335905741796503844}
   - {fileID: 581589179319355833}
   - {fileID: 6208214147098336164}
@@ -5681,7 +5728,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   size: {x: 1, y: 1}
-  doors: []
+  doors:
+  - {fileID: 7834737280655417216}
+  - {fileID: 8894667011604897634}
+  - {fileID: 5753251121915196198}
   moduleKind: 1
   selectionWeight: 1
   occupancyVolume: {fileID: 0}
@@ -5692,4 +5742,5 @@ MonoBehaviour:
   playerSpawnPoints: []
   ventSpawnPoints:
   - {fileID: 3335905741796503844}
-  leakSpawnPoints: []
+  leakSpawnPoints:
+  - {fileID: 387455442544482239}

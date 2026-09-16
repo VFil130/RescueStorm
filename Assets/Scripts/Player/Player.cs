@@ -198,14 +198,6 @@ public class Player : NetworkBehaviour
         if (item == null) return;
 
         item.Use(gameObject);
-        if (item is not ItemObject itemObject) return;
-
-        itemObject.charges--;
-        if (itemObject.charges > 0) return;
-
-        GameObject consumedItem = itemObject.gameObject;
-        SetInventorySlot(selectedSlot, null);
-        DestroyNetworkObject(consumedItem);
     }
 
     public GameObject GetSelectedItem()

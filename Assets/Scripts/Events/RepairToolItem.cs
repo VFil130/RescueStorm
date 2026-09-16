@@ -10,10 +10,14 @@ public sealed class RepairToolItem : ItemObject
     public LeakHazard CurrentTarget { get; private set; }
     public event Action<LeakHazard> TargetChanged;
 
+    [Tooltip("Charges drained per second while the repair action is held.")]
+    [SerializeField, Min(0f)] private float chargeDrainPerSecond = 1f;
+
     private Coroutine repairCoroutine;
     private LeakHazard aimedTarget;
     private Player owner;
     private LeakHazard serverTarget;
+    private float chargeTimer;
 
     private void Awake()
     {
@@ -47,6 +51,7 @@ public sealed class RepairToolItem : ItemObject
         if (repairCoroutine == null) return;
         StopCoroutine(repairCoroutine);
         repairCoroutine = null;
+        chargeTimer = 0f;
         StopRepair();
     }
 
@@ -59,6 +64,23 @@ public sealed class RepairToolItem : ItemObject
                 TryBeginRepair(target);
             else
                 StopRepair();
+
+            if (charges > 0 && chargeDrainPerSecond > 0f)
+            {
+                chargeTimer += Time.deltaTime;
+                while (chargeTimer >= 1f)
+                {
+                    chargeTimer -= 1f;
+                    charges--;
+                    if (charges <= 0)
+                    {
+                        StopRepair();
+                        repairCoroutine = null;
+                        yield break;
+                    }
+                }
+            }
+
             yield return null;
         }
     }

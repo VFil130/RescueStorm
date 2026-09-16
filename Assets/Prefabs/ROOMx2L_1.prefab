@@ -3455,6 +3455,7 @@ Transform:
   - {fileID: 102312952391686061}
   - {fileID: 8171732393788214058}
   - {fileID: 2505683923062587448}
+  - {fileID: 6855316656758112408}
   - {fileID: 1534365960343440234}
   - {fileID: 2824289636953832262}
   - {fileID: 6586242366026375749}
@@ -3543,7 +3544,8 @@ MonoBehaviour:
   playerSpawnPoints: []
   ventSpawnPoints:
   - {fileID: 3033030026261148482}
-  leakSpawnPoints: []
+  leakSpawnPoints:
+  - {fileID: 8299856165924972910}
 --- !u!1 &3476799278277024370
 GameObject:
   m_ObjectHideFlags: 0
@@ -6132,6 +6134,52 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6553209680919089989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6855316656758112408}
+  - component: {fileID: 8299856165924972910}
+  m_Layer: 0
+  m_Name: Leak
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6855316656758112408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6553209680919089989}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.547, y: 1.018, z: 1.749}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7944805330186329594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8299856165924972910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6553209680919089989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a84aabb6b3341e2459155b311bbfb055, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakSpawnPoint
+  leakOffset: {x: 0, y: 0, z: 0}
+  leakEulerAngles: {x: -45, y: 90, z: 0}
 --- !u!1 &6559203245647249997
 GameObject:
   m_ObjectHideFlags: 0

@@ -7931,6 +7931,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4308819231806691674}
   - {fileID: 3988057018471440510}
   - {fileID: 5441743166420733478}
   - {fileID: 2146610250136824855}
@@ -8031,7 +8032,8 @@ MonoBehaviour:
   playerSpawnPoints: []
   ventSpawnPoints:
   - {fileID: 8031954764970551242}
-  leakSpawnPoints: []
+  leakSpawnPoints:
+  - {fileID: 6090494986028591859}
 --- !u!1 &8085917187076667610
 GameObject:
   m_ObjectHideFlags: 0
@@ -9290,6 +9292,52 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8935467698724703597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4308819231806691674}
+  - component: {fileID: 6090494986028591859}
+  m_Layer: 0
+  m_Name: Leak
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4308819231806691674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8935467698724703597}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000015695824, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.31, y: 0.977, z: 3.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 313213376043109407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6090494986028591859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8935467698724703597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a84aabb6b3341e2459155b311bbfb055, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakSpawnPoint
+  leakOffset: {x: 0, y: 0, z: 0}
+  leakEulerAngles: {x: -45, y: -90, z: 0}
 --- !u!1 &9026068873343698796
 GameObject:
   m_ObjectHideFlags: 0
