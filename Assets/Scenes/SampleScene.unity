@@ -4292,9 +4292,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeakEventManager
   gameManager: {fileID: 1141529821}
   leakPrefab: {fileID: 2617055582767789072, guid: a58868275affff64ba1d4dce0d5945ce, type: 3}
-  minimumInterval: 90
-  maximumInterval: 180
-  maximumActiveLeaks: 3
+  minimumInterval: 1
+  maximumInterval: 2
+  maximumActiveLeaks: 5
 --- !u!1 &1261775007
 GameObject:
   m_ObjectHideFlags: 0

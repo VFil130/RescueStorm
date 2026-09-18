@@ -193,10 +193,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  charges: 1
+  charges: 100
   itemName: RepairTool
   isHeavy: 0
   icon: {fileID: 0}
+  chargeDrainPerSecond: 1
 --- !u!65 &2430514359268847193
 BoxCollider:
   m_ObjectHideFlags: 0

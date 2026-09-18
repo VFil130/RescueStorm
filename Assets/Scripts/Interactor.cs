@@ -6,7 +6,6 @@ public class Interactor : NetworkBehaviour
 {
     [SerializeField] private float interactionRange = 2.5f;
     [SerializeField] private LayerMask interactionMask = -1;
-    [SerializeField] private GameObject promptUI;
 
     private Camera playerCamera;
     private IInteractable currentInteractable;
@@ -16,7 +15,6 @@ public class Interactor : NetworkBehaviour
     private void Start()
     {
         playerCamera = GetComponentInChildren<Camera>();
-        ShowPrompt(false);
     }
 
     private void Update()
@@ -97,7 +95,6 @@ public class Interactor : NetworkBehaviour
                 if (currentInteractable != interactable)
                 {
                     currentInteractable = interactable;
-                    ShowPrompt(true);
                 }
                 return;
             }
@@ -106,13 +103,7 @@ public class Interactor : NetworkBehaviour
         if (currentInteractable != null)
         {
             currentInteractable = null;
-            ShowPrompt(false);
         }
-    }
-
-    private void ShowPrompt(bool show)
-    {
-        if (promptUI != null) promptUI.SetActive(show);
     }
 
     public bool HasTarget()
