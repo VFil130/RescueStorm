@@ -12,6 +12,7 @@ public sealed class PlayerHud : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject ePrompt;
     [SerializeField] private Image healthFill;
+    [SerializeField] private Image[] leakIcons;
 
     private GameManager gameManager;
     private Player localPlayer;
@@ -20,6 +21,11 @@ public sealed class PlayerHud : MonoBehaviour
     private void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.OnActiveLeaksUpdated += UpdateLeakIcons;
+            UpdateLeakIcons(gameManager.GetActiveLeakCount());
+        }
 
         bool standalone = !NetworkClient.active && !NetworkServer.active;
         localPlayer = FindObjectsByType<Player>(FindObjectsSortMode.None)
@@ -34,6 +40,9 @@ public sealed class PlayerHud : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (gameManager != null)
+            gameManager.OnActiveLeaksUpdated -= UpdateLeakIcons;
+
         if (localPlayer != null)
             localPlayer.OnHealthChanged -= UpdateHealth;
     }
@@ -104,6 +113,17 @@ public sealed class PlayerHud : MonoBehaviour
         healthFill.fillAmount = maxHealth > 0
             ? (float)health / maxHealth
             : 0f;
+    }
+
+    private void UpdateLeakIcons(int activeLeaks)
+    {
+        if (leakIcons == null) return;
+
+        for (int i = 0; i < leakIcons.Length; i++)
+        {
+            if (leakIcons[i] != null)
+                leakIcons[i].gameObject.SetActive(i < activeLeaks);
+        }
     }
 
     private ItemObject GetSelectedItem()
