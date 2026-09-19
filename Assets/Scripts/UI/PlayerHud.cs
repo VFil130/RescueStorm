@@ -2,6 +2,7 @@ using Mirror;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class PlayerHud : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public sealed class PlayerHud : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemAmmoText;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject ePrompt;
+    [SerializeField] private Image healthFill;
 
     private GameManager gameManager;
     private Player localPlayer;
@@ -23,7 +25,17 @@ public sealed class PlayerHud : MonoBehaviour
         localPlayer = FindObjectsByType<Player>(FindObjectsSortMode.None)
             .FirstOrDefault(player => standalone || player.isLocalPlayer);
         if (localPlayer != null)
+        {
             localInteractor = localPlayer.GetComponent<Interactor>();
+            localPlayer.OnHealthChanged += UpdateHealth;
+            UpdateHealth(localPlayer.Health, localPlayer.MaxHealth);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (localPlayer != null)
+            localPlayer.OnHealthChanged -= UpdateHealth;
     }
 
     private void Update()
@@ -83,6 +95,15 @@ public sealed class PlayerHud : MonoBehaviour
 
         itemAmmoText.gameObject.SetActive(true);
         itemAmmoText.text = item.charges.ToString();
+    }
+
+    private void UpdateHealth(int health, int maxHealth)
+    {
+        if (healthFill == null) return;
+
+        healthFill.fillAmount = maxHealth > 0
+            ? (float)health / maxHealth
+            : 0f;
     }
 
     private ItemObject GetSelectedItem()
