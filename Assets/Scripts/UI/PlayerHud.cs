@@ -1,18 +1,36 @@
 using Mirror;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public sealed class PlayerHud : MonoBehaviour
 {
+    [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
+
+    [Header("Survivors")]
     [SerializeField] private TextMeshProUGUI survivorsText;
+
+    [Header("Item")]
     [SerializeField] private TextMeshProUGUI itemAmmoText;
+
+    [Header("Pause")]
     [SerializeField] private GameObject pausePanel;
+
+    [Header("Interact")]
     [SerializeField] private GameObject ePrompt;
+
+    [Header("Health")]
     [SerializeField] private Image healthFill;
+
+    [Header("Leaks")]
     [SerializeField] private Image[] leakIcons;
+
+    [Header("Inventory Slots")]
+    [SerializeField] private Image[] slotBackgrounds;
+    [SerializeField] private Image[] slotIcons;
+    [SerializeField] private Color slotSelectedColor = new Color(1f, 0.9f, 0.4f, 1f);
+    [SerializeField] private Color slotNormalColor = new Color(1f, 1f, 1f, 0.2f);
 
     private GameManager gameManager;
     private Player localPlayer;
@@ -27,13 +45,15 @@ public sealed class PlayerHud : MonoBehaviour
             UpdateLeakIcons(gameManager.GetActiveLeakCount());
         }
 
-        bool standalone = !NetworkClient.active && !NetworkServer.active;
-        localPlayer = FindObjectsByType<Player>(FindObjectsSortMode.None)
-            .FirstOrDefault(player => standalone || player.isLocalPlayer);
+        localPlayer = FindFirstObjectByType<Player>();
         if (localPlayer != null)
         {
             localInteractor = localPlayer.GetComponent<Interactor>();
             localPlayer.OnHealthChanged += UpdateHealth;
+            localPlayer.OnSelectedSlotChangedEvent += UpdateSelectedSlot;
+            localPlayer.OnInventoryChanged += UpdateSlotIcons;
+            UpdateSelectedSlot(localPlayer.SelectedSlot);
+            UpdateSlotIcons(localPlayer.InventoryItems);
             UpdateHealth(localPlayer.Health, localPlayer.MaxHealth);
         }
     }
@@ -44,7 +64,11 @@ public sealed class PlayerHud : MonoBehaviour
             gameManager.OnActiveLeaksUpdated -= UpdateLeakIcons;
 
         if (localPlayer != null)
+        {
             localPlayer.OnHealthChanged -= UpdateHealth;
+            localPlayer.OnSelectedSlotChangedEvent -= UpdateSelectedSlot;
+            localPlayer.OnInventoryChanged -= UpdateSlotIcons;
+        }
     }
 
     private void Update()
@@ -61,14 +85,41 @@ public sealed class PlayerHud : MonoBehaviour
             pausePanel.SetActive(!pausePanel.activeSelf);
     }
 
-    private void UpdateEPrompt()
+    private void UpdateSelectedSlot(int slotIndex)
     {
-        if (ePrompt == null || localInteractor == null)
+        if (slotBackgrounds == null) return;
+
+        for (int i = 0; i < slotBackgrounds.Length; i++)
         {
-            if (ePrompt != null) ePrompt.SetActive(false);
-            return;
+            if (slotBackgrounds[i] != null)
+                slotBackgrounds[i].color = i == slotIndex
+                    ? slotSelectedColor
+                    : slotNormalColor;
         }
-        ePrompt.SetActive(localInteractor.HasTarget());
+    }
+
+    private void UpdateSlotIcons(InventorySlot[] slots)
+    {
+        if (slotIcons == null) return;
+
+        for (int i = 0; i < slotIcons.Length; i++)
+        {
+            if (slotIcons[i] == null) continue;
+
+            ItemObject item = slots != null && i < slots.Length
+                ? slots[i].itemObject as ItemObject
+                : null;
+
+            if (item != null && item.icon != null)
+            {
+                slotIcons[i].gameObject.SetActive(true);
+                slotIcons[i].sprite = item.icon;
+            }
+            else
+            {
+                slotIcons[i].gameObject.SetActive(false);
+            }
+        }
     }
 
     private void UpdateTimer()
@@ -104,6 +155,13 @@ public sealed class PlayerHud : MonoBehaviour
 
         itemAmmoText.gameObject.SetActive(true);
         itemAmmoText.text = item.charges.ToString();
+    }
+
+    private void UpdateEPrompt()
+    {
+        if (ePrompt == null) return;
+
+        ePrompt.SetActive(localInteractor != null && localInteractor.HasTarget());
     }
 
     private void UpdateHealth(int health, int maxHealth)

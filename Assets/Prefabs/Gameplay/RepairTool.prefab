@@ -196,7 +196,7 @@ MonoBehaviour:
   charges: 100
   itemName: RepairTool
   isHeavy: 0
-  icon: {fileID: 0}
+  icon: {fileID: 3286163911610860551, guid: d37be086c50d58c4b8081e09c29b82cd, type: 3}
   chargeDrainPerSecond: 1
 --- !u!65 &2430514359268847193
 BoxCollider:
