@@ -17,6 +17,7 @@ public abstract class SteamLobbyController : MonoBehaviour
     private readonly Dictionary<CSteamID, GameObject> lobbyItems =
         new Dictionary<CSteamID, GameObject>();
 
+    private bool isHostingLobby;
     private NetworkManager networkManager;
     private Callback<LobbyCreated_t> lobbyCreated;
     private Callback<LobbyMatchList_t> lobbyMatchList;
@@ -47,6 +48,7 @@ public abstract class SteamLobbyController : MonoBehaviour
     public void CreateLobby()
     {
         if (!SteamManager.Initialized || networkManager == null) return;
+        isHostingLobby = true;
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
     }
 
@@ -83,6 +85,8 @@ public abstract class SteamLobbyController : MonoBehaviour
 
     public void LeaveLobby()
     {
+        isHostingLobby = false;
+
         if (currentLobbyId.IsValid())
         {
             SteamMatchmaking.LeaveLobby(currentLobbyId);
@@ -153,6 +157,8 @@ public abstract class SteamLobbyController : MonoBehaviour
             Debug.LogError("Не удалось войти в лобби");
             return;
         }
+
+        if (isHostingLobby) return;
 
         currentLobbyId = new CSteamID(result.m_ulSteamIDLobby);
         networkManager.networkAddress =
