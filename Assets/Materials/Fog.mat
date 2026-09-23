@@ -112,7 +112,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DensityMultiplier: 0.25
+    - _DensityMultiplier: 0.07
     - _DensityThreshold: 0.15
     - _DepthOcclusion: 0
     - _DetailAlbedoMapScale: 1
