@@ -208,8 +208,8 @@ ModelImporter:
       name: Armature.001|walk
       takeName: Armature.001|walk
       internalID: -6993090946979842912
-      firstFrame: 0
-      lastFrame: 27
+      firstFrame: 0.40000004
+      lastFrame: 26.7
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
