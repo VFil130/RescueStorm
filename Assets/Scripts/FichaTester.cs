@@ -59,7 +59,7 @@ public class FichaTester : MonoBehaviour
 
     void RunParticleTests()
     {
-        particleManager.PlayParticle("Particles/1", Vector3.zero);
+        particleManager.PlayParticle("1", Vector3.zero);
     }
 
     void OnDestroy()

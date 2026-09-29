@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8010519053903214661}
   - component: {fileID: 799975832173459911}
   - component: {fileID: 6782744689266559434}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LeakHazard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

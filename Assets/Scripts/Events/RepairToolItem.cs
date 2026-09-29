@@ -13,6 +13,15 @@ public sealed class RepairToolItem : ItemObject
     [Tooltip("Charges drained per second while the repair action is held.")]
     [SerializeField, Min(0f)] private float chargeDrainPerSecond = 1f;
 
+    [Tooltip("Looping effect prefab name inside Resources/Particles.")]
+    [SerializeField] private string repairEffectName = "RepairParticle";
+
+    [Tooltip("Muzzle transform the effect is attached to.")]
+    [SerializeField] private Transform effectAnchor;
+
+    [Tooltip("Raycast mask used to aim at leaks.")]
+    [SerializeField] private LayerMask leakMask;
+
     private Coroutine repairCoroutine;
     private LeakHazard aimedTarget;
     private Player owner;
@@ -39,9 +48,19 @@ public sealed class RepairToolItem : ItemObject
 
     private bool IsStandalone => !NetworkClient.active && !NetworkServer.active;
 
+    private int LeakMask
+    {
+        get
+        {
+            int layer = LayerMask.NameToLayer("Leak");
+            return layer < 0 ? leakMask.value : 1 << layer;
+        }
+    }
+
     public override void UseHeld(GameObject user)
     {
         owner = user.GetComponent<Player>();
+        Debug.Log("F4");
         if (repairCoroutine != null) return;
         repairCoroutine = StartCoroutine(RepairRoutine(user));
     }
@@ -53,17 +72,30 @@ public sealed class RepairToolItem : ItemObject
         repairCoroutine = null;
         chargeTimer = 0f;
         StopRepair();
+        ParticleManager.Instance.SetLoopingParticleVisible(repairEffectName, false);
     }
 
     private IEnumerator RepairRoutine(GameObject user)
     {
+        Debug.Log("F5");
         while (true)
         {
+            Debug.Log("F6");
             LeakHazard target = FindAimedLeak(user);
             if (target != null && !target.IsRepaired)
                 TryBeginRepair(target);
             else
                 StopRepair();
+
+            if (charges <= 0)
+            {
+                StopRepair();
+                ParticleManager.Instance.SetLoopingParticleVisible(repairEffectName, false);
+                repairCoroutine = null;
+                yield break;
+            }
+
+            ParticleManager.Instance.ShowLoopingParticle(repairEffectName, effectAnchor);
 
             if (charges > 0 && chargeDrainPerSecond > 0f)
             {
@@ -75,6 +107,7 @@ public sealed class RepairToolItem : ItemObject
                     if (charges <= 0)
                     {
                         StopRepair();
+                        ParticleManager.Instance.SetLoopingParticleVisible(repairEffectName, false);
                         repairCoroutine = null;
                         yield break;
                     }
@@ -95,6 +128,7 @@ public sealed class RepairToolItem : ItemObject
         }
         else
         {
+            Debug.Log("F1");
             CmdBeginRepair(target.netIdentity);
             SetTarget(target);
         }
@@ -126,24 +160,35 @@ public sealed class RepairToolItem : ItemObject
         target?.EndRepair(owner);
     }
 
-    [Command]
-    private void CmdBeginRepair(NetworkIdentity leakIdentity)
+    [Command(requiresAuthority = false)]
+    private void CmdBeginRepair(
+        NetworkIdentity leakIdentity,
+        NetworkConnectionToClient sender = null)
     {
+        Player player = ResolvePlayer(sender);
         LeakHazard leak = leakIdentity != null ? leakIdentity.GetComponent<LeakHazard>() : null;
-        if (serverTarget != null)
-            serverTarget.EndRepair(owner);
-        if (leak == null || !leak.TryBeginRepair(owner))
+        Debug.Log("F2");
+        if (serverTarget != null && serverTarget != leak)
+            serverTarget.EndRepair(player);
+        if (leak == null || !leak.TryBeginRepair(player))
             serverTarget = null;
         else
             serverTarget = leak;
     }
 
-    [Command]
-    private void CmdStopRepair()
+    [Command(requiresAuthority = false)]
+    private void CmdStopRepair(NetworkConnectionToClient sender = null)
     {
+        Player player = ResolvePlayer(sender);
         if (serverTarget != null)
-            serverTarget.EndRepair(owner);
+            serverTarget.EndRepair(player);
         serverTarget = null;
+    }
+
+    private static Player ResolvePlayer(NetworkConnectionToClient sender)
+    {
+        if (sender == null || sender.identity == null) return null;
+        return sender.identity.GetComponent<Player>();
     }
 
     private void Update()
@@ -166,9 +211,8 @@ public sealed class RepairToolItem : ItemObject
         if (playerCamera == null) return null;
 
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
-        if (!Physics.Raycast(ray, out RaycastHit hit, 2.5f, ~0, QueryTriggerInteraction.Collide))
+        if (!Physics.Raycast(ray, out RaycastHit hit, 2.5f, LeakMask, QueryTriggerInteraction.Collide))
             return null;
-
         return hit.collider.GetComponentInParent<LeakHazard>();
     }
 }
