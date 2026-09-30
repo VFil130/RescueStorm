@@ -213,7 +213,7 @@ Transform:
   m_GameObject: {fileID: 467144715889871064}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000003774895, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1146, y: 0.074000105, z: 0.24671}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5938591, y: 0.5938591, z: 0.5938591}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1995,7 +1995,6 @@ GameObject:
   - component: {fileID: 7703017497110289450}
   - component: {fileID: 8094738673803503230}
   - component: {fileID: 6536322355782351081}
-  - component: {fileID: 7385924989083935784}
   - component: {fileID: 2024430304339457242}
   m_Layer: 0
   m_Name: Zombie Idle
@@ -2030,7 +2029,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8278454828837564536}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -2039,7 +2038,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 1
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -2253,27 +2252,6 @@ MonoBehaviour:
   positionSensitivity: 0.001
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!65 &7385924989083935784
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8278454828837564536}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1.08}
-  m_Center: {x: 0, y: 0.6, z: 0.33}
 --- !u!114 &2024430304339457242
 MonoBehaviour:
   m_ObjectHideFlags: 0
