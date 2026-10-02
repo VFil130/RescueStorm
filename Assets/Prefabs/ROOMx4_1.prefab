@@ -3620,6 +3620,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7802253805380610640}
+  - component: {fileID: 7374451102341848001}
   m_Layer: 0
   m_Name: MinigameSpawn
   m_TagString: Untagged
@@ -3635,13 +3636,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4578442804753469218}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.00000015695824, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.06, y: 0, z: -2.43}
+  m_LocalRotation: {x: 0.00000015695824, y: 0.00000086426724, z: 1.3062957e-13, w: 1}
+  m_LocalPosition: {x: -3.06, y: 1, z: 2.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6561696633720461034}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7374451102341848001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578442804753469218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c900ff5f55fbc644f926cb2e8fddbb40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameSpawnPoint
+  miniGamePrefab: {fileID: 3706330075134515904, guid: 89592f0bfe2324149bb2176013d3801d, type: 3}
 --- !u!1 &4606562133362244981
 GameObject:
   m_ObjectHideFlags: 0
@@ -6037,7 +6051,7 @@ Transform:
   m_GameObject: {fileID: 7061403505579337123}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00000015695824, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.207, y: -0, z: 0.002}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

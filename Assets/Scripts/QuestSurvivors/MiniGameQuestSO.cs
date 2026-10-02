@@ -12,8 +12,6 @@ public class MinigameQuestSO : QuestSO
         base.Initialize(survivor);
         owner = survivor;
 
-        if (miniGamePrefab == null) return;
-
         Transform spawnPoint = GetMiniGameSpawnPoint();
         if (spawnPoint == null)
         {
@@ -21,7 +19,10 @@ public class MinigameQuestSO : QuestSO
             return;
         }
 
-        GameObject obj = Instantiate(miniGamePrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject prefab = ResolveMiniGamePrefab(spawnPoint);
+        if (prefab == null) return;
+
+        GameObject obj = Instantiate(prefab, spawnPoint, false);
         miniGameInstance = obj.GetComponent<IMiniGame>();
         if (miniGameInstance == null)
         {
@@ -36,7 +37,7 @@ public class MinigameQuestSO : QuestSO
         if (identity == null)
         {
             Debug.LogError(
-                $"Minigame prefab '{miniGamePrefab.name}' needs NetworkIdentity.",
+                $"Minigame prefab '{prefab.name}' needs NetworkIdentity.",
                 obj);
             Destroy(obj);
             miniGameInstance = null;
@@ -44,6 +45,12 @@ public class MinigameQuestSO : QuestSO
         }
 
         NetworkServer.Spawn(obj);
+    }
+
+    private GameObject ResolveMiniGamePrefab(Transform spawnPoint)
+    {
+        MiniGameSpawnPoint slot = spawnPoint.GetComponent<MiniGameSpawnPoint>();
+        return slot != null && slot.MiniGamePrefab != null ? slot.MiniGamePrefab : miniGamePrefab;
     }
 
     public override bool CheckCompletion(GameObject interactor, Survivor survivor)

@@ -4188,7 +4188,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   survivorSpawnHeight: 0
-  survivorPrefab: {fileID: 5307399027723149225, guid: 4a5a12f3d8020474baa85618cda85804, type: 3}
+  survivorPrefab: {fileID: 3169270393728764687, guid: e9f5b275d494d224a89fdc920c5b367e, type: 3}
   survivorsCount: 5
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
