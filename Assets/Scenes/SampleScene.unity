@@ -4189,10 +4189,16 @@ MonoBehaviour:
   syncInterval: 0
   survivorSpawnHeight: 0
   survivorPrefab: {fileID: 3169270393728764687, guid: e9f5b275d494d224a89fdc920c5b367e, type: 3}
-  survivorsCount: 5
+  survivorsCount: 7
   availableQuests:
   - {fileID: 11400000, guid: 4c8c8d5bfdf30e14a9eb73d7748eccd4, type: 2}
   - {fileID: 11400000, guid: cbf4b2fc1548dbc4ea8a5eaa16cf770b, type: 2}
+  - {fileID: 11400000, guid: f8a7c9066deba264d986df87b44a5ecb, type: 2}
+  - {fileID: 11400000, guid: f881d8333d2c93441909249031fe825e, type: 2}
+  - {fileID: 11400000, guid: 2a2dba534580e794fbef1f977dd500df, type: 2}
+  - {fileID: 11400000, guid: ab954ad63f064ce4c9c85ebaad16165f, type: 2}
+  - {fileID: 11400000, guid: cb65aaebc1da2a14aa88513831edf8b7, type: 2}
+  - {fileID: 11400000, guid: 5a41e12f383b73f4b899748c5dfe2522, type: 2}
   questItemPrefabs: []
 --- !u!114 &1141529819
 MonoBehaviour:

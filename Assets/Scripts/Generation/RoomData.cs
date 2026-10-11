@@ -24,6 +24,9 @@ public class RoomData : MonoBehaviour
     [SerializeField] private List<Transform> ventSpawnPoints = new List<Transform>();
     [SerializeField] private List<LeakSpawnPoint> leakSpawnPoints = new List<LeakSpawnPoint>();
 
+    private Renderer[] cachedRenderers;
+    private bool renderersCached;
+
     public float SelectionWeight => selectionWeight;
     public RoomModuleKind ModuleKind => moduleKind;
     public bool CanBeEvacuationRoom => canBeEvacuationRoom;
@@ -55,16 +58,21 @@ public class RoomData : MonoBehaviour
             return occupancyVolume.bounds;
         }
 
-        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
-        if (renderers.Length == 0)
+        if (!renderersCached)
+        {
+            cachedRenderers = GetComponentsInChildren<Renderer>(true);
+            renderersCached = true;
+        }
+
+        if (cachedRenderers.Length == 0)
         {
             return new Bounds(transform.position, Vector3.one);
         }
 
-        Bounds bounds = renderers[0].bounds;
-        for (int i = 1; i < renderers.Length; i++)
+        Bounds bounds = cachedRenderers[0].bounds;
+        for (int i = 1; i < cachedRenderers.Length; i++)
         {
-            bounds.Encapsulate(renderers[i].bounds);
+            if (cachedRenderers[i] != null) bounds.Encapsulate(cachedRenderers[i].bounds);
         }
 
         return bounds;

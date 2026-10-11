@@ -34,6 +34,9 @@ internal sealed class DungeonLayoutBuilder
     private readonly System.Random random;
     private readonly List<DungeonPlacedModule> modules = new List<DungeonPlacedModule>();
     private Dictionary<GameObject, int> remainingMandatoryRooms;
+    private readonly Dictionary<GameObject, Stack<GameObject>> instancePool =
+        new Dictionary<GameObject, Stack<GameObject>>();
+    private List<GameObject> placementPrefabs;
     private int searchSteps;
     private int loopCount;
 
@@ -162,12 +165,7 @@ internal sealed class DungeonLayoutBuilder
 
     private bool TryPlaceModule(GameObject prefab, OpenSocket target)
     {
-        GameObject instance = UnityEngine.Object.Instantiate(
-            prefab,
-            Vector3.zero,
-            Quaternion.identity,
-            generatedRoot);
-        instance.name = prefab.name;
+        GameObject instance = RentInstance(prefab);
 
         RoomData data = instance.GetComponent<RoomData>();
         if (data == null)
@@ -219,7 +217,7 @@ internal sealed class DungeonLayoutBuilder
             if (consumedMandatory) RestoreMandatory(prefab);
         }
 
-        DungeonObjectLifecycle.Destroy(instance);
+        ReturnInstance(prefab, instance);
         return false;
     }
 
@@ -334,6 +332,8 @@ internal sealed class DungeonLayoutBuilder
         Vector3 layoutCenter = CalculateLayoutCenter();
         Vector3 startPosition = modules.Count > 0 ? modules[0].Bounds.center : origin.position;
         List<ScoredDoorPoint> scored = new List<ScoredDoorPoint>();
+        // The placed layout does not change while scoring, so the open sockets are identical for every door.
+        List<OpenSocket> existingOpenSockets = CollectOpenSockets();
 
         foreach (DoorPoint socket in candidateRoom.GetDoorPoints().Where(socket => socket != null))
         {
@@ -343,7 +343,7 @@ internal sealed class DungeonLayoutBuilder
             Bounds bounds = candidateRoom.GetWorldBounds();
             if (OverlapsPlacedModules(bounds)) continue;
 
-            int closures = CountPotentialLoopConnections(candidateRoom, socket, target);
+            int closures = CountPotentialLoopConnections(candidateRoom, socket, target, existingOpenSockets);
             float centerDistance = HorizontalDistance(bounds.center, layoutCenter);
             float radialDistance = HorizontalDistance(bounds.center, startPosition);
             float outsidePreferredRadius = Mathf.Max(0f, radialDistance - settings.PreferredLayoutRadius);
@@ -380,10 +380,10 @@ internal sealed class DungeonLayoutBuilder
     private int CountPotentialLoopConnections(
         RoomData candidateRoom,
         DoorPoint attachmentSocket,
-        OpenSocket target)
+        OpenSocket target,
+        List<OpenSocket> existingOpenSockets)
     {
         int count = 0;
-        List<OpenSocket> existingOpenSockets = CollectOpenSockets();
         foreach (DoorPoint candidateSocket in candidateRoom.GetDoorPoints())
         {
             if (candidateSocket == null || candidateSocket == attachmentSocket) continue;
@@ -572,11 +572,57 @@ internal sealed class DungeonLayoutBuilder
 
     private List<GameObject> GetPlacementPrefabs()
     {
-        return settings.RoomPrefabs
-            .Concat(settings.MandatoryRoomPrefabs)
-            .Where(prefab => prefab != null)
-            .Distinct()
-            .ToList();
+        if (placementPrefabs == null)
+        {
+            placementPrefabs = settings.RoomPrefabs
+                .Concat(settings.MandatoryRoomPrefabs)
+                .Where(prefab => prefab != null)
+                .Distinct()
+                .ToList();
+        }
+
+        return placementPrefabs;
+    }
+
+    private GameObject RentInstance(GameObject prefab)
+    {
+        if (instancePool.TryGetValue(prefab, out Stack<GameObject> pool))
+        {
+            while (pool.Count > 0)
+            {
+                GameObject pooled = pool.Pop();
+                if (pooled != null)
+                {
+                    pooled.SetActive(true);
+                    return pooled;
+                }
+            }
+        }
+
+        GameObject instance = UnityEngine.Object.Instantiate(
+            prefab,
+            Vector3.zero,
+            Quaternion.identity,
+            generatedRoot);
+        instance.name = prefab.name;
+        return instance;
+    }
+
+    private void ReturnInstance(GameObject prefab, GameObject instance)
+    {
+        if (instance == null) return;
+
+        RoomData data = instance.GetComponent<RoomData>();
+        if (data != null) data.ResetRuntimeState();
+
+        instance.SetActive(false);
+        if (!instancePool.TryGetValue(prefab, out Stack<GameObject> pool))
+        {
+            pool = new Stack<GameObject>();
+            instancePool[prefab] = pool;
+        }
+
+        pool.Push(instance);
     }
 
     private void Shuffle<T>(IList<T> list)

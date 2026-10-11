@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f478e992d6cdd1647ba8ab13e4fca159, type: 3}
+  m_Name: NewSimpleQuest
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleQuestSO
+  questId: 3
+  questName: Simple1
+  requiredRoomPrefab: {fileID: 387658994413658846, guid: 757000173c1ec6a4eb8507c2a65d9127, type: 3}
+  itemPrefab: {fileID: 0}
+  questIndicatorPrefab: {fileID: 0}
+  requiredRoom: 
+  requiredItem: 

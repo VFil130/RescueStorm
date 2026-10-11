@@ -56,10 +56,10 @@ public class SurvivorManager : NetworkBehaviour
         DungeonGenerator generator,
         out List<string> missingRoomNames)
     {
+        // Keep duplicates: every quest that requires a room needs its own placed instance.
         List<GameObject> roomPrefabs = assignedQuests
             .Select(quest => quest.RequiredRoomPrefab)
             .Where(prefab => prefab != null)
-            .Distinct()
             .ToList();
 
         IEnumerable<string> legacyRoomNames = assignedQuests

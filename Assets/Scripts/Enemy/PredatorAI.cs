@@ -23,6 +23,11 @@ public class PredatorAI : NetworkBehaviour
     [SerializeField] private float patrolRadius = 15f;
     [SerializeField] private float stuckTime = 5f;
 
+    [Header("Chase")]
+    [SerializeField] private float chaseGiveUpTime = 8f;
+    [SerializeField] private float chaseProgressThreshold = 1.5f;
+    [SerializeField] private float chaseGiveUpCooldown = 5f;
+
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private float fleeThreshold = 0.3f;
@@ -57,6 +62,9 @@ public class PredatorAI : NetworkBehaviour
     private float ventTimer;
     private float trapTimer;
     private float stuckTimer;
+    private float chaseTimer;
+    private float chaseCooldownTimer;
+    private float lastChaseDistance;
     private Vent enterVent;
     private Vent exitVent;
     private bool usingVent;
@@ -92,6 +100,7 @@ public class PredatorAI : NetworkBehaviour
 
         attackTimer -= Time.deltaTime;
         trapTimer -= Time.deltaTime;
+        chaseCooldownTimer = Mathf.Max(0f, chaseCooldownTimer - Time.deltaTime);
         UpdateAnimations();
         if (usingVent)
         {
@@ -293,7 +302,7 @@ public class PredatorAI : NetworkBehaviour
         }),
         new BTSequence(new System.Collections.Generic.List<BTNode>
         {
-            new BTCondition(() => { target = FindClosestPlayer(); return IsTargetInSight(); }),
+            new BTCondition(TryStartHunt),
             new BTAction(() => HuntUpdate())
         }),
         new BTAction(() => PatrolUpdate())
@@ -313,6 +322,26 @@ public class PredatorAI : NetworkBehaviour
         return IsTargetInAttackRange() ? BTNode.Status.Running : BTNode.Status.Failure;
     }
 
+    private bool TryStartHunt()
+    {
+        if (chaseCooldownTimer > 0f) return false;
+
+        Transform found = FindClosestPlayer();
+        if (found == null)
+        {
+            ResetChaseProgress();
+            return false;
+        }
+
+        if (found != target)
+        {
+            target = found;
+            ResetChaseProgress();
+        }
+
+        return IsTargetInSight();
+    }
+
     private BTNode.Status HuntUpdate()
     {
         if (target == null)
@@ -325,8 +354,29 @@ public class PredatorAI : NetworkBehaviour
 
         if (distance > sightRange)
         {
-            target = null;
-            agent.speed = walkSpeed;
+            GiveUpChase();
+            return BTNode.Status.Failure;
+        }
+
+        if (distance <= lastChaseDistance - chaseProgressThreshold)
+        {
+            lastChaseDistance = distance;
+            chaseTimer = 0f;
+        }
+        else
+        {
+            chaseTimer += Time.deltaTime;
+        }
+
+        bool cannotReach = !agent.pathPending &&
+                           (agent.pathStatus == NavMeshPathStatus.PathPartial ||
+                            agent.pathStatus == NavMeshPathStatus.PathInvalid);
+        bool notMoving = agent.velocity.magnitude < 0.75f;
+        bool stuck = (cannotReach || notMoving) && chaseTimer >= chaseGiveUpTime;
+        bool tooLong = chaseTimer >= chaseGiveUpTime * 2f;
+        if (stuck || tooLong)
+        {
+            GiveUpChase();
             return BTNode.Status.Failure;
         }
 
@@ -334,6 +384,21 @@ public class PredatorAI : NetworkBehaviour
         agent.SetDestination(target.position);
 
         return BTNode.Status.Running;
+    }
+
+    private void ResetChaseProgress()
+    {
+        chaseTimer = 0f;
+        lastChaseDistance = float.MaxValue;
+    }
+
+    private void GiveUpChase()
+    {
+        target = null;
+        chaseCooldownTimer = chaseGiveUpCooldown;
+        ResetChaseProgress();
+        agent.ResetPath();
+        agent.speed = walkSpeed;
     }
 
     private BTNode.Status PatrolUpdate()
