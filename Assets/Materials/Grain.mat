@@ -105,7 +105,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FocusDistance: 2.0363967
+    - _FocusDistance: 2.0111187
     - _FocusGrainMax: 1.29
     - _FocusGrainMin: 0.62
     - _FocusRange: 10.4
