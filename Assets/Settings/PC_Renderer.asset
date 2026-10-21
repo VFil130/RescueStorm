@@ -78,6 +78,26 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &-3379754714767011889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FullScreenPassRendererFeature
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 550
+  fetchColorBuffer: 1
+  requirements: 4
+  passMaterial: {fileID: 2100000, guid: 0b99df468a1fbb041ac783d4b7c4b117, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &-122567428183688894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d86bfc599a81242a6163eadf8b1b8c, type: 3}
   m_Name: StaticGrainFeature
   m_EditorClassIdentifier: Assembly-CSharp::StaticGrainFeature
-  m_Active: 0
+  m_Active: 1
   grainMaterial: {fileID: 2100000, guid: 7436563d67ca897459567c3b116fe544, type: 2}
   renderPassEvent: 500
 --- !u!114 &11400000
@@ -119,11 +139,12 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  - {fileID: -122567428183688894}
   - {fileID: -4924936192971285933}
   - {fileID: -8419756580690825850}
   - {fileID: -3752815267647853523}
-  m_RendererFeatureMap: ad6b866f10d7b46c42f913ce928d4cfe535a7b3ca01ca7bb866daae8ff03278b2dec2fb86552ebcb
+  - {fileID: -3379754714767011889}
+  - {fileID: -122567428183688894}
+  m_RendererFeatureMap: ad6b866f10d7b46c535a7b3ca01ca7bb866daae8ff03278b2dec2fb86552ebcbcf4f5c5efeb218d142f913ce928d4cfe
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -164,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   m_Settings:
     AOMethod: 0
     Downsample: 1
